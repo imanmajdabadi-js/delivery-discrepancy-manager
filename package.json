@@ -1,0 +1,22 @@
+{
+  "name": "delivery-discrepancy-manager",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20.20.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @delivery-discrepancy/web --filter @delivery-discrepancy/api dev",
+    "build": "pnpm -r --if-present build",
+    "lint": "oxlint frontend/src backend/src",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm lint && pnpm typecheck && pnpm build"
+  },
+  "devDependencies": {
+    "oxlint": "^1.73.0",
+    "prettier": "^3.9.5"
+  }
+}

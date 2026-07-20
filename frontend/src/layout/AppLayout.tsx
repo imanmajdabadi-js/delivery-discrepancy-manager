@@ -1,0 +1,37 @@
+import { Outlet } from 'react-router-dom';
+
+export function AppLayout() {
+  return (
+    <div className="app-canvas min-h-screen text-ink">
+      <header className="app-header border-b border-line bg-surface">
+        <div className="mx-auto flex min-h-17 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="brand-mark grid size-9 place-items-center rounded-xl text-brand"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+              >
+                <path d="M4.5 7.5 12 3l7.5 4.5v9L12 21l-7.5-4.5z" />
+                <path d="m4.8 7.7 7.2 4.2 7.2-4.2M12 12v8.6" />
+                <path d="m8.2 5.3 7.4 4.4" />
+              </svg>
+            </span>
+            <span className="text-[0.9375rem] font-semibold text-ink">
+              سامانه رسیدگی به مغایرت تحویل
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <Outlet />
+    </div>
+  );
+}
