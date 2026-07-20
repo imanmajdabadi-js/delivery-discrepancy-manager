@@ -1,18 +1,40 @@
+import { Link } from 'react-router-dom';
+
 export function CasesPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-9 sm:px-6 sm:py-12 lg:px-8">
-      <header className="max-w-3xl">
-        <p className="mb-2.5 text-[0.8125rem] font-semibold text-brand sm:text-sm">
-          مدیریت عملیات پس از تحویل
-        </p>
-        <h1 className="text-[1.625rem] leading-[1.55] font-bold text-ink sm:text-[1.75rem]">
-          پرونده‌های مغایرت
-        </h1>
-        <p className="mt-2.5 max-w-2xl text-[0.9375rem] leading-7.5 text-muted sm:text-base sm:leading-8">
-          گزارش‌های کسری و آسیب‌دیدگی اقلام تحویل‌شده از این بخش ثبت و پیگیری
-          می‌شوند.
-        </p>
-      </header>
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <header className="max-w-3xl">
+          <p className="mb-2.5 text-[0.8125rem] font-semibold text-brand sm:text-sm">
+            مدیریت عملیات پس از تحویل
+          </p>
+          <h1 className="text-[1.625rem] leading-[1.55] font-bold text-ink sm:text-[1.75rem]">
+            پرونده‌های مغایرت
+          </h1>
+          <p className="mt-2.5 max-w-2xl text-[0.9375rem] leading-7.5 text-muted sm:text-base sm:leading-8">
+            گزارش‌های کسری و آسیب‌دیدگی اقلام تحویل‌شده از این بخش ثبت و پیگیری
+            می‌شوند.
+          </p>
+        </header>
+
+        <Link
+          to="/cases/new"
+          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(15,118,110,0.18)] transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:self-auto"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="size-4.5"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          ایجاد پرونده جدید
+        </Link>
+      </div>
 
       <section
         aria-labelledby="empty-cases-title"

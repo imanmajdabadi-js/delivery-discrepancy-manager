@@ -13,9 +13,11 @@ Operations teams need a reliable way to connect a customer report to the correct
 - PostgreSQL data model for customers, orders, cases, decisions, and history
 - Versioned database migrations and repeatable development data
 - Database-backed health check
+- Exact order search by order number, customer code, or mobile number
+- Responsive search states for eligible, ineligible, empty, and failed results
 - Database constraints for core integrity rules and open-case conflicts
 
-Product endpoints are added as focused vertical slices. The current frontend therefore keeps the case list empty until those slices are connected.
+Product endpoints are added as focused vertical slices. Order lookup is the first completed slice; case creation and the working case list follow it.
 
 ## Stack
 
@@ -55,6 +57,8 @@ pnpm dev
 The frontend runs on `http://localhost:5173`, the API runs on `http://localhost:3000/api`, and PostgreSQL is exposed locally on port `5433` to avoid conflicting with a default PostgreSQL installation.
 
 The health endpoint is available at `http://localhost:3000/api/health` and reports success only when the API can reach the database.
+
+Order search is available at `http://localhost:3000/api/orders/search?query=...`. It accepts an exact order number, customer code, or mobile number and returns current eligibility with each matching order.
 
 ## Development data
 

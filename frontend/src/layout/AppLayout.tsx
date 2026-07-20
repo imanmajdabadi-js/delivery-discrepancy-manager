@@ -1,11 +1,14 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 export function AppLayout() {
   return (
     <div className="app-canvas min-h-screen text-ink">
       <header className="app-header border-b border-line bg-surface">
         <div className="mx-auto flex min-h-17 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="flex items-center gap-3 rounded-xl focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
             <span
               aria-hidden="true"
               className="brand-mark grid size-9 place-items-center rounded-xl text-brand"
@@ -27,7 +30,7 @@ export function AppLayout() {
             <span className="text-[0.9375rem] font-semibold text-ink">
               سامانه رسیدگی به مغایرت تحویل
             </span>
-          </div>
+          </Link>
         </div>
       </header>
 
