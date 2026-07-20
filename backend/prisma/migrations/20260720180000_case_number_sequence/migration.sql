@@ -1,0 +1,5 @@
+CREATE SEQUENCE "discrepancy_case_number_seq"
+  AS BIGINT
+  START WITH 1001
+  INCREMENT BY 1
+  NO CYCLE;

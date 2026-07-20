@@ -1,4 +1,9 @@
-import type { OrderSearchResponse } from '../types';
+import type {
+  ApiErrorPayload,
+  CreateCaseRequest,
+  CreateCaseResponse,
+  OrderSearchResponse,
+} from '../types';
 
 const apiBaseUrl = (
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api'
@@ -6,12 +11,32 @@ const apiBaseUrl = (
 
 export class ApiError extends Error {
   readonly status: number;
+  readonly payload: ApiErrorPayload | null;
 
-  constructor(message: string, status: number) {
+  constructor(
+    message: string,
+    status: number,
+    payload: ApiErrorPayload | null,
+  ) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.payload = payload;
   }
+}
+
+async function parseErrorResponse(response: Response, fallbackMessage: string) {
+  const body: unknown = await response.json().catch(() => null);
+  const payload =
+    typeof body === 'object' && body !== null
+      ? (body as ApiErrorPayload)
+      : null;
+  const message =
+    payload && typeof payload.message === 'string'
+      ? payload.message
+      : fallbackMessage;
+
+  return new ApiError(message, response.status, payload);
 }
 
 export async function searchOrders(query: string, signal: AbortSignal) {
@@ -21,17 +46,28 @@ export async function searchOrders(query: string, signal: AbortSignal) {
   });
 
   if (!response.ok) {
-    const body: unknown = await response.json().catch(() => null);
-    const message =
-      typeof body === 'object' &&
-      body !== null &&
-      'message' in body &&
-      typeof body.message === 'string'
-        ? body.message
-        : 'دریافت اطلاعات سفارش با خطا روبه‌رو شد.';
-
-    throw new ApiError(message, response.status);
+    throw await parseErrorResponse(
+      response,
+      'دریافت اطلاعات سفارش با خطا روبه‌رو شد.',
+    );
   }
 
   return (await response.json()) as OrderSearchResponse;
+}
+
+export async function createCase(request: CreateCaseRequest) {
+  const response = await fetch(`${apiBaseUrl}/cases`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'ثبت پرونده با خطا روبه‌رو شد. اطلاعات واردشده حفظ شده است.',
+    );
+  }
+
+  return (await response.json()) as CreateCaseResponse;
 }

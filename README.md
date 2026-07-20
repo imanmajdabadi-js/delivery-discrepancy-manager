@@ -15,9 +15,11 @@ Operations teams need a reliable way to connect a customer report to the correct
 - Database-backed health check
 - Exact order search by order number, customer code, or mobile number
 - Responsive search states for eligible, ineligible, empty, and failed results
+- Transactional case creation with per-item quantity validation
+- Responsive item selection, inline feedback, and a submission summary
 - Database constraints for core integrity rules and open-case conflicts
 
-Product endpoints are added as focused vertical slices. Order lookup is the first completed slice; case creation and the working case list follow it.
+Product endpoints are added as focused vertical slices. Order lookup and case creation are complete; the working case list is the next slice.
 
 ## Stack
 
@@ -30,7 +32,7 @@ Product endpoints are added as focused vertical slices. Order lookup is the firs
 
 The database rejects invalid enum values, non-positive quantities, blank decision explanations, and inconsistent delivery timestamps. A dedicated open-discrepancy table also guarantees that the same order item and discrepancy type cannot belong to two submitted cases at the same time.
 
-Application-level validation will still provide clear user-facing errors. The database constraints are the final safety boundary for concurrent or malformed writes.
+Application-level validation provides clear user-facing errors before the database constraints act as the final safety boundary for concurrent or malformed writes. Creating a case rechecks the current order state, validates item ownership and quantities, reserves open discrepancies, writes the initial history event, and returns the new case in one transaction.
 
 ## Local setup
 
@@ -59,6 +61,8 @@ The frontend runs on `http://localhost:5173`, the API runs on `http://localhost:
 The health endpoint is available at `http://localhost:3000/api/health` and reports success only when the API can reach the database.
 
 Order search is available at `http://localhost:3000/api/orders/search?query=...`. It accepts an exact order number, customer code, or mobile number and returns current eligibility with each matching order.
+
+Case creation is available through `POST http://localhost:3000/api/cases`. It accepts one delivered order and at least one shortage or damaged-item row. Conflicting open cases return a conflict response without creating a partial case.
 
 ## Development data
 

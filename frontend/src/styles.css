@@ -157,6 +157,12 @@ body {
   box-shadow: 0 16px 46px rgb(24 57 51 / 8%);
 }
 
+.success-receipt {
+  background:
+    radial-gradient(circle at 50% 0%, rgb(32 132 90 / 11%), transparent 18rem),
+    linear-gradient(180deg, rgb(233 247 239 / 65%), var(--color-surface));
+}
+
 button,
 input,
 select,

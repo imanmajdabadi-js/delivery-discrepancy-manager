@@ -78,6 +78,17 @@ async function verify() {
     5,
     'Expected data integrity checks are missing.',
   );
+
+  const [caseNumberSequence] = await prisma.$queryRaw<
+    Array<{ exists: boolean }>
+  >`
+    SELECT to_regclass('public.discrepancy_case_number_seq') IS NOT NULL AS "exists"
+  `;
+
+  assert(
+    caseNumberSequence?.exists,
+    'The discrepancy case number sequence is missing.',
+  );
 }
 
 verify()

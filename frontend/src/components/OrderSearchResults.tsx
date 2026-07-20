@@ -74,11 +74,23 @@ function EligibilityMessage({ order }: { order: OrderSearchResult }) {
   );
 }
 
-function OrderResultCard({ order }: { order: OrderSearchResult }) {
+function OrderResultCard({
+  order,
+  isSelected,
+  onSelect,
+}: {
+  order: OrderSearchResult;
+  isSelected: boolean;
+  onSelect: (orderId: string) => void;
+}) {
   const status = statusDetails[order.status];
 
   return (
-    <article className="result-card overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)]">
+    <article
+      className={`result-card overflow-hidden rounded-3xl border bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)] ${
+        isSelected ? 'border-brand' : 'border-line'
+      }`}
+    >
       <div className="flex flex-col gap-4 border-b border-line bg-surface-soft/75 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div>
           <p className="text-[0.8125rem] font-semibold text-muted">
@@ -127,6 +139,34 @@ function OrderResultCard({ order }: { order: OrderSearchResult }) {
 
       <div className="px-5 pb-5 sm:px-6 sm:pb-6">
         <EligibilityMessage order={order} />
+        {order.eligibility.eligible ? (
+          <button
+            type="button"
+            aria-pressed={isSelected}
+            className={`mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:w-auto ${
+              isSelected
+                ? 'cursor-default border border-brand-mild bg-brand-soft text-brand-strong'
+                : 'bg-brand text-white shadow-[0_8px_20px_rgba(15,118,110,0.16)] hover:bg-brand-strong'
+            }`}
+            onClick={() => onSelect(order.id)}
+          >
+            {isSelected ? (
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4.5"
+              >
+                <path d="m5 12 4 4L19 6" />
+              </svg>
+            ) : null}
+            {isSelected ? 'سفارش انتخاب‌شده' : 'انتخاب این سفارش'}
+          </button>
+        ) : null}
       </div>
 
       {order.eligibility.eligible ? (
@@ -190,8 +230,12 @@ function OrderResultCard({ order }: { order: OrderSearchResult }) {
 
 export function OrderSearchResults({
   results,
+  selectedOrderId,
+  onSelectOrder,
 }: {
   results: OrderSearchResult[];
+  selectedOrderId: string | null;
+  onSelectOrder: (orderId: string) => void;
 }) {
   return (
     <section aria-labelledby="search-results-title" className="mt-7">
@@ -208,7 +252,12 @@ export function OrderSearchResults({
       </div>
       <div className="space-y-4">
         {results.map((order) => (
-          <OrderResultCard key={order.id} order={order} />
+          <OrderResultCard
+            key={order.id}
+            order={order}
+            isSelected={order.id === selectedOrderId}
+            onSelect={onSelectOrder}
+          />
         ))}
       </div>
     </section>

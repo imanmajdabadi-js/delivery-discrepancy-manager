@@ -1,11 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { CaseCreationSuccess } from '../../../components/CaseCreationSuccess';
+import { CaseItemsForm } from '../../../components/CaseItemsForm';
 import { OrderSearchForm } from '../../../components/OrderSearchForm';
 import { OrderSearchNotice } from '../../../components/OrderSearchNotice';
 import { OrderSearchResults } from '../../../components/OrderSearchResults';
 import { OrderSearchSkeleton } from '../../../components/OrderSearchSkeleton';
 import { useOrderSearch } from '../../../hooks/useOrderSearch';
 import { ApiError } from '../../../services';
+import type { CreateCaseResponse } from '../../../types';
 import { normalizeSearchQuery } from '../../../utils';
 
 const minimumQueryLength = 3;
@@ -15,7 +18,16 @@ export function CreateCasePage() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [creationResult, setCreationResult] = useState<{
+    createdCase: CreateCaseResponse;
+    itemCount: number;
+  } | null>(null);
   const search = useOrderSearch(submittedQuery);
+  const selectedOrder =
+    search.data?.results.find(
+      (order) => order.id === selectedOrderId && order.eligibility.eligible,
+    ) ?? null;
 
   function handleQueryChange(value: string) {
     setQuery(value);
@@ -32,17 +44,20 @@ export function CreateCasePage() {
     if (normalizedQuery.length < minimumQueryLength) {
       setValidationError('حداقل ۳ نویسه برای جست‌وجو وارد کنید.');
       setSubmittedQuery(null);
+      setSelectedOrderId(null);
       return;
     }
 
     if (normalizedQuery.length > maximumQueryLength) {
       setValidationError('عبارت جست‌وجو نمی‌تواند بیشتر از ۶۴ نویسه باشد.');
       setSubmittedQuery(null);
+      setSelectedOrderId(null);
       return;
     }
 
     setValidationError(null);
     setQuery(normalizedQuery);
+    setSelectedOrderId(null);
 
     if (normalizedQuery === submittedQuery) {
       void search.refetch();
@@ -50,6 +65,24 @@ export function CreateCasePage() {
     }
 
     setSubmittedQuery(normalizedQuery);
+  }
+
+  function resetCreationFlow() {
+    setQuery('');
+    setSubmittedQuery(null);
+    setValidationError(null);
+    setSelectedOrderId(null);
+    setCreationResult(null);
+  }
+
+  if (creationResult) {
+    return (
+      <CaseCreationSuccess
+        createdCase={creationResult.createdCase}
+        itemCount={creationResult.itemCount}
+        onCreateAnother={resetCreationFlow}
+      />
+    );
   }
 
   return (
@@ -162,9 +195,24 @@ export function CreateCasePage() {
         ) : null}
 
         {!search.isFetching && search.data?.results.length ? (
-          <OrderSearchResults results={search.data.results} />
+          <OrderSearchResults
+            results={search.data.results}
+            selectedOrderId={selectedOrderId}
+            onSelectOrder={setSelectedOrderId}
+          />
         ) : null}
       </div>
+
+      {!search.isFetching && selectedOrder ? (
+        <CaseItemsForm
+          key={selectedOrder.id}
+          order={selectedOrder}
+          onChangeOrder={() => setSelectedOrderId(null)}
+          onCreated={(createdCase, itemCount) =>
+            setCreationResult({ createdCase, itemCount })
+          }
+        />
+      ) : null}
     </main>
   );
 }
