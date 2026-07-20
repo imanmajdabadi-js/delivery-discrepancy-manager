@@ -8,6 +8,11 @@
   },
   "scripts": {
     "dev": "pnpm --parallel --filter @delivery-discrepancy/web --filter @delivery-discrepancy/api dev",
+    "db:start": "docker compose up -d --wait database",
+    "db:stop": "docker compose stop database",
+    "db:setup": "pnpm db:start && pnpm --filter @delivery-discrepancy/api db:deploy && pnpm db:seed && pnpm db:verify",
+    "db:seed": "pnpm --filter @delivery-discrepancy/api db:seed",
+    "db:verify": "pnpm --filter @delivery-discrepancy/api db:verify",
     "build": "pnpm -r --if-present build",
     "lint": "oxlint frontend/src backend/src",
     "typecheck": "pnpm -r --if-present typecheck",

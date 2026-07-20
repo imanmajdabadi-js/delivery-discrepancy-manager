@@ -3,15 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "prisma generate",
     "dev": "nest start --watch",
+    "prebuild": "prisma generate",
     "build": "nest build",
     "start": "node dist/main.js",
-    "typecheck": "tsc --noEmit --pretty false"
+    "pretypecheck": "prisma generate",
+    "typecheck": "tsc --noEmit --pretty false",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:verify": "tsx prisma/verify.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.28",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.28",
     "@nestjs/platform-express": "^11.1.28",
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
+    "pg": "^8.22.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
@@ -19,6 +31,10 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@types/node": "^22.10.7",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
+    "prisma": "7.8.0",
+    "tsx": "^4.23.1",
     "typescript": "~5.7.3"
   }
 }

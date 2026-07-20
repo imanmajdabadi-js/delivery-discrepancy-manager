@@ -12,3 +12,4 @@ Thumbs.db
 .private/
 .agents/
 .codex/
+backend/src/generated/prisma/

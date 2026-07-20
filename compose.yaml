@@ -1,0 +1,19 @@
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: delivery_discrepancy
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: local_password
+    ports:
+      - '5433:5432'
+    volumes:
+      - delivery_discrepancy_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U app_user -d delivery_discrepancy']
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  delivery_discrepancy_data:

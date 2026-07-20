@@ -4,3 +4,4 @@ coverage
 pnpm-lock.yaml
 .private
 docs
+backend/src/generated/prisma
