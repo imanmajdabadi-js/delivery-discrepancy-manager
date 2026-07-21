@@ -6,6 +6,8 @@ import type {
   CreateCaseRequest,
   CreateCaseResponse,
   OrderSearchResponse,
+  SubmitCaseDecisionRequest,
+  SubmitCaseDecisionResponse,
 } from '../types';
 
 const apiBaseUrl = (
@@ -86,6 +88,26 @@ export async function getCaseDetails(caseId: string, signal: AbortSignal) {
   }
 
   return (await response.json()) as CaseDetailsResponse;
+}
+
+export async function submitCaseDecision(
+  caseId: string,
+  request: SubmitCaseDecisionRequest,
+) {
+  const response = await fetch(`${apiBaseUrl}/cases/${caseId}/decision`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'ثبت تصمیم با خطا روبه‌رو شد. توضیح واردشده حفظ شده است.',
+    );
+  }
+
+  return (await response.json()) as SubmitCaseDecisionResponse;
 }
 
 export async function getCases(

@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { CaseDecisionSummary } from '../../../components/CaseDecisionSummary';
+import { CaseDecisionForm } from '../../../components/CaseDecisionForm';
 import { CaseDetailsNotice } from '../../../components/CaseDetailsNotice';
 import { CaseDetailsSkeleton } from '../../../components/CaseDetailsSkeleton';
 import { CaseDetailsSummary } from '../../../components/CaseDetailsSummary';
@@ -101,6 +102,11 @@ export function CaseDetailsPage() {
         <div className="space-y-5">
           {caseDetails.decision ? (
             <CaseDecisionSummary decision={caseDetails.decision} />
+          ) : caseDetails.status === 'SUBMITTED' ? (
+            <CaseDecisionForm
+              caseId={caseDetails.id}
+              onConflict={() => void caseDetailsQuery.refetch()}
+            />
           ) : null}
           <CaseDiscrepancyList items={caseDetails.items} />
           <CaseTimeline history={caseDetails.history} />

@@ -1,0 +1,158 @@
+import { useState } from 'react';
+import { useCaseDecision } from '../hooks/useCaseDecision';
+import { ApiError } from '../services';
+import type { CaseDecisionType } from '../types';
+
+interface CaseDecisionFormProps {
+  caseId: string;
+  onConflict: () => void;
+}
+
+export function CaseDecisionForm({
+  caseId,
+  onConflict,
+}: CaseDecisionFormProps) {
+  const [explanation, setExplanation] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [submittingType, setSubmittingType] = useState<CaseDecisionType | null>(
+    null,
+  );
+  const decisionMutation = useCaseDecision(caseId);
+
+  function handleExplanationChange(value: string) {
+    setExplanation(value);
+
+    if (validationError) {
+      setValidationError(null);
+    }
+
+    if (decisionMutation.isError) {
+      decisionMutation.reset();
+    }
+  }
+
+  function handleDecision(type: CaseDecisionType) {
+    const trimmedExplanation = explanation.trim();
+
+    if (!trimmedExplanation) {
+      setValidationError('پیش از ثبت نتیجه، توضیح تصمیم را وارد کنید.');
+      return;
+    }
+
+    setValidationError(null);
+    setSubmittingType(type);
+    decisionMutation.mutate(
+      { type, explanation: trimmedExplanation },
+      {
+        onError: (error) => {
+          if (error instanceof ApiError && error.status === 409) {
+            onConflict();
+          }
+        },
+        onSettled: () => setSubmittingType(null),
+      },
+    );
+  }
+
+  const requestError = decisionMutation.isError
+    ? decisionMutation.error instanceof ApiError
+      ? decisionMutation.error.message
+      : 'ارتباط با سامانه برقرار نشد. توضیح شما حفظ شده است و می‌توانید دوباره تلاش کنید.'
+    : null;
+
+  return (
+    <section
+      aria-labelledby="case-decision-form-title"
+      className="rounded-3xl border border-line bg-surface p-5 shadow-[0_14px_42px_rgba(24,57,51,0.045)] sm:p-6"
+    >
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden="true"
+          className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent-violet-soft text-accent-violet"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-5"
+          >
+            <path d="M9 11.5 11 14l4-5" />
+            <path d="M7 4h10a2 2 0 0 1 2 2v14H5V6a2 2 0 0 1 2-2Z" />
+          </svg>
+        </span>
+        <div>
+          <h2
+            id="case-decision-form-title"
+            className="text-base font-semibold text-ink"
+          >
+            ثبت نتیجه رسیدگی
+          </h2>
+          <p className="mt-1 text-[0.8125rem] leading-6 text-muted">
+            نتیجه نهایی است و پس از ثبت امکان تغییر آن وجود ندارد.
+          </p>
+        </div>
+      </div>
+
+      <label className="mt-5 block" htmlFor="case-decision-explanation">
+        <span className="text-sm font-semibold text-ink">توضیح تصمیم</span>
+        <span aria-hidden="true" className="mr-1 text-xs text-danger">
+          الزامی
+        </span>
+      </label>
+      <textarea
+        id="case-decision-explanation"
+        value={explanation}
+        rows={4}
+        disabled={decisionMutation.isPending}
+        placeholder="دلیل تأیید یا رد پرونده را کوتاه و روشن بنویسید."
+        aria-invalid={validationError ? true : undefined}
+        aria-describedby={
+          validationError ? 'case-decision-validation-error' : undefined
+        }
+        className="mt-2 w-full resize-y rounded-2xl border border-line-strong bg-surface px-4 py-3 text-sm leading-7 text-ink outline-none transition placeholder:text-muted/75 focus:border-brand focus:ring-3 focus:ring-brand-soft disabled:cursor-wait disabled:bg-surface-soft"
+        onChange={(event) => handleExplanationChange(event.target.value)}
+      />
+
+      <div aria-live="polite" className="mt-2 min-h-6">
+        {validationError ? (
+          <p
+            id="case-decision-validation-error"
+            className="text-sm text-danger"
+          >
+            {validationError}
+          </p>
+        ) : requestError ? (
+          <p role="alert" className="text-sm leading-6 text-danger">
+            {requestError}
+          </p>
+        ) : (
+          <p className="text-xs leading-6 text-muted">
+            توضیح ثبت‌شده همراه پرونده و نام تصمیم‌گیرنده نگه‌داری می‌شود.
+          </p>
+        )}
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          disabled={decisionMutation.isPending}
+          className="inline-flex h-11 items-center justify-center rounded-xl bg-success px-4 text-sm font-semibold text-white transition hover:bg-success-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-success disabled:cursor-wait disabled:opacity-60"
+          onClick={() => handleDecision('APPROVE')}
+        >
+          {submittingType === 'APPROVE' ? 'در حال ثبت...' : 'تأیید پرونده'}
+        </button>
+        <button
+          type="button"
+          disabled={decisionMutation.isPending}
+          className="inline-flex h-11 items-center justify-center rounded-xl border border-danger/30 bg-surface px-4 text-sm font-semibold text-danger-strong transition hover:bg-danger-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-danger disabled:cursor-wait disabled:opacity-60"
+          onClick={() => handleDecision('REJECT')}
+        >
+          {submittingType === 'REJECT' ? 'در حال ثبت...' : 'رد پرونده'}
+        </button>
+      </div>
+    </section>
+  );
+}

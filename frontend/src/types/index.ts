@@ -56,6 +56,23 @@ export interface CreateCaseResponse {
   createdAt: string;
 }
 
+export interface SubmitCaseDecisionRequest {
+  type: CaseDecisionType;
+  explanation: string;
+}
+
+export interface SubmitCaseDecisionResponse {
+  id: string;
+  caseNumber: string;
+  status: Exclude<CaseStatus, 'SUBMITTED'>;
+  decision: {
+    type: CaseDecisionType;
+    explanation: string;
+    createdAt: string;
+    decidedBy: CaseActor;
+  };
+}
+
 export interface CaseActor {
   id: string;
   fullName: string;
@@ -134,6 +151,8 @@ export interface CaseConflict {
 export interface ApiErrorPayload {
   code?: string;
   message?: string;
+  caseNumber?: string;
+  currentStatus?: CaseStatus;
   errors?: CaseValidationIssue[];
   conflicts?: CaseConflict[];
 }

@@ -11,6 +11,7 @@ import { PrismaService } from '../database/prisma.service';
 import {
   CaseEventType,
   CaseStatus,
+  DecisionType,
   DiscrepancyType,
   OrderStatus,
   Prisma,
@@ -20,6 +21,7 @@ import {
   isCaseStatus,
   normalizeCaseListQuery,
 } from './case-list.helpers';
+import { parseCaseDecisionInput } from './case-decision.helpers';
 import {
   parseCreateCaseInput,
   validateCaseItemsAgainstOrder,
@@ -223,6 +225,136 @@ export class CasesService {
     };
   }
 
+  async decide(caseId: string, rawInput: unknown) {
+    if (!isUuid(caseId)) {
+      this.throwCaseNotFound();
+    }
+
+    const parsedInput = parseCaseDecisionInput(rawInput);
+
+    if (!parsedInput.value) {
+      throw new BadRequestException({
+        statusCode: 400,
+        code: 'INVALID_CASE_DECISION',
+        message: 'اطلاعات تصمیم را بررسی کنید.',
+        errors: parsedInput.issues,
+      });
+    }
+
+    const input = parsedInput.value;
+    const resultingStatus =
+      input.type === DecisionType.APPROVE
+        ? CaseStatus.APPROVED
+        : CaseStatus.REJECTED;
+
+    try {
+      return await this.prisma.$transaction(
+        async (transaction) => {
+          const caseSnapshot = await transaction.discrepancyCase.findUnique({
+            where: { id: caseId },
+            select: { id: true, caseNumber: true, status: true },
+          });
+
+          if (!caseSnapshot) {
+            this.throwCaseNotFound();
+          }
+
+          if (caseSnapshot.status !== CaseStatus.SUBMITTED) {
+            this.throwCaseAlreadyDecided(
+              caseSnapshot.caseNumber,
+              caseSnapshot.status,
+            );
+          }
+
+          const operator = await transaction.operator.findUnique({
+            where: { email: developmentOperatorEmail },
+            select: { id: true, fullName: true },
+          });
+
+          if (!operator) {
+            throw new InternalServerErrorException({
+              statusCode: 500,
+              code: 'DEVELOPMENT_OPERATOR_MISSING',
+              message: 'کاربر عملیاتی محیط توسعه پیدا نشد.',
+            });
+          }
+
+          const updateResult = await transaction.discrepancyCase.updateMany({
+            where: { id: caseId, status: CaseStatus.SUBMITTED },
+            data: { status: resultingStatus },
+          });
+
+          if (updateResult.count !== 1) {
+            this.throwDecisionConflict();
+          }
+
+          const decision = await transaction.caseDecision.create({
+            data: {
+              caseId,
+              type: input.type,
+              explanation: input.explanation,
+              decidedById: operator.id,
+            },
+            select: {
+              type: true,
+              explanation: true,
+              createdAt: true,
+              decidedBy: { select: { id: true, fullName: true } },
+            },
+          });
+
+          await transaction.openDiscrepancy.deleteMany({ where: { caseId } });
+
+          await transaction.caseHistory.create({
+            data: {
+              caseId,
+              eventType: CaseEventType.DECIDED,
+              resultingStatus,
+              performedById: operator.id,
+            },
+          });
+
+          return {
+            id: caseSnapshot.id,
+            caseNumber: caseSnapshot.caseNumber,
+            status: resultingStatus,
+            decision: {
+              ...decision,
+              createdAt: decision.createdAt.toISOString(),
+            },
+          };
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      if (isPrismaErrorWithCode(error, ['P2002', 'P2034'])) {
+        const currentCase = await this.prisma.discrepancyCase.findUnique({
+          where: { id: caseId },
+          select: { caseNumber: true, status: true },
+        });
+
+        if (!currentCase) {
+          this.throwCaseNotFound();
+        }
+
+        if (currentCase.status !== CaseStatus.SUBMITTED) {
+          this.throwCaseAlreadyDecided(
+            currentCase.caseNumber,
+            currentCase.status,
+          );
+        }
+
+        this.throwDecisionConflict();
+      }
+
+      throw error;
+    }
+  }
+
   async create(rawInput: unknown) {
     const parsedInput = parseCreateCaseInput(rawInput);
 
@@ -417,6 +549,28 @@ export class CasesService {
         type: conflict.type,
         caseNumber: conflict.case.caseNumber,
       })),
+    });
+  }
+
+  private throwCaseAlreadyDecided(
+    caseNumber: string,
+    currentStatus: CaseStatus,
+  ): never {
+    throw new ConflictException({
+      statusCode: 409,
+      code: 'CASE_ALREADY_DECIDED',
+      message: 'این پرونده قبلاً نهایی شده و امکان ثبت تصمیم دیگری ندارد.',
+      caseNumber,
+      currentStatus,
+    });
+  }
+
+  private throwDecisionConflict(): never {
+    throw new ConflictException({
+      statusCode: 409,
+      code: 'CASE_DECISION_CONFLICT',
+      message:
+        'وضعیت پرونده هم‌زمان تغییر کرده است. اطلاعات را دوباره بررسی کنید.',
     });
   }
 }

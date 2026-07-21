@@ -15,6 +15,11 @@ export class CasesController {
     return this.casesService.findOne(caseId);
   }
 
+  @Post(':caseId/decision')
+  decide(@Param('caseId') caseId: string, @Body() body: unknown) {
+    return this.casesService.decide(caseId, body);
+  }
+
   @Post()
   create(@Body() body: unknown) {
     return this.casesService.create(body);

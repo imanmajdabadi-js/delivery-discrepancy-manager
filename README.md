@@ -70,6 +70,8 @@ The case list is available through `GET http://localhost:3000/api/cases`. Option
 
 Case details are available through `GET http://localhost:3000/api/cases/:caseId`. The response includes the related customer, order, discrepancy items, optional final decision, and chronologically ordered history.
 
+A submitted case can be finalized once through `POST http://localhost:3000/api/cases/:caseId/decision`. The request accepts an approval or rejection with a required explanation and records the status, decision, and history atomically.
+
 ## Development data
 
 | Order number     | State                      | Purpose                |
