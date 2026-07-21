@@ -105,10 +105,7 @@ export function CaseDetailsPage() {
           {caseDetails.decision ? (
             <CaseDecisionSummary decision={caseDetails.decision} />
           ) : caseDetails.status === 'SUBMITTED' ? (
-            <CaseDecisionForm
-              caseId={caseDetails.id}
-              onConflict={() => void caseDetailsQuery.refetch()}
-            />
+            <CaseDecisionForm caseId={caseDetails.id} />
           ) : null}
           <CaseDiscrepancyList items={caseDetails.items} />
           <CaseTimeline history={caseDetails.history} />

@@ -6,22 +6,24 @@ An internal case-management application for resolving shortages and damaged item
 
 Operations teams need a reliable way to connect a customer report to the correct delivered order, record the affected items, and keep the final decision traceable. This project focuses on that workflow instead of expanding into inventory, accounting, or customer messaging.
 
-## Current foundation
+## MVP capabilities
 
-- Responsive Persian RTL frontend shell
-- NestJS API with validated runtime configuration
+- Responsive Persian RTL interface for mobile and desktop
+- Case list with search, status filtering, loading, empty, and retry states
+- Exact order search by order number, customer code, or mobile number
+- Eligibility feedback for delivered, processing, cancelled, and empty orders
+- Multi-item discrepancy entry for shortages and damaged items
+- Inline quantity validation and open-case conflict feedback
+- Read-only case details with customer, order, item, decision, and history data
+- One-time case approval or rejection with a required explanation
+- Consistent refresh of list and details data after write operations
+- Keyboard-friendly form feedback and safe handling of long content
+- NestJS API with validated runtime configuration and focused endpoints
 - PostgreSQL data model for customers, orders, cases, decisions, and history
 - Versioned database migrations and repeatable development data
 - Database-backed health check
-- Exact order search by order number, customer code, or mobile number
-- Responsive search states for eligible, ineligible, empty, and failed results
-- Transactional case creation with per-item quantity validation
-- Responsive item selection, inline feedback, and a submission summary
-- Read-only case details with customer, order, discrepancy, and history data
-- Distinct loading, not-found, and failed-request states for case details
-- Database constraints for core integrity rules and open-case conflicts
-
-Product endpoints are added as focused vertical slices. Order lookup, case creation, and case details are complete; the working case list is the next slice.
+- Transactional case creation and final decisions
+- Database constraints for core integrity rules and concurrent conflicts
 
 ## Stack
 
@@ -35,6 +37,8 @@ Product endpoints are added as focused vertical slices. Order lookup, case creat
 The database rejects invalid enum values, non-positive quantities, blank decision explanations, and inconsistent delivery timestamps. A dedicated open-discrepancy table also guarantees that the same order item and discrepancy type cannot belong to two submitted cases at the same time.
 
 Application-level validation provides clear user-facing errors before the database constraints act as the final safety boundary for concurrent or malformed writes. Creating a case rechecks the current order state, validates item ownership and quantities, reserves open discrepancies, writes the initial history event, and returns the new case in one transaction.
+
+Final decisions follow the same boundary: the API rechecks the case status, records the decision and history, releases open discrepancies, and changes the case status in one transaction. If a write response is interrupted, the interface refreshes server data before the user decides what to do next.
 
 ## Local setup
 
@@ -92,8 +96,10 @@ pnpm db:verify
 pnpm db:stop
 pnpm lint
 pnpm typecheck
+pnpm test
 pnpm build
 pnpm check
+pnpm format:check
 ```
 
 ## Scope boundary

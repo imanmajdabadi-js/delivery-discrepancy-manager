@@ -5,13 +5,9 @@ import type { CaseDecisionType } from '../types';
 
 interface CaseDecisionFormProps {
   caseId: string;
-  onConflict: () => void;
 }
 
-export function CaseDecisionForm({
-  caseId,
-  onConflict,
-}: CaseDecisionFormProps) {
+export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
   const [explanation, setExplanation] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [submittingType, setSubmittingType] = useState<CaseDecisionType | null>(
@@ -50,11 +46,6 @@ export function CaseDecisionForm({
     decisionMutation.mutate(
       { type, explanation: trimmedExplanation },
       {
-        onError: (error) => {
-          if (error instanceof ApiError && error.status === 409) {
-            onConflict();
-          }
-        },
         onSettled: () => setSubmittingType(null),
       },
     );
@@ -63,7 +54,7 @@ export function CaseDecisionForm({
   const requestError = decisionMutation.isError
     ? decisionMutation.error instanceof ApiError
       ? decisionMutation.error.message
-      : 'ارتباط با سامانه برقرار نشد. توضیح شما حفظ شده است و می‌توانید دوباره تلاش کنید.'
+      : 'پاسخ ثبت تصمیم دریافت نشد. اطلاعات پرونده دوباره بررسی می‌شود و توضیح شما حفظ شده است.'
     : null;
 
   return (

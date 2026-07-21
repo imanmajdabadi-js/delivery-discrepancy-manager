@@ -6,6 +6,6 @@ export function useCreateCase() {
 
   return useMutation({
     mutationFn: createCase,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
   });
 }

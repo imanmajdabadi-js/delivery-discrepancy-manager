@@ -158,7 +158,7 @@ export function CaseItemsForm({
   function applyServerError(error: unknown) {
     if (!(error instanceof ApiError)) {
       setSubmitError(
-        'ثبت پرونده ممکن نشد. اطلاعات واردشده حفظ شده است و می‌توانید دوباره تلاش کنید.',
+        'پاسخ ثبت پرونده دریافت نشد. اطلاعات واردشده حفظ شده است؛ پیش از تلاش دوباره، فهرست پرونده‌ها را بررسی کنید.',
       );
       return;
     }
