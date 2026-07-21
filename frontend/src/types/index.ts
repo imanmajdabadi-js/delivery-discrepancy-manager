@@ -34,6 +34,9 @@ export interface OrderSearchResponse {
 }
 
 export type CaseDiscrepancyType = 'SHORTAGE' | 'DAMAGED';
+export type CaseStatus = 'SUBMITTED' | 'APPROVED' | 'REJECTED';
+export type CaseDecisionType = 'APPROVE' | 'REJECT';
+export type CaseEventType = 'CREATED' | 'DECIDED';
 
 export interface CreateCaseItemInput {
   orderItemId: string;
@@ -51,6 +54,51 @@ export interface CreateCaseResponse {
   caseNumber: string;
   status: 'SUBMITTED';
   createdAt: string;
+}
+
+export interface CaseActor {
+  id: string;
+  fullName: string;
+}
+
+export interface CaseDetailsResponse {
+  id: string;
+  caseNumber: string;
+  status: CaseStatus;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: CaseActor;
+  order: {
+    id: string;
+    orderNumber: string;
+    status: OrderStatus;
+    deliveredAt: string | null;
+    customer: {
+      id: string;
+      customerCode: string;
+      fullName: string;
+      phone: string;
+    };
+  };
+  items: Array<{
+    id: string;
+    type: CaseDiscrepancyType;
+    quantity: number;
+    orderItem: OrderSearchItem;
+  }>;
+  decision: {
+    type: CaseDecisionType;
+    explanation: string;
+    createdAt: string;
+    decidedBy: CaseActor;
+  } | null;
+  history: Array<{
+    id: string;
+    eventType: CaseEventType;
+    resultingStatus: CaseStatus;
+    createdAt: string;
+    performedBy: CaseActor;
+  }>;
 }
 
 export interface CaseValidationIssue {

@@ -17,7 +17,7 @@ const discrepancyTypes: CaseDiscrepancyType[] = ['SHORTAGE', 'DAMAGED'];
 interface CaseItemsFormProps {
   order: OrderSearchResult;
   onChangeOrder: () => void;
-  onCreated: (createdCase: CreateCaseResponse, itemCount: number) => void;
+  onCreated: (createdCase: CreateCaseResponse) => void;
 }
 
 function hasSelectedType(
@@ -186,7 +186,7 @@ export function CaseItemsForm({
         orderId: order.id,
         items: requestItems,
       });
-      onCreated(createdCase, requestItems.length);
+      onCreated(createdCase);
     } catch (error: unknown) {
       applyServerError(error);
     }

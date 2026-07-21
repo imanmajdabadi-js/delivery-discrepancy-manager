@@ -1,5 +1,6 @@
 import type {
   ApiErrorPayload,
+  CaseDetailsResponse,
   CreateCaseRequest,
   CreateCaseResponse,
   OrderSearchResponse,
@@ -70,4 +71,17 @@ export async function createCase(request: CreateCaseRequest) {
   }
 
   return (await response.json()) as CreateCaseResponse;
+}
+
+export async function getCaseDetails(caseId: string, signal: AbortSignal) {
+  const response = await fetch(`${apiBaseUrl}/cases/${caseId}`, { signal });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'دریافت اطلاعات پرونده با خطا روبه‌رو شد.',
+    );
+  }
+
+  return (await response.json()) as CaseDetailsResponse;
 }

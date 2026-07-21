@@ -1,5 +1,10 @@
 const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
 const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+const persianDateTimeFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Asia/Tehran',
+});
 
 export function normalizeSearchQuery(value: string) {
   return value
@@ -25,4 +30,14 @@ export function formatPhoneNumber(value: string) {
   return toPersianDigits(
     `${compactValue.slice(0, 4)} ${compactValue.slice(4, 7)} ${compactValue.slice(7)}`,
   );
+}
+
+export function formatDateTime(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'زمان نامشخص';
+  }
+
+  return persianDateTimeFormatter.format(date);
 }

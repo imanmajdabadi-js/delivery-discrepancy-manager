@@ -17,9 +17,11 @@ Operations teams need a reliable way to connect a customer report to the correct
 - Responsive search states for eligible, ineligible, empty, and failed results
 - Transactional case creation with per-item quantity validation
 - Responsive item selection, inline feedback, and a submission summary
+- Read-only case details with customer, order, discrepancy, and history data
+- Distinct loading, not-found, and failed-request states for case details
 - Database constraints for core integrity rules and open-case conflicts
 
-Product endpoints are added as focused vertical slices. Order lookup and case creation are complete; the working case list is the next slice.
+Product endpoints are added as focused vertical slices. Order lookup, case creation, and case details are complete; the working case list is the next slice.
 
 ## Stack
 
@@ -39,7 +41,7 @@ Application-level validation provides clear user-facing errors before the databa
 Requirements:
 
 - Node.js 20.20 or newer
-- pnpm 11
+- pnpm 10.34.5
 - Docker Desktop or another Docker-compatible runtime
 
 Create the local API environment file:
@@ -63,6 +65,8 @@ The health endpoint is available at `http://localhost:3000/api/health` and repor
 Order search is available at `http://localhost:3000/api/orders/search?query=...`. It accepts an exact order number, customer code, or mobile number and returns current eligibility with each matching order.
 
 Case creation is available through `POST http://localhost:3000/api/cases`. It accepts one delivered order and at least one shortage or damaged-item row. Conflicting open cases return a conflict response without creating a partial case.
+
+Case details are available through `GET http://localhost:3000/api/cases/:caseId`. The response includes the related customer, order, discrepancy items, optional final decision, and chronologically ordered history.
 
 ## Development data
 

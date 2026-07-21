@@ -157,10 +157,11 @@ body {
   box-shadow: 0 16px 46px rgb(24 57 51 / 8%);
 }
 
-.success-receipt {
+.case-detail-hero {
   background:
-    radial-gradient(circle at 50% 0%, rgb(32 132 90 / 11%), transparent 18rem),
-    linear-gradient(180deg, rgb(233 247 239 / 65%), var(--color-surface));
+    radial-gradient(circle at 92% 0%, rgb(15 118 110 / 10%), transparent 22rem),
+    radial-gradient(circle at 5% 100%, rgb(61 127 195 / 7%), transparent 20rem),
+    linear-gradient(145deg, rgb(255 255 255 / 98%), rgb(248 252 251 / 95%));
 }
 
 button,

@@ -19,6 +19,7 @@ import {
   parseCreateCaseInput,
   validateCaseItemsAgainstOrder,
   type CreateCaseInput,
+  isUuid,
 } from './case-validation.helpers';
 
 const developmentOperatorEmail = 'operator@local.test';
@@ -42,6 +43,105 @@ function isPrismaErrorWithCode(error: unknown, codes: string[]) {
 @Injectable()
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findOne(caseId: string) {
+    if (!isUuid(caseId)) {
+      this.throwCaseNotFound();
+    }
+
+    const caseDetails = await this.prisma.discrepancyCase.findUnique({
+      where: { id: caseId },
+      select: {
+        id: true,
+        caseNumber: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        createdBy: {
+          select: { id: true, fullName: true },
+        },
+        order: {
+          select: {
+            id: true,
+            orderNumber: true,
+            status: true,
+            deliveredAt: true,
+            customer: {
+              select: {
+                id: true,
+                customerCode: true,
+                fullName: true,
+                phone: true,
+              },
+            },
+          },
+        },
+        items: {
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+          select: {
+            id: true,
+            type: true,
+            quantity: true,
+            orderItem: {
+              select: {
+                id: true,
+                sku: true,
+                productName: true,
+                unit: true,
+                deliveredQuantity: true,
+              },
+            },
+          },
+        },
+        decision: {
+          select: {
+            type: true,
+            explanation: true,
+            createdAt: true,
+            decidedBy: {
+              select: { id: true, fullName: true },
+            },
+          },
+        },
+        history: {
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+          select: {
+            id: true,
+            eventType: true,
+            resultingStatus: true,
+            createdAt: true,
+            performedBy: {
+              select: { id: true, fullName: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!caseDetails) {
+      this.throwCaseNotFound();
+    }
+
+    return {
+      ...caseDetails,
+      createdAt: caseDetails.createdAt.toISOString(),
+      updatedAt: caseDetails.updatedAt.toISOString(),
+      order: {
+        ...caseDetails.order,
+        deliveredAt: caseDetails.order.deliveredAt?.toISOString() ?? null,
+      },
+      decision: caseDetails.decision
+        ? {
+            ...caseDetails.decision,
+            createdAt: caseDetails.decision.createdAt.toISOString(),
+          }
+        : null,
+      history: caseDetails.history.map((event) => ({
+        ...event,
+        createdAt: event.createdAt.toISOString(),
+      })),
+    };
+  }
 
   async create(rawInput: unknown) {
     const parsedInput = parseCreateCaseInput(rawInput);
@@ -217,6 +317,14 @@ export class CasesService {
       orderItemId: item.orderItemId,
       type: item.type,
     }));
+  }
+
+  private throwCaseNotFound(): never {
+    throw new NotFoundException({
+      statusCode: 404,
+      code: 'CASE_NOT_FOUND',
+      message: 'پرونده موردنظر پیدا نشد.',
+    });
   }
 
   private throwOpenConflict(conflicts: OpenConflict[]): never {

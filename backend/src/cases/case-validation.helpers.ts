@@ -40,6 +40,10 @@ function isDiscrepancyType(value: unknown): value is CaseDiscrepancyType {
   return value === 'SHORTAGE' || value === 'DAMAGED';
 }
 
+export function isUuid(value: unknown): value is string {
+  return typeof value === 'string' && uuidPattern.test(value);
+}
+
 export function parseCreateCaseInput(input: unknown): ParseResult {
   if (!isRecord(input)) {
     return {
@@ -58,7 +62,7 @@ export function parseCreateCaseInput(input: unknown): ParseResult {
   const orderId = input.orderId;
   const rawItems = input.items;
 
-  if (typeof orderId !== 'string' || !uuidPattern.test(orderId)) {
+  if (!isUuid(orderId)) {
     issues.push({
       field: 'orderId',
       code: 'INVALID_ORDER_ID',
@@ -92,7 +96,7 @@ export function parseCreateCaseInput(input: unknown): ParseResult {
       const quantity = rawItem.quantity;
       let itemIsValid = true;
 
-      if (typeof orderItemId !== 'string' || !uuidPattern.test(orderItemId)) {
+      if (!isUuid(orderItemId)) {
         issues.push({
           field: `items.${index}.orderItemId`,
           code: 'INVALID_ORDER_ITEM_ID',

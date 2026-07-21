@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  isUuid,
   parseCreateCaseInput,
   validateCaseItemsAgainstOrder,
 } from '../src/cases/case-validation.helpers';
@@ -10,6 +11,12 @@ const firstItemId = '41111111-1111-4111-8111-111111111111';
 const secondItemId = '42222222-2222-4222-8222-222222222222';
 
 describe('case validation helpers', () => {
+  it('recognizes valid case identifiers', () => {
+    assert.equal(isUuid(orderId), true);
+    assert.equal(isUuid('not-a-case-id'), false);
+    assert.equal(isUuid(null), false);
+  });
+
   it('parses a valid case request', () => {
     const result = parseCreateCaseInput({
       orderId,

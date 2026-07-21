@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { CaseCreationSuccess } from '../../../components/CaseCreationSuccess';
+import { Link, useNavigate } from 'react-router-dom';
 import { CaseItemsForm } from '../../../components/CaseItemsForm';
 import { OrderSearchForm } from '../../../components/OrderSearchForm';
 import { OrderSearchNotice } from '../../../components/OrderSearchNotice';
@@ -8,21 +7,17 @@ import { OrderSearchResults } from '../../../components/OrderSearchResults';
 import { OrderSearchSkeleton } from '../../../components/OrderSearchSkeleton';
 import { useOrderSearch } from '../../../hooks/useOrderSearch';
 import { ApiError } from '../../../services';
-import type { CreateCaseResponse } from '../../../types';
 import { normalizeSearchQuery } from '../../../utils';
 
 const minimumQueryLength = 3;
 const maximumQueryLength = 64;
 
 export function CreateCasePage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [creationResult, setCreationResult] = useState<{
-    createdCase: CreateCaseResponse;
-    itemCount: number;
-  } | null>(null);
   const search = useOrderSearch(submittedQuery);
   const selectedOrder =
     search.data?.results.find(
@@ -65,24 +60,6 @@ export function CreateCasePage() {
     }
 
     setSubmittedQuery(normalizedQuery);
-  }
-
-  function resetCreationFlow() {
-    setQuery('');
-    setSubmittedQuery(null);
-    setValidationError(null);
-    setSelectedOrderId(null);
-    setCreationResult(null);
-  }
-
-  if (creationResult) {
-    return (
-      <CaseCreationSuccess
-        createdCase={creationResult.createdCase}
-        itemCount={creationResult.itemCount}
-        onCreateAnother={resetCreationFlow}
-      />
-    );
   }
 
   return (
@@ -208,9 +185,7 @@ export function CreateCasePage() {
           key={selectedOrder.id}
           order={selectedOrder}
           onChangeOrder={() => setSelectedOrderId(null)}
-          onCreated={(createdCase, itemCount) =>
-            setCreationResult({ createdCase, itemCount })
-          }
+          onCreated={(createdCase) => void navigate(`/cases/${createdCase.id}`)}
         />
       ) : null}
     </main>
