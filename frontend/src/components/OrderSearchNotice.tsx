@@ -58,7 +58,7 @@ export function OrderSearchNotice({
       <h2 className="mt-4 text-[1.0625rem] leading-7 font-semibold text-ink">
         {title}
       </h2>
-      <p className="mx-auto mt-1.5 max-w-lg text-sm leading-7 text-muted sm:text-[0.9375rem]">
+      <p className="wrap-anywhere mx-auto mt-1.5 max-w-lg text-sm leading-7 text-muted sm:text-[0.9375rem]">
         {description}
       </p>
       {onRetry ? (

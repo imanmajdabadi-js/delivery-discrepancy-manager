@@ -98,7 +98,7 @@ function OrderResultCard({
           </p>
           <h3
             dir="ltr"
-            className="mt-1 text-left text-lg leading-8 font-bold tracking-[0.02em] text-ink sm:text-xl"
+            className="wrap-anywhere mt-1 text-left text-lg leading-8 font-bold tracking-[0.02em] text-ink sm:text-xl"
           >
             {order.orderNumber}
           </h3>
@@ -117,13 +117,16 @@ function OrderResultCard({
       <div className="grid gap-4 p-5 sm:grid-cols-3 sm:p-6">
         <div>
           <p className="text-[0.75rem] font-semibold text-subtle">مشتری</p>
-          <p className="mt-1 text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
+          <p className="wrap-anywhere mt-1 text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
             {order.customer.fullName}
           </p>
         </div>
         <div>
           <p className="text-[0.75rem] font-semibold text-subtle">کد مشتری</p>
-          <p dir="ltr" className="mt-1 text-left text-sm leading-7 text-ink">
+          <p
+            dir="ltr"
+            className="wrap-anywhere mt-1 text-left text-sm leading-7 text-ink"
+          >
             {order.customer.customerCode}
           </p>
         </div>
@@ -196,7 +199,7 @@ function OrderResultCard({
                   <span className="text-[0.75rem] font-semibold text-subtle sm:hidden">
                     نام محصول
                   </span>
-                  <p className="mt-0.5 text-sm leading-6 font-semibold text-ink sm:mt-0 sm:font-normal">
+                  <p className="wrap-anywhere mt-0.5 text-sm leading-6 font-semibold text-ink sm:mt-0 sm:font-normal">
                     {item.productName}
                   </p>
                 </div>
@@ -206,7 +209,7 @@ function OrderResultCard({
                   </span>
                   <p
                     dir="ltr"
-                    className="mt-0.5 text-left text-[0.8125rem] leading-6 text-muted sm:mt-0"
+                    className="wrap-anywhere mt-0.5 text-left text-[0.8125rem] leading-6 text-muted sm:mt-0"
                   >
                     {item.sku}
                   </p>

@@ -34,6 +34,11 @@ export function CreateCasePage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (search.isFetching) {
+      return;
+    }
+
     const normalizedQuery = normalizeSearchQuery(query);
 
     if (normalizedQuery.length < minimumQueryLength) {

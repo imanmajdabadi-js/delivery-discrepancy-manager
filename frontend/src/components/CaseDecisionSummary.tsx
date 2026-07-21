@@ -27,7 +27,7 @@ export function CaseDecisionSummary({
       <h2 id="case-decision-title" className="mt-1 text-lg font-bold text-ink">
         {isApproved ? 'پرونده تأیید شده است' : 'پرونده رد شده است'}
       </h2>
-      <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted">
+      <p className="wrap-anywhere mt-3 whitespace-pre-wrap text-sm leading-7 text-muted">
         {decision.explanation}
       </p>
       <p className="mt-4 border-t border-current/10 pt-3 text-[0.75rem] leading-6 text-subtle">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useCaseDecision } from '../hooks/useCaseDecision';
 import { ApiError } from '../services';
 import type { CaseDecisionType } from '../types';
@@ -17,6 +17,7 @@ export function CaseDecisionForm({
   const [submittingType, setSubmittingType] = useState<CaseDecisionType | null>(
     null,
   );
+  const explanationRef = useRef<HTMLTextAreaElement>(null);
   const decisionMutation = useCaseDecision(caseId);
 
   function handleExplanationChange(value: string) {
@@ -32,10 +33,15 @@ export function CaseDecisionForm({
   }
 
   function handleDecision(type: CaseDecisionType) {
+    if (decisionMutation.isPending) {
+      return;
+    }
+
     const trimmedExplanation = explanation.trim();
 
     if (!trimmedExplanation) {
       setValidationError('پیش از ثبت نتیجه، توضیح تصمیم را وارد کنید.');
+      explanationRef.current?.focus();
       return;
     }
 
@@ -63,6 +69,7 @@ export function CaseDecisionForm({
   return (
     <section
       aria-labelledby="case-decision-form-title"
+      aria-busy={decisionMutation.isPending}
       className="rounded-3xl border border-line bg-surface p-5 shadow-[0_14px_42px_rgba(24,57,51,0.045)] sm:p-6"
     >
       <div className="flex items-start gap-3">
@@ -103,6 +110,7 @@ export function CaseDecisionForm({
         </span>
       </label>
       <textarea
+        ref={explanationRef}
         id="case-decision-explanation"
         value={explanation}
         rows={4}
@@ -120,12 +128,15 @@ export function CaseDecisionForm({
         {validationError ? (
           <p
             id="case-decision-validation-error"
-            className="text-sm text-danger"
+            className="wrap-anywhere text-sm text-danger"
           >
             {validationError}
           </p>
         ) : requestError ? (
-          <p role="alert" className="text-sm leading-6 text-danger">
+          <p
+            role="alert"
+            className="wrap-anywhere text-sm leading-6 text-danger"
+          >
             {requestError}
           </p>
         ) : (

@@ -50,7 +50,7 @@ export function CaseDetailsNotice({
         <h1 className="mt-4 text-xl font-bold text-ink sm:text-2xl">
           {isNotFound ? 'پرونده پیدا نشد' : 'دریافت پرونده ممکن نشد'}
         </h1>
-        <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-muted sm:text-[0.9375rem]">
+        <p className="wrap-anywhere mx-auto mt-2 max-w-lg text-sm leading-7 text-muted sm:text-[0.9375rem]">
           {description}
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">

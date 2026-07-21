@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useCreateCase } from '../hooks/useCreateCase';
 import { ApiError } from '../services';
 import type {
@@ -35,6 +35,7 @@ export function CaseItemsForm({
   const [drafts, setDrafts] = useState<ItemDrafts>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const createCaseMutation = useCreateCase();
 
   const selectedEntries = useMemo(
@@ -56,6 +57,21 @@ export function CaseItemsForm({
     setErrors({});
     setSubmitError(null);
     createCaseMutation.reset();
+  }
+
+  function focusFirstProblem(fallbackToFirstType = false) {
+    requestAnimationFrame(() => {
+      const invalidField = formRef.current?.querySelector<HTMLElement>(
+        '[aria-invalid="true"]',
+      );
+      const firstTypeButton = fallbackToFirstType
+        ? formRef.current?.querySelector<HTMLElement>(
+            '[data-discrepancy-toggle]',
+          )
+        : null;
+
+      (invalidField ?? firstTypeButton)?.focus();
+    });
   }
 
   function handleToggle(itemId: string, type: CaseDiscrepancyType) {
@@ -166,15 +182,22 @@ export function CaseItemsForm({
 
     setErrors(nextErrors);
     setSubmitError(error.message);
+    focusFirstProblem();
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (createCaseMutation.isPending) {
+      return;
+    }
+
     const { requestItems, nextErrors } = buildRequestItems();
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       setSubmitError('موارد مشخص‌شده را اصلاح کنید.');
+      focusFirstProblem(Boolean(nextErrors.form));
       return;
     }
 
@@ -218,7 +241,13 @@ export function CaseItemsForm({
         </button>
       </div>
 
-      <form className="mt-5 pb-56 lg:pb-0" noValidate onSubmit={handleSubmit}>
+      <form
+        ref={formRef}
+        aria-busy={createCaseMutation.isPending}
+        className="mt-5 pb-56 lg:pb-0"
+        noValidate
+        onSubmit={handleSubmit}
+      >
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <div>
             <div className="mb-3.5 px-1">
@@ -268,7 +297,7 @@ export function CaseItemsForm({
             {errors.form ? (
               <p
                 role="alert"
-                className="mt-4 rounded-xl bg-danger-soft px-3 py-2.5 text-[0.75rem] leading-6 text-danger-strong"
+                className="wrap-anywhere mt-4 rounded-xl bg-danger-soft px-3 py-2.5 text-[0.75rem] leading-6 text-danger-strong"
               >
                 {errors.form}
               </p>
@@ -277,7 +306,7 @@ export function CaseItemsForm({
             {submitError ? (
               <p
                 role="alert"
-                className="mt-3 text-[0.75rem] leading-6 text-danger-strong"
+                className="wrap-anywhere mt-3 text-[0.75rem] leading-6 text-danger-strong"
               >
                 {submitError}
               </p>

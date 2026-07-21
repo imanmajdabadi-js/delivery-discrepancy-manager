@@ -29,6 +29,11 @@ export function CasesPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (cases.isFetching) {
+      return;
+    }
+
     const normalizedQuery = normalizeSearchQuery(query);
 
     if (normalizedQuery.length > maximumQueryLength) {

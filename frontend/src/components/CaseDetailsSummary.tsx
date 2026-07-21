@@ -17,7 +17,7 @@ function SummaryRow({
       </dt>
       <dd
         dir={direction}
-        className="text-left text-sm leading-6 font-semibold text-ink"
+        className="wrap-anywhere min-w-0 text-left text-sm leading-6 font-semibold text-ink"
       >
         {value}
       </dd>

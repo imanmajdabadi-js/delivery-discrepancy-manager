@@ -43,6 +43,8 @@ export function CaseItemEditor({
     (type) => quantities[type] !== undefined,
   );
   const isSelected = selectedTypes.length > 0;
+  const sumError = errors[`${item.id}:sum`];
+  const sumErrorId = `quantity-${item.id}-sum-error`;
 
   return (
     <li
@@ -54,10 +56,13 @@ export function CaseItemEditor({
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h3 className="text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
+          <h3 className="wrap-anywhere text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
             {item.productName}
           </h3>
-          <p dir="ltr" className="mt-0.5 text-left text-[0.75rem] text-subtle">
+          <p
+            dir="ltr"
+            className="wrap-anywhere mt-0.5 text-left text-[0.75rem] text-subtle"
+          >
             {item.sku}
           </p>
         </div>
@@ -84,6 +89,7 @@ export function CaseItemEditor({
               <button
                 key={type}
                 type="button"
+                data-discrepancy-toggle
                 aria-pressed={isTypeSelected}
                 disabled={disabled}
                 className={`min-h-12 rounded-xl border px-3 py-2 text-right transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60 ${
@@ -111,6 +117,12 @@ export function CaseItemEditor({
             const fieldId = `quantity-${item.id}-${type}`;
             const errorKey = `${item.id}:${type}`;
             const error = errors[errorKey];
+            const descriptionIds = [
+              error ? `${fieldId}-error` : null,
+              sumError ? sumErrorId : null,
+            ]
+              .filter(Boolean)
+              .join(' ');
 
             return (
               <div key={type}>
@@ -128,8 +140,8 @@ export function CaseItemEditor({
                     autoComplete="off"
                     disabled={disabled}
                     value={quantities[type] ?? ''}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={error ? `${fieldId}-error` : undefined}
+                    aria-invalid={Boolean(error || sumError)}
+                    aria-describedby={descriptionIds || undefined}
                     className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 pl-16 text-sm text-ink outline-none transition focus:border-brand focus:ring-3 focus:ring-brand-mild/55 disabled:bg-surface-soft disabled:text-subtle aria-invalid:border-danger aria-invalid:ring-danger-soft"
                     placeholder="۰"
                     onChange={(event) =>
@@ -155,12 +167,13 @@ export function CaseItemEditor({
         </div>
       ) : null}
 
-      {errors[`${item.id}:sum`] ? (
+      {sumError ? (
         <p
+          id={sumErrorId}
           role="alert"
           className="mt-3 rounded-xl bg-danger-soft px-3 py-2 text-[0.75rem] leading-6 text-danger-strong"
         >
-          {errors[`${item.id}:sum`]}
+          {sumError}
         </p>
       ) : null}
     </li>

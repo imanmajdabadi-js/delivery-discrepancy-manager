@@ -35,7 +35,7 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
                 <p className="text-xs font-medium text-muted">شماره پرونده</p>
                 <p
                   dir="ltr"
-                  className="mt-1 text-right text-base font-bold text-ink"
+                  className="wrap-anywhere mt-1 text-right text-base font-bold text-ink"
                 >
                   {caseItem.caseNumber}
                 </p>
@@ -46,13 +46,16 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
             <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 text-sm">
               <div className="col-span-2 sm:col-span-1">
                 <p className="text-xs text-muted">مشتری</p>
-                <p className="mt-1 line-clamp-2 font-semibold text-ink">
+                <p className="wrap-anywhere mt-1 font-semibold text-ink">
                   {caseItem.customerName}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted">شماره سفارش</p>
-                <p dir="ltr" className="mt-1 text-right font-medium text-ink">
+                <p
+                  dir="ltr"
+                  className="wrap-anywhere mt-1 text-right font-medium text-ink"
+                >
                   {caseItem.orderNumber}
                 </p>
               </div>
@@ -115,21 +118,18 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
                   <Link
                     dir="ltr"
                     to={`/cases/${caseItem.id}`}
-                    className="inline-block rounded-md text-sm font-bold text-ink transition hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand"
+                    className="wrap-anywhere inline-block rounded-md text-sm font-bold text-ink transition hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand"
                   >
                     {caseItem.caseNumber}
                   </Link>
                 </td>
                 <td className="px-5 py-4">
-                  <p
-                    className="truncate text-sm font-semibold text-ink"
-                    title={caseItem.customerName}
-                  >
+                  <p className="wrap-anywhere text-sm leading-6 font-semibold text-ink">
                     {caseItem.customerName}
                   </p>
                   <p
                     dir="ltr"
-                    className="mt-1 truncate text-right text-xs text-muted"
+                    className="wrap-anywhere mt-1 text-right text-xs text-muted"
                   >
                     {caseItem.orderNumber}
                   </p>

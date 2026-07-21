@@ -55,7 +55,7 @@ export function CaseDiscrepancyList({
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
+                  <h3 className="wrap-anywhere text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
                     {item.orderItem.productName}
                   </h3>
                   <span
@@ -65,7 +65,9 @@ export function CaseDiscrepancyList({
                   </span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[0.75rem] text-subtle">
-                  <span dir="ltr">{item.orderItem.sku}</span>
+                  <span dir="ltr" className="wrap-anywhere">
+                    {item.orderItem.sku}
+                  </span>
                   <span>
                     تحویل‌شده:‌{' '}
                     {toPersianDigits(item.orderItem.deliveredQuantity)}{' '}

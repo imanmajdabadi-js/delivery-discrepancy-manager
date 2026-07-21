@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import { useEffect, useRef, type FormEvent } from 'react';
 import type { CaseStatus } from '../types';
 
 interface CaseListToolbarProps {
@@ -24,8 +24,17 @@ export function CaseListToolbar({
   onSubmit,
   onClear,
 }: CaseListToolbarProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (validationError) {
+      inputRef.current?.focus();
+    }
+  }, [validationError]);
+
   return (
     <form
+      aria-busy={isFetching}
       className="mt-8 rounded-2xl border border-line bg-surface p-4 shadow-[0_10px_35px_rgba(24,57,51,0.05)] sm:p-5"
       onSubmit={onSubmit}
     >
@@ -48,6 +57,7 @@ export function CaseListToolbar({
               <path d="m15.5 15.5 4 4" />
             </svg>
             <input
+              ref={inputRef}
               value={query}
               type="search"
               maxLength={65}
@@ -91,7 +101,10 @@ export function CaseListToolbar({
 
       <div className="mt-3 flex min-h-6 flex-wrap items-start justify-between gap-2">
         {validationError ? (
-          <p id="case-list-search-error" className="text-sm text-danger">
+          <p
+            id="case-list-search-error"
+            className="wrap-anywhere text-sm text-danger"
+          >
             {validationError}
           </p>
         ) : (

@@ -70,7 +70,7 @@ export function CaseDetailsPage() {
             </p>
             <h1
               dir="ltr"
-              className="mt-1 text-left text-2xl font-bold tracking-[0.035em] text-ink sm:text-[1.75rem]"
+              className="wrap-anywhere mt-1 text-left text-2xl font-bold tracking-[0.035em] text-ink sm:text-[1.75rem]"
             >
               {caseDetails.caseNumber}
             </h1>
@@ -93,7 +93,9 @@ export function CaseDetailsPage() {
           </div>
           <div className="flex flex-wrap items-center gap-x-2">
             <dt className="font-semibold text-subtle">ثبت‌کننده:</dt>
-            <dd className="text-muted">{caseDetails.createdBy.fullName}</dd>
+            <dd className="wrap-anywhere min-w-0 text-muted">
+              {caseDetails.createdBy.fullName}
+            </dd>
           </div>
         </dl>
       </header>

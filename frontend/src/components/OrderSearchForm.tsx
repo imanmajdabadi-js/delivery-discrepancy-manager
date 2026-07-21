@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import { useEffect, useRef, type FormEvent } from 'react';
 
 interface OrderSearchFormProps {
   query: string;
@@ -16,9 +16,17 @@ export function OrderSearchForm({
   onSubmit,
 }: OrderSearchFormProps) {
   const descriptionId = error ? 'order-search-error' : 'order-search-hint';
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (error) {
+      inputRef.current?.focus();
+    }
+  }, [error]);
 
   return (
     <form
+      aria-busy={isSubmitting}
       className="search-panel rounded-3xl border border-line bg-surface p-5 shadow-[0_18px_55px_rgba(24,57,51,0.07)] sm:p-7"
       noValidate
       onSubmit={onSubmit}
@@ -62,6 +70,7 @@ export function OrderSearchForm({
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="min-w-0 flex-1">
             <input
+              ref={inputRef}
               id="order-search-query"
               name="query"
               type="search"
@@ -79,7 +88,7 @@ export function OrderSearchForm({
               <p
                 id="order-search-error"
                 role="alert"
-                className="mt-2 text-sm leading-6 text-danger-strong"
+                className="wrap-anywhere mt-2 text-sm leading-6 text-danger-strong"
               >
                 {error}
               </p>
