@@ -16,6 +16,11 @@ import {
   Prisma,
 } from '../generated/prisma/client';
 import {
+  CASE_LIST_QUERY_MAX_LENGTH,
+  isCaseStatus,
+  normalizeCaseListQuery,
+} from './case-list.helpers';
+import {
   parseCreateCaseInput,
   validateCaseItemsAgainstOrder,
   type CreateCaseInput,
@@ -43,6 +48,81 @@ function isPrismaErrorWithCode(error: unknown, codes: string[]) {
 @Injectable()
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(rawQuery: string | undefined, rawStatus: string | undefined) {
+    const query = normalizeCaseListQuery(rawQuery ?? '');
+    const normalizedStatus = rawStatus?.trim().toUpperCase() ?? '';
+
+    if (query.length > CASE_LIST_QUERY_MAX_LENGTH) {
+      throw new BadRequestException({
+        statusCode: 400,
+        code: 'INVALID_CASE_LIST_QUERY',
+        message: 'عبارت جست‌وجو نمی‌تواند بیشتر از ۶۴ نویسه باشد.',
+      });
+    }
+
+    let status: CaseStatus | null = null;
+
+    if (normalizedStatus) {
+      if (!isCaseStatus(normalizedStatus)) {
+        throw new BadRequestException({
+          statusCode: 400,
+          code: 'INVALID_CASE_STATUS',
+          message: 'وضعیت انتخاب‌شده معتبر نیست.',
+        });
+      }
+
+      status = normalizedStatus;
+    }
+
+    const cases = await this.prisma.discrepancyCase.findMany({
+      where: {
+        ...(status ? { status } : {}),
+        ...(query
+          ? {
+              OR: [
+                { caseNumber: { contains: query, mode: 'insensitive' } },
+                {
+                  order: {
+                    is: {
+                      orderNumber: { contains: query, mode: 'insensitive' },
+                    },
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+      select: {
+        id: true,
+        caseNumber: true,
+        status: true,
+        createdAt: true,
+        order: {
+          select: {
+            orderNumber: true,
+            customer: { select: { fullName: true } },
+          },
+        },
+        _count: { select: { items: true } },
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    });
+
+    return {
+      query,
+      status,
+      results: cases.map((caseItem) => ({
+        id: caseItem.id,
+        caseNumber: caseItem.caseNumber,
+        status: caseItem.status,
+        createdAt: caseItem.createdAt.toISOString(),
+        orderNumber: caseItem.order.orderNumber,
+        customerName: caseItem.order.customer.fullName,
+        itemCount: caseItem._count.items,
+      })),
+    };
+  }
 
   async findOne(caseId: string) {
     if (!isUuid(caseId)) {

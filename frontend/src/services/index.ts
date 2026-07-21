@@ -1,6 +1,8 @@
 import type {
   ApiErrorPayload,
   CaseDetailsResponse,
+  CaseListResponse,
+  CaseStatus,
   CreateCaseRequest,
   CreateCaseResponse,
   OrderSearchResponse,
@@ -84,4 +86,35 @@ export async function getCaseDetails(caseId: string, signal: AbortSignal) {
   }
 
   return (await response.json()) as CaseDetailsResponse;
+}
+
+export async function getCases(
+  query: string,
+  status: CaseStatus | null,
+  signal: AbortSignal,
+) {
+  const searchParams = new URLSearchParams();
+
+  if (query) {
+    searchParams.set('query', query);
+  }
+
+  if (status) {
+    searchParams.set('status', status);
+  }
+
+  const queryString = searchParams.toString();
+  const response = await fetch(
+    `${apiBaseUrl}/cases${queryString ? `?${queryString}` : ''}`,
+    { signal },
+  );
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'دریافت فهرست پرونده‌ها با خطا روبه‌رو شد.',
+    );
+  }
+
+  return (await response.json()) as CaseListResponse;
 }

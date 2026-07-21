@@ -66,6 +66,8 @@ Order search is available at `http://localhost:3000/api/orders/search?query=...`
 
 Case creation is available through `POST http://localhost:3000/api/cases`. It accepts one delivered order and at least one shortage or damaged-item row. Conflicting open cases return a conflict response without creating a partial case.
 
+The case list is available through `GET http://localhost:3000/api/cases`. Optional `query` and `status` parameters can be combined to search case or order numbers and filter the current status.
+
 Case details are available through `GET http://localhost:3000/api/cases/:caseId`. The response includes the related customer, order, discrepancy items, optional final decision, and chronologically ordered history.
 
 ## Development data

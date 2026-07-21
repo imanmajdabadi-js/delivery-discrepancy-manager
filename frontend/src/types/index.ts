@@ -101,6 +101,22 @@ export interface CaseDetailsResponse {
   }>;
 }
 
+export interface CaseListItem {
+  id: string;
+  caseNumber: string;
+  status: CaseStatus;
+  createdAt: string;
+  orderNumber: string;
+  customerName: string;
+  itemCount: number;
+}
+
+export interface CaseListResponse {
+  query: string;
+  status: CaseStatus | null;
+  results: CaseListItem[];
+}
+
 export interface CaseValidationIssue {
   field: string;
   code: string;

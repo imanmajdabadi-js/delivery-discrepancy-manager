@@ -1,6 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCase } from '../services';
 
 export function useCreateCase() {
-  return useMutation({ mutationFn: createCase });
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createCase,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
+  });
 }
