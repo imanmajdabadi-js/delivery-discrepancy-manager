@@ -3,6 +3,13 @@ import { describe, it } from 'node:test';
 import { parseCaseDecisionInput } from '../src/cases/case-decision.helpers';
 
 describe('case decision helpers', () => {
+  it('rejects a body that is not an object', () => {
+    const result = parseCaseDecisionInput(null);
+
+    assert.equal(result.value, null);
+    assert.equal(result.issues[0]?.code, 'INVALID_BODY');
+  });
+
   it('parses an approval and trims its explanation', () => {
     const result = parseCaseDecisionInput({
       type: 'APPROVE',

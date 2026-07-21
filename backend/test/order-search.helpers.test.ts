@@ -20,6 +20,10 @@ describe('order search helpers', () => {
     assert.equal(getPhoneCandidate('ORD-1405-00125'), null);
   });
 
+  it('accepts a phone number with common separators', () => {
+    assert.equal(getPhoneCandidate('+98 (912) 123-4567'), '+989121234567');
+  });
+
   it('accepts only delivered orders with at least one item', () => {
     assert.deepEqual(getOrderEligibility(OrderStatus.DELIVERED, 3), {
       eligible: true,

@@ -11,6 +11,13 @@ const firstItemId = '41111111-1111-4111-8111-111111111111';
 const secondItemId = '42222222-2222-4222-8222-222222222222';
 
 describe('case validation helpers', () => {
+  it('rejects a body that is not an object', () => {
+    const result = parseCreateCaseInput([]);
+
+    assert.equal(result.value, null);
+    assert.equal(result.issues[0]?.code, 'INVALID_BODY');
+  });
+
   it('recognizes valid case identifiers', () => {
     assert.equal(isUuid(orderId), true);
     assert.equal(isUuid('not-a-case-id'), false);
@@ -44,6 +51,29 @@ describe('case validation helpers', () => {
     assert(
       decimalResult.issues.some((issue) => issue.code === 'INVALID_QUANTITY'),
     );
+  });
+
+  it('reports invalid identifiers, type, and quantity', () => {
+    const result = parseCreateCaseInput({
+      orderId: 'invalid-order',
+      items: [
+        {
+          orderItemId: 'invalid-item',
+          type: 'LOST',
+          quantity: 0,
+        },
+      ],
+    });
+
+    assert.equal(result.value, null);
+    assert(result.issues.some((issue) => issue.code === 'INVALID_ORDER_ID'));
+    assert(
+      result.issues.some((issue) => issue.code === 'INVALID_ORDER_ITEM_ID'),
+    );
+    assert(
+      result.issues.some((issue) => issue.code === 'INVALID_DISCREPANCY_TYPE'),
+    );
+    assert(result.issues.some((issue) => issue.code === 'INVALID_QUANTITY'));
   });
 
   it('rejects a duplicate item and discrepancy type', () => {
