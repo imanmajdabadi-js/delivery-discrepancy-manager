@@ -21,7 +21,7 @@ export function CaseStatusBadge({ status }: { status: CaseStatus }) {
 
   return (
     <span
-      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold ${details.className}`}
+      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold transition-colors duration-200 ${details.className}`}
     >
       <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {details.label}
