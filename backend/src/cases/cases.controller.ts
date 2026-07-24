@@ -10,6 +10,11 @@ export class CasesController {
     return this.casesService.findAll(query, status);
   }
 
+  @Get('stats')
+  getStats() {
+    return this.casesService.getStats();
+  }
+
   @Get(':caseId')
   findOne(@Param('caseId') caseId: string) {
     return this.casesService.findOne(caseId);

@@ -118,6 +118,13 @@ export interface CaseDetailsResponse {
   }>;
 }
 
+export interface CaseStatsResponse {
+  total: number;
+  submitted: number;
+  approved: number;
+  rejected: number;
+}
+
 export interface CaseListItem {
   id: string;
   caseNumber: string;

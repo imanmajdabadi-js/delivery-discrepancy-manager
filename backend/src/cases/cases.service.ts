@@ -51,6 +51,31 @@ function isPrismaErrorWithCode(error: unknown, codes: string[]) {
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getStats() {
+    const stats = await this.prisma.discrepancyCase.groupBy({
+      by: ['status'],
+      _count: true,
+    });
+
+    const result = {
+      total: 0,
+      submitted: 0,
+      approved: 0,
+      rejected: 0,
+    };
+
+    stats.forEach((stat) => {
+      const count = stat._count;
+      result.total += count;
+
+      if (stat.status === CaseStatus.SUBMITTED) result.submitted = count;
+      if (stat.status === CaseStatus.APPROVED) result.approved = count;
+      if (stat.status === CaseStatus.REJECTED) result.rejected = count;
+    });
+
+    return result;
+  }
+
   async findAll(rawQuery: string | undefined, rawStatus: string | undefined) {
     const query = normalizeCaseListQuery(rawQuery ?? '');
     const normalizedStatus = rawStatus?.trim().toUpperCase() ?? '';

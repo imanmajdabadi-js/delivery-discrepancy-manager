@@ -4,6 +4,7 @@ import { CaseList } from '../../../components/CaseList';
 import { CaseListNotice } from '../../../components/CaseListNotice';
 import { CaseListSkeleton } from '../../../components/CaseListSkeleton';
 import { CaseListToolbar } from '../../../components/CaseListToolbar';
+import { CaseStats } from '../../../components/CaseStats';
 import { useCases } from '../../../hooks/useCases';
 import { ApiError } from '../../../services';
 import type { CaseStatus } from '../../../types';
@@ -96,6 +97,10 @@ export function CasesPage() {
           </svg>
           ایجاد پرونده جدید
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <CaseStats />
       </div>
 
       <CaseListToolbar

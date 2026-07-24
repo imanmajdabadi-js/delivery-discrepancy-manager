@@ -110,6 +110,19 @@ export async function submitCaseDecision(
   return (await response.json()) as SubmitCaseDecisionResponse;
 }
 
+export async function getCaseStats(signal?: AbortSignal) {
+  const response = await fetch(`${apiBaseUrl}/cases/stats`, { signal });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'دریافت آمار پرونده‌ها با خطا روبه‌رو شد.',
+    );
+  }
+
+  return (await response.json()) as CaseStatsResponse;
+}
+
 export async function getCases(
   query: string,
   status: CaseStatus | null,
