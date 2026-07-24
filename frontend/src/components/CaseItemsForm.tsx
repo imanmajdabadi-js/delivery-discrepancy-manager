@@ -3,12 +3,12 @@ import { useCreateCase } from '../hooks/useCreateCase';
 import { ApiError } from '../services';
 import type {
   CaseDiscrepancyType,
-  CreateCaseItemInput,
   CreateCaseResponse,
   OrderSearchResult,
 } from '../types';
 import { normalizeSearchQuery, toPersianDigits } from '../utils';
 import { CaseItemEditor } from './CaseItemEditor';
+import { validateCaseItems } from '../features/cases/utils/validation';
 
 type ItemDrafts = Record<string, Partial<Record<CaseDiscrepancyType, string>>>;
 
@@ -111,80 +111,6 @@ export function CaseItemsForm({
     }));
   }
 
-  function buildRequestItems() {
-    const nextErrors: Record<string, string> = {};
-    const requestItems: CreateCaseItemInput[] = [];
-    const totals = new Map<string, number>();
-
-    if (selectedEntries.length === 0) {
-      nextErrors.form = 'حداقل یک نوع مغایرت برای یکی از اقلام انتخاب کنید.';
-    }
-
-    selectedEntries.forEach(({ item, type, value }) => {
-      const errorKey = `${item.id}:${type}`;
-
-      if (!/^\d+$/.test(value)) {
-        nextErrors[errorKey] = 'یک عدد صحیح بزرگ‌تر از صفر وارد کنید.';
-        return;
-      }
-
-      const quantity = Number(value);
-
-      if (!Number.isSafeInteger(quantity) || quantity <= 0) {
-        nextErrors[errorKey] = 'یک عدد صحیح بزرگ‌تر از صفر وارد کنید.';
-        return;
-      }
-
-      if (quantity > item.deliveredQuantity) {
-        nextErrors[errorKey] = 'مقدار از تعداد تحویل‌شده بیشتر است.';
-      }
-
-      totals.set(item.id, (totals.get(item.id) ?? 0) + quantity);
-      requestItems.push({ orderItemId: item.id, type, quantity });
-    });
-
-    totals.forEach((total, itemId) => {
-      const item = order.items.find((orderItem) => orderItem.id === itemId);
-
-      if (item && total > item.deliveredQuantity) {
-        nextErrors[`${itemId}:sum`] =
-          'مجموع کسری و آسیب‌دیدگی از مقدار تحویل‌شده بیشتر است.';
-      }
-    });
-
-    return { requestItems, nextErrors };
-  }
-
-  function applyServerError(error: unknown) {
-    if (!(error instanceof ApiError)) {
-      setSubmitError(
-        'پاسخ ثبت پرونده دریافت نشد. اطلاعات واردشده حفظ شده است؛ پیش از تلاش دوباره، فهرست پرونده‌ها را بررسی کنید.',
-      );
-      return;
-    }
-
-    const nextErrors: Record<string, string> = {};
-
-    error.payload?.errors?.forEach((issue) => {
-      if (issue.orderItemId && issue.type) {
-        nextErrors[`${issue.orderItemId}:${issue.type}`] = issue.message;
-      } else if (issue.orderItemId) {
-        nextErrors[`${issue.orderItemId}:sum`] = issue.message;
-      } else {
-        nextErrors.form = issue.message;
-      }
-    });
-
-    error.payload?.conflicts?.forEach((conflict) => {
-      nextErrors[`${conflict.orderItemId}:${conflict.type}`] =
-        `این مورد در پرونده ${conflict.caseNumber} باز است.`;
-    });
-
-    setErrors(nextErrors);
-    setSubmitError(error.message);
-    focusFirstProblem();
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -192,7 +118,10 @@ export function CaseItemsForm({
       return;
     }
 
-    const { requestItems, nextErrors } = buildRequestItems();
+    const { requestItems, errors: nextErrors } = validateCaseItems(
+      order,
+      selectedEntries,
+    );
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);

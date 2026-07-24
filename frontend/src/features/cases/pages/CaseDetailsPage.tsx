@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Breadcrumbs } from '../../../components/Breadcrumbs';
 import { CaseDecisionSummary } from '../../../components/CaseDecisionSummary';
 import { CaseDecisionForm } from '../../../components/CaseDecisionForm';
 import { CaseDetailsNotice } from '../../../components/CaseDetailsNotice';
@@ -43,24 +44,13 @@ export function CaseDetailsPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
-      <Link
-        to="/"
-        className="inline-flex items-center gap-1.5 rounded-lg text-sm font-semibold text-muted transition hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
-      >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="size-4"
-        >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
-        بازگشت به پرونده‌ها
-      </Link>
+      <Breadcrumbs
+        items={[
+          {
+            label: `پرونده ${caseDetails.caseNumber}`,
+          },
+        ]}
+      />
 
       <header className="case-detail-hero mt-5 overflow-hidden rounded-3xl border border-brand-mild px-5 py-6 shadow-[0_18px_58px_rgba(24,57,51,0.07)] sm:px-7 sm:py-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
