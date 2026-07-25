@@ -212,6 +212,49 @@ async function seed() {
         deliveredQuantity: 4,
       },
     });
+
+    const sampleCaseId = '51111111-1111-4111-8111-111111111111';
+    const existingCase = await transaction.discrepancyCase.findUnique({
+      where: { id: sampleCaseId },
+    });
+
+    if (!existingCase) {
+      const discrepancyCase = await transaction.discrepancyCase.create({
+        data: {
+          id: sampleCaseId,
+          caseNumber: 'CASE-1405-001',
+          orderId: seedIds.deliveredOrder,
+          status: 'SUBMITTED',
+          createdById: seedIds.operator,
+          items: {
+            create: [
+              {
+                orderItemId: seedIds.riceItem,
+                type: 'SHORTAGE',
+                quantity: 2,
+              },
+            ],
+          },
+          openDiscrepancies: {
+            create: [
+              {
+                orderItemId: seedIds.riceItem,
+                type: 'SHORTAGE',
+              },
+            ],
+          },
+          history: {
+            create: [
+              {
+                eventType: 'CREATED',
+                resultingStatus: 'SUBMITTED',
+                performedById: seedIds.operator,
+              },
+            ],
+          },
+        },
+      });
+    }
   });
 }
 
