@@ -1,9 +1,6 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import * as crypto from 'crypto';
-import { promisify } from 'util';
-
-const scrypt = promisify(crypto.scrypt);
 
 @Injectable()
 export class AuthService {
@@ -16,7 +13,8 @@ export class AuthService {
     }
 
     const salt = crypto.randomBytes(16).toString('hex');
-    const buf = (await scrypt(dto.password, salt, 64)) as Buffer;
+    const p = dto.password || '';
+    const buf = crypto.scryptSync(p, salt as any, 64);
     const passwordHash = `${salt}:${buf.toString('hex')}`;
 
     const operator = await this.prisma.operator.create({
@@ -38,7 +36,8 @@ export class AuthService {
     }
 
     const [salt, key] = operator.passwordHash.split(':');
-    const buf = (await scrypt(dto.password, salt, 64)) as Buffer;
+    const p = dto.password || '';
+    const buf = crypto.scryptSync(p, salt as any, 64);
 
     if (buf.toString('hex') !== key) {
       throw new UnauthorizedException('ایمیل یا رمز عبور اشتباه است.');
