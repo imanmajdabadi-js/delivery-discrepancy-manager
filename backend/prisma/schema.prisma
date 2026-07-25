@@ -39,6 +39,7 @@ model Operator {
   id             String            @id @default(uuid()) @db.Uuid
   fullName       String            @map("full_name") @db.VarChar(120)
   email          String            @unique @db.VarChar(254)
+  passwordHash   String?           @map("password_hash") @db.VarChar(255)
   createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   createdCases   DiscrepancyCase[] @relation("CaseCreator")
   decisions      CaseDecision[]    @relation("DecisionActor")
