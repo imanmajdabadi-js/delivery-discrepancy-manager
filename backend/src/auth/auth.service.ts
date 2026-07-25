@@ -16,7 +16,8 @@ export class AuthService {
     }
 
     const salt = crypto.randomBytes(16).toString('hex');
-    const buf = (await scrypt(dto.password, salt, 64)) as Buffer;
+    const passwordStr: string = dto.password ?? '';
+    const buf = (await scrypt(passwordStr, salt, 64)) as Buffer;
     const passwordHash = `${salt}:${buf.toString('hex')}`;
 
     const operator = await this.prisma.operator.create({
@@ -38,7 +39,8 @@ export class AuthService {
     }
 
     const [salt, key] = operator.passwordHash.split(':');
-    const buf = (await scrypt(dto.password, salt, 64)) as Buffer;
+    const passwordStr: string = dto.password ?? '';
+    const buf = (await scrypt(passwordStr, salt, 64)) as Buffer;
 
     if (buf.toString('hex') !== key) {
       throw new UnauthorizedException('ایمیل یا رمز عبور اشتباه است.');
