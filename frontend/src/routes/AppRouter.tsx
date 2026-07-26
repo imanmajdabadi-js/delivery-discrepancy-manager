@@ -5,6 +5,7 @@ import { CaseDetailsPage } from '../features/cases/pages/CaseDetailsPage';
 import { LoginPage } from '../features/auth/pages/LoginPage';
 import { RegisterPage } from '../features/auth/pages/RegisterPage';
 import { AppLayout } from '../layout/AppLayout';
+import AuthGuard from '../app/AuthGuard';
 
 const router = createBrowserRouter([
   {
@@ -17,19 +18,24 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <AppLayout />,
+    element: <AuthGuard />,
     children: [
       {
-        index: true,
-        element: <CasesPage />,
-      },
-      {
-        path: 'cases/new',
-        element: <CreateCasePage />,
-      },
-      {
-        path: 'cases/:id',
-        element: <CaseDetailsPage />,
+        element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            element: <CasesPage />,
+          },
+          {
+            path: 'cases/new',
+            element: <CreateCasePage />,
+          },
+          {
+            path: 'cases/:id',
+            element: <CaseDetailsPage />,
+          },
+        ],
       },
     ],
   },

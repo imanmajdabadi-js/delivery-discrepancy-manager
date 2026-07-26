@@ -1,10 +1,17 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 export function AppLayout() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('operator');
+    navigate('/login');
+  };
+
   return (
     <div className="app-canvas min-h-screen text-ink">
       <header className="app-header border-b border-line bg-surface">
-        <div className="mx-auto flex min-h-17 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-17 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
             className="flex items-center gap-3 rounded-xl focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
@@ -31,6 +38,14 @@ export function AppLayout() {
               سامانه رسیدگی به مغایرت تحویل
             </span>
           </Link>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-2"
+          >
+            خروج
+          </button>
         </div>
       </header>
 
