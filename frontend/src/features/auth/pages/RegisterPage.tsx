@@ -19,89 +19,110 @@ export const RegisterPage: React.FC = () => {
       await axios.post('/api/auth/register', { fullName, email, password });
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'خطا در ثبت‌نام. لطفاً مجدد تلاش کنید.');
+      setError(
+        err.response?.data?.message || 'خطا در ثبت‌نام. لطفاً مجدد تلاش کنید.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-slate-900">
-          سامانه مدیریت مغایرت لجستیک
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          ثبت‌نام اپراتور جدید
-        </p>
-      </div>
+    <div className="min-h-screen bg-canvas px-4 py-12 text-right sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-md flex-col items-center">
+        <div className="mb-6 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-ink">
+            سامانه مدیریت مغایرت لجستیک
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            ثبت‌نام اپراتور جدید
+          </p>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
+        <div className="login-card w-full rounded-2xl border border-line bg-surface px-6 py-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8">
           {error && (
-            <div className="mb-4 bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded text-sm">
+            <div
+              className="mb-5 rounded-xl border border-danger/20 bg-surface px-4 py-3 text-sm text-danger"
+              aria-live="polite"
+            >
               {error}
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleRegister}>
             <div>
-              <label className="block text-sm font-medium text-slate-700">نام و نام خانوادگی</label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="علی رضایی"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700">ایمیل سازمانی</label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="name@company.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700">رمز عبور</label>
-              <div className="mt-1">
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              <label
+                htmlFor="fullName"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام در سیستم'}
-              </button>
+                نام و نام خانوادگی
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                required
+                autoComplete="name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand-soft disabled:bg-canvas/60"
+                placeholder="علی رضایی"
+              />
             </div>
+
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-medium text-ink"
+              >
+                ایمیل سازمانی
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand-soft disabled:bg-canvas/60"
+                placeholder="name@company.com"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-medium text-ink"
+              >
+                رمز عبور
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand-soft disabled:bg-canvas/60"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-xl border border-transparent bg-brand px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-brand-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام در سیستم'}
+            </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted">
               قبلاً ثبت‌نام کرده‌اید؟{' '}
-              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link
+                to="/login"
+                className="font-medium text-brand transition hover:text-brand-strong focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft"
+              >
                 وارد شوید
               </Link>
             </p>
