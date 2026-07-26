@@ -33,6 +33,8 @@ enum DecisionType {
 enum CaseEventType {
   CREATED
   DECIDED
+  ASSIGNED
+  ASSIGNMENT_RELEASED
 }
 
 model Operator {
@@ -42,6 +44,7 @@ model Operator {
   passwordHash   String?           @map("password_hash") @db.VarChar(255)
   createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   createdCases   DiscrepancyCase[] @relation("CaseCreator")
+  assignedCases  DiscrepancyCase[] @relation("CaseAssignee")
   decisions      CaseDecision[]    @relation("DecisionActor")
   historyEntries CaseHistory[]     @relation("HistoryActor")
 
@@ -96,10 +99,13 @@ model DiscrepancyCase {
   orderId           String            @map("order_id") @db.Uuid
   status            CaseStatus        @default(SUBMITTED)
   createdById       String            @map("created_by_id") @db.Uuid
+  assigneeId        String?           @map("assignee_id") @db.Uuid
+  assignedAt        DateTime?         @map("assigned_at") @db.Timestamptz(3)
   createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
   order             Order             @relation(fields: [orderId], references: [id], onDelete: Restrict)
   createdBy         Operator          @relation("CaseCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignee          Operator?         @relation("CaseAssignee", fields: [assigneeId], references: [id], onDelete: Restrict)
   items             DiscrepancyItem[]
   decision          CaseDecision?
   history           CaseHistory[]
@@ -107,6 +113,7 @@ model DiscrepancyCase {
 
   @@index([status, createdAt])
   @@index([orderId])
+  @@index([assigneeId, status, createdAt])
   @@map("discrepancy_cases")
 }
 

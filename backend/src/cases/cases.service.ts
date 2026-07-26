@@ -124,7 +124,11 @@ export class CasesService {
         id: true,
         caseNumber: true,
         status: true,
+        assignedAt: true,
         createdAt: true,
+        assignee: {
+          select: { id: true, fullName: true },
+        },
         order: {
           select: {
             orderNumber: true,
@@ -143,6 +147,13 @@ export class CasesService {
         id: caseItem.id,
         caseNumber: caseItem.caseNumber,
         status: caseItem.status,
+        assignee: caseItem.assignee
+          ? {
+              id: caseItem.assignee.id,
+              fullName: caseItem.assignee.fullName,
+            }
+          : null,
+        assignedAt: caseItem.assignedAt?.toISOString() ?? null,
         createdAt: caseItem.createdAt.toISOString(),
         orderNumber: caseItem.order.orderNumber,
         customerName: caseItem.order.customer.fullName,
@@ -162,9 +173,14 @@ export class CasesService {
         id: true,
         caseNumber: true,
         status: true,
+        assigneeId: true,
+        assignedAt: true,
         createdAt: true,
         updatedAt: true,
         createdBy: {
+          select: { id: true, fullName: true },
+        },
+        assignee: {
           select: { id: true, fullName: true },
         },
         order: {
@@ -233,6 +249,7 @@ export class CasesService {
       ...caseDetails,
       createdAt: caseDetails.createdAt.toISOString(),
       updatedAt: caseDetails.updatedAt.toISOString(),
+      assignedAt: caseDetails.assignedAt?.toISOString() ?? null,
       order: {
         ...caseDetails.order,
         deliveredAt: caseDetails.order.deliveredAt?.toISOString() ?? null,
@@ -374,6 +391,215 @@ export class CasesService {
         }
 
         this.throwDecisionConflict();
+      }
+
+      throw error;
+    }
+  }
+
+  async claimCase(caseId: string, operatorId: string) {
+    if (!isUuid(caseId)) {
+      this.throwCaseNotFound();
+    }
+
+    if (!isUuid(operatorId)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        code: 'INVALID_OPERATOR_ID',
+        message: 'شناسه کاربر معتبر نیست.',
+      });
+    }
+
+    try {
+      return await this.prisma.$transaction(
+        async (transaction) => {
+          const caseSnapshot = await transaction.discrepancyCase.findUnique({
+            where: { id: caseId },
+            select: {
+              id: true,
+              caseNumber: true,
+              status: true,
+              assigneeId: true,
+              assignedAt: true,
+            },
+          });
+
+          if (!caseSnapshot) {
+            this.throwCaseNotFound();
+          }
+
+          if (caseSnapshot.status !== CaseStatus.SUBMITTED) {
+            this.throwCaseAlreadyDecided(
+              caseSnapshot.caseNumber,
+              caseSnapshot.status,
+            );
+          }
+
+          if (caseSnapshot.assigneeId) {
+            throw new ConflictException({
+              statusCode: 409,
+              code: 'CASE_ALREADY_ASSIGNED',
+              message: 'این پرونده در حال حاضر به کاربر دیگری اختصاص یافته است.',
+              caseNumber: caseSnapshot.caseNumber,
+              currentAssigneeId: caseSnapshot.assigneeId,
+            });
+          }
+
+          const operator = await transaction.operator.findUnique({
+            where: { id: operatorId },
+            select: { id: true },
+          });
+
+          if (!operator) {
+            throw new NotFoundException({
+              statusCode: 404,
+              code: 'OPERATOR_NOT_FOUND',
+              message: 'کاربر انتخاب‌شده پیدا نشد.',
+            });
+          }
+
+          const assignedAt = new Date();
+          const updateResult = await transaction.discrepancyCase.updateMany({
+            where: { id: caseId, status: CaseStatus.SUBMITTED, assigneeId: null },
+            data: { assigneeId: operatorId, assignedAt },
+          });
+
+          if (updateResult.count !== 1) {
+            throw new ConflictException({
+              statusCode: 409,
+              code: 'CASE_ASSIGNMENT_CONFLICT',
+              message: 'این پرونده در حال حاضر قابل اختصاص نیست.',
+              caseNumber: caseSnapshot.caseNumber,
+            });
+          }
+
+          await transaction.caseHistory.create({
+            data: {
+              caseId,
+              eventType: CaseEventType.ASSIGNED,
+              resultingStatus: CaseStatus.SUBMITTED,
+              performedById: operator.id,
+            },
+          });
+
+          return {
+            id: caseSnapshot.id,
+            caseNumber: caseSnapshot.caseNumber,
+            status: CaseStatus.SUBMITTED,
+            assigneeId: operatorId,
+            assignedAt: assignedAt.toISOString(),
+          };
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      if (isPrismaErrorWithCode(error, ['P2002', 'P2034'])) {
+        throw new ConflictException({
+          statusCode: 409,
+          code: 'CASE_ASSIGNMENT_CONFLICT',
+          message: 'این پرونده در حال حاضر قابل اختصاص نیست.',
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  async releaseCase(caseId: string, operatorId: string) {
+    if (!isUuid(caseId)) {
+      this.throwCaseNotFound();
+    }
+
+    if (!isUuid(operatorId)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        code: 'INVALID_OPERATOR_ID',
+        message: 'شناسه کاربر معتبر نیست.',
+      });
+    }
+
+    try {
+      return await this.prisma.$transaction(
+        async (transaction) => {
+          const caseSnapshot = await transaction.discrepancyCase.findUnique({
+            where: { id: caseId },
+            select: {
+              id: true,
+              caseNumber: true,
+              status: true,
+              assigneeId: true,
+              assignedAt: true,
+            },
+          });
+
+          if (!caseSnapshot) {
+            this.throwCaseNotFound();
+          }
+
+          if (caseSnapshot.status !== CaseStatus.SUBMITTED) {
+            this.throwCaseAlreadyDecided(
+              caseSnapshot.caseNumber,
+              caseSnapshot.status,
+            );
+          }
+
+          if (!caseSnapshot.assigneeId || caseSnapshot.assigneeId !== operatorId) {
+            throw new ConflictException({
+              statusCode: 409,
+              code: 'CASE_ASSIGNMENT_CONFLICT',
+              message: 'این پرونده به شما اختصاص ندارد.',
+              caseNumber: caseSnapshot.caseNumber,
+            });
+          }
+
+          const updateResult = await transaction.discrepancyCase.updateMany({
+            where: { id: caseId, status: CaseStatus.SUBMITTED, assigneeId: operatorId },
+            data: { assigneeId: null, assignedAt: null },
+          });
+
+          if (updateResult.count !== 1) {
+            throw new ConflictException({
+              statusCode: 409,
+              code: 'CASE_ASSIGNMENT_CONFLICT',
+              message: 'این پرونده در حال حاضر قابل آزادسازی نیست.',
+              caseNumber: caseSnapshot.caseNumber,
+            });
+          }
+
+          await transaction.caseHistory.create({
+            data: {
+              caseId,
+              eventType: CaseEventType.ASSIGNMENT_RELEASED,
+              resultingStatus: CaseStatus.SUBMITTED,
+              performedById: operatorId,
+            },
+          });
+
+          return {
+            id: caseSnapshot.id,
+            caseNumber: caseSnapshot.caseNumber,
+            status: CaseStatus.SUBMITTED,
+            assigneeId: null,
+            assignedAt: null,
+          };
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      if (isPrismaErrorWithCode(error, ['P2002', 'P2034'])) {
+        throw new ConflictException({
+          statusCode: 409,
+          code: 'CASE_ASSIGNMENT_CONFLICT',
+          message: 'این پرونده در حال حاضر قابل آزادسازی نیست.',
+        });
       }
 
       throw error;
