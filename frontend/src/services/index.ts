@@ -1,13 +1,14 @@
 import type {
-  ApiErrorPayload,
-  CaseDetailsResponse,
-  CaseListResponse,
-  CaseStatus,
-  CreateCaseRequest,
-  CreateCaseResponse,
-  OrderSearchResponse,
-  SubmitCaseDecisionRequest,
-  SubmitCaseDecisionResponse,
+    ApiErrorPayload,
+    CaseDetailsResponse,
+    CaseListResponse,
+    CaseStatsResponse,
+    CaseStatus,
+    CreateCaseRequest,
+    CreateCaseResponse,
+    OrderSearchResponse,
+    SubmitCaseDecisionRequest,
+    SubmitCaseDecisionResponse,
 } from '../types';
 
 const apiBaseUrl = (

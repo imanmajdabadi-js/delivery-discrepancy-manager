@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
+import { validateCaseItems } from '../features/cases/utils/validation';
 import { useCreateCase } from '../hooks/useCreateCase';
-import { ApiError } from '../services';
 import type {
   CaseDiscrepancyType,
   CreateCaseResponse,
@@ -8,7 +8,6 @@ import type {
 } from '../types';
 import { normalizeSearchQuery, toPersianDigits } from '../utils';
 import { CaseItemEditor } from './CaseItemEditor';
-import { validateCaseItems } from '../features/cases/utils/validation';
 
 type ItemDrafts = Record<string, Partial<Record<CaseDiscrepancyType, string>>>;
 
@@ -140,7 +139,11 @@ export function CaseItemsForm({
       });
       onCreated(createdCase);
     } catch (error: unknown) {
-      applyServerError(error);
+      if (error instanceof Error) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError('ثبت پرونده با خطا روبه‌رو شد. دوباره تلاش کنید.');
+      }
     }
   }
 

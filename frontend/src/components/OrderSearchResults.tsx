@@ -87,7 +87,7 @@ function OrderResultCard({
 
   return (
     <article
-      className={`result-card overflow-hidden rounded-3xl border bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)] ${
+      className={`result-card surface-enter overflow-hidden rounded-3xl border bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)] ${
         isSelected ? 'border-brand' : 'border-line'
       }`}
     >
@@ -176,7 +176,7 @@ function OrderResultCard({
         <div className="border-t border-line px-5 py-5 sm:px-6 sm:py-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h4 className="text-sm font-semibold text-ink">اقلام تحویل‌شده</h4>
-            <span className="rounded-full bg-accent-violet-soft px-2.5 py-1 text-[0.75rem] font-semibold text-accent-violet">
+            <span className="rounded-full bg-brand-soft px-2.5 py-1 text-[0.75rem] font-semibold text-brand-strong">
               {toPersianDigits(order.items.length)} قلم
             </span>
           </div>

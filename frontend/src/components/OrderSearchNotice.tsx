@@ -16,14 +16,12 @@ export function OrderSearchNotice({
   return (
     <section
       role={isError ? 'alert' : 'status'}
-      className="mt-6 rounded-3xl border border-line bg-surface px-5 py-9 text-center shadow-[0_12px_40px_rgba(24,57,51,0.05)] sm:px-8 sm:py-11"
+      className="surface-enter empty-state-card mt-6 rounded-3xl border border-line bg-surface/95 px-5 py-9 text-center shadow-[0_12px_40px_rgba(24,57,51,0.05)] sm:px-8 sm:py-11"
     >
       <span
         aria-hidden="true"
         className={`mx-auto grid size-12 place-items-center rounded-2xl ${
-          isError
-            ? 'bg-danger-soft text-danger'
-            : 'bg-accent-sky-soft text-accent-sky'
+          isError ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'
         }`}
       >
         {isError ? (

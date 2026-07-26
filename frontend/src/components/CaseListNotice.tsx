@@ -24,11 +24,11 @@ export function CaseListNotice({
   return (
     <section
       role={isError ? 'alert' : 'status'}
-      className="mt-5 rounded-2xl border border-dashed border-line bg-surface px-5 py-11 text-center shadow-[0_8px_28px_rgba(24,57,51,0.04)] sm:px-8 sm:py-13"
+      className="surface-enter empty-state-card mt-5 rounded-3xl border border-dashed border-line bg-surface/95 px-5 py-11 text-center shadow-[0_12px_36px_rgba(24,57,51,0.05)] sm:px-8 sm:py-13"
     >
       <span
         aria-hidden="true"
-        className={`mx-auto grid size-12 place-items-center rounded-2xl ${isError ? 'bg-danger-soft text-danger' : isFiltered ? 'bg-accent-sky-soft text-accent-sky' : 'bg-brand-soft text-brand'}`}
+        className={`mx-auto grid size-12 place-items-center rounded-2xl ${isError ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'}`}
       >
         <svg
           viewBox="0 0 24 24"

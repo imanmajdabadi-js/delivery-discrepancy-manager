@@ -22,13 +22,13 @@ function CaseLinkIcon() {
 
 export function CaseList({ cases }: { cases: CaseListItem[] }) {
   return (
-    <section aria-label="فهرست پرونده‌ها" className="mt-5">
+    <section aria-label="فهرست پرونده‌ها" className="surface-enter mt-5">
       <div className="space-y-3 lg:hidden">
         {cases.map((caseItem) => (
           <Link
             key={caseItem.id}
             to={`/cases/${caseItem.id}`}
-            className="group block rounded-2xl border border-line bg-surface p-4 shadow-[0_8px_26px_rgba(24,57,51,0.045)] transition hover:border-brand-mild hover:shadow-[0_12px_32px_rgba(24,57,51,0.08)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:p-5"
+            className="group block rounded-2xl border border-line bg-surface p-4 shadow-[0_8px_26px_rgba(24,57,51,0.045)] transition hover:-translate-y-0.5 hover:border-brand-mild hover:shadow-[0_12px_32px_rgba(24,57,51,0.08)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -84,7 +84,7 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_35px_rgba(24,57,51,0.05)] lg:block">
+      <div className="hidden overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_10px_35px_rgba(24,57,51,0.05)] lg:block">
         <table className="w-full table-fixed border-collapse text-right">
           <thead className="border-b border-line bg-surface-soft text-[0.8125rem] font-semibold text-muted">
             <tr>

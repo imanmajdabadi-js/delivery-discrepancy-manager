@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FormEvent } from 'react';
+import { type FormEvent } from 'react';
 import type { CaseStatus } from '../types';
 
 interface CaseListToolbarProps {
@@ -24,18 +24,10 @@ export function CaseListToolbar({
   onSubmit,
   onClear,
 }: CaseListToolbarProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (validationError) {
-      inputRef.current?.focus();
-    }
-  }, [validationError]);
-
   return (
     <form
       aria-busy={isFetching}
-      className="mt-8 rounded-2xl border border-line bg-surface p-4 shadow-[0_10px_35px_rgba(24,57,51,0.05)] sm:p-5"
+      className="surface-enter mt-8 rounded-2xl border border-line bg-surface p-4 shadow-[0_10px_35px_rgba(24,57,51,0.05)] sm:p-5"
       onSubmit={onSubmit}
     >
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_13rem_auto] md:items-end">
@@ -57,7 +49,6 @@ export function CaseListToolbar({
               <path d="m15.5 15.5 4 4" />
             </svg>
             <input
-              ref={inputRef}
               value={query}
               type="search"
               maxLength={65}
@@ -66,7 +57,7 @@ export function CaseListToolbar({
               aria-describedby={
                 validationError ? 'case-list-search-error' : undefined
               }
-              className="h-11 w-full rounded-xl border border-line-strong bg-surface pr-11 pl-3 text-sm text-ink outline-none transition placeholder:text-muted/80 focus:border-brand focus:ring-3 focus:ring-brand-soft"
+              className="h-11 w-full rounded-xl border border-line-strong bg-surface pr-11 pl-3 text-sm text-ink outline-none transition placeholder:text-muted/80 focus-visible:border-brand focus-visible:ring-3 focus-visible:ring-brand-soft"
               onChange={(event) => onQueryChange(event.target.value)}
             />
           </span>
@@ -78,7 +69,7 @@ export function CaseListToolbar({
           </span>
           <select
             value={status ?? ''}
-            className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 text-sm text-ink outline-none transition focus:border-brand focus:ring-3 focus:ring-brand-soft"
+            className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 text-sm text-ink outline-none transition focus-visible:border-brand focus-visible:ring-3 focus-visible:ring-brand-soft"
             onChange={(event) =>
               onStatusChange((event.target.value || null) as CaseStatus | null)
             }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FormEvent } from 'react';
+import { type FormEvent } from 'react';
 
 interface OrderSearchFormProps {
   query: string;
@@ -16,18 +16,11 @@ export function OrderSearchForm({
   onSubmit,
 }: OrderSearchFormProps) {
   const descriptionId = error ? 'order-search-error' : 'order-search-hint';
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (error) {
-      inputRef.current?.focus();
-    }
-  }, [error]);
 
   return (
     <form
       aria-busy={isSubmitting}
-      className="search-panel rounded-3xl border border-line bg-surface p-5 shadow-[0_18px_55px_rgba(24,57,51,0.07)] sm:p-7"
+      className="search-panel surface-enter rounded-3xl border border-line bg-surface p-5 shadow-[0_18px_55px_rgba(24,57,51,0.07)] sm:p-7"
       noValidate
       onSubmit={onSubmit}
     >
@@ -70,7 +63,6 @@ export function OrderSearchForm({
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="min-w-0 flex-1">
             <input
-              ref={inputRef}
               id="order-search-query"
               name="query"
               type="search"
@@ -80,7 +72,7 @@ export function OrderSearchForm({
               value={query}
               aria-describedby={descriptionId}
               aria-invalid={Boolean(error)}
-              className="h-12 w-full rounded-xl border border-line-strong bg-surface px-4 text-[0.9375rem] text-ink outline-none transition placeholder:text-subtle hover:border-brand-mild focus:border-brand focus:ring-3 focus:ring-brand-mild/55 aria-invalid:border-danger aria-invalid:ring-danger-soft"
+              className="h-12 w-full rounded-xl border border-line-strong bg-surface px-4 text-[0.9375rem] text-ink outline-none transition placeholder:text-subtle hover:border-brand-mild focus-visible:border-brand focus-visible:ring-3 focus-visible:ring-brand-mild/55 aria-invalid:border-danger aria-invalid:ring-danger-soft"
               placeholder="مثلاً ORD-1405-..."
               onChange={(event) => onQueryChange(event.target.value)}
             />

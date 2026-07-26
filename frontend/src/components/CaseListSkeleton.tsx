@@ -3,13 +3,13 @@ export function CaseListSkeleton() {
     <section
       aria-label="در حال دریافت فهرست پرونده‌ها"
       aria-busy="true"
-      className="mt-5 motion-safe:animate-pulse"
+      className="surface-enter mt-5"
     >
       <div className="space-y-3 lg:hidden">
         {Array.from({ length: 3 }, (_, index) => (
           <div
             key={index}
-            className="rounded-2xl border border-line bg-surface p-5"
+            className="rounded-3xl border border-line/70 bg-surface p-5 shadow-[0_10px_26px_rgba(24,57,51,0.03)]"
           >
             <div className="flex justify-between gap-4">
               <div className="space-y-2">
@@ -30,8 +30,8 @@ export function CaseListSkeleton() {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface lg:block">
-        <div className="h-13 border-b border-line bg-surface-soft" />
+      <div className="hidden overflow-hidden rounded-3xl border border-line/70 bg-surface shadow-[0_14px_40px_rgba(24,57,51,0.05)] lg:block">
+        <div className="h-14 border-b border-line bg-surface-soft" />
         {Array.from({ length: 4 }, (_, index) => (
           <div
             key={index}
