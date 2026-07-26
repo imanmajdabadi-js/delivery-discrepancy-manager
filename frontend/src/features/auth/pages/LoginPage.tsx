@@ -26,68 +26,89 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-slate-900">
-          سامانه مدیریت مغایرت لجستیک
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          ورود اپراتور به سیستم
-        </p>
-      </div>
+    <div className="min-h-screen bg-canvas px-4 py-12 text-right sm:px-6 lg:px-8">
+      <style>{`
+        @keyframes loginFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
+        @media (prefers-reduced-motion: reduce) {
+          .login-card {
+            animation: none !important;
+          }
+        }
+      `}</style>
+
+      <div className="mx-auto flex max-w-md flex-col items-center">
+        <div className="mb-6 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-ink">
+            سامانه مدیریت مغایرت لجستیک
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            ورود اپراتور به سیستم
+          </p>
+        </div>
+
+        <div className="login-card w-full rounded-2xl border border-line bg-surface px-6 py-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8" style={{ animation: 'loginFadeIn 0.4s ease-out both' }}>
           {error && (
-            <div className="mb-4 bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded text-sm">
+            <div className="mb-5 rounded-xl border border-danger/20 bg-surface px-4 py-3 text-sm text-danger" aria-live="polite">
               {error}
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
-              <label className="block text-sm font-medium text-slate-700">ایمیل سازمانی</label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="name@company.com"
-                />
-              </div>
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-ink">
+                ایمیل سازمانی
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand-soft disabled:bg-canvas/60"
+                placeholder="name@company.com"
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">رمز عبور</label>
-              <div className="mt-1">
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="••••••••"
-                />
-              </div>
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-ink">
+                رمز عبور
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand-soft disabled:bg-canvas/60"
+                placeholder="••••••••"
+              />
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                {loading ? 'در حال ورود...' : 'ورود به پنل'}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-xl border border-transparent bg-brand px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-brand-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {loading ? 'در حال ورود...' : 'ورود به پنل'}
+            </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted">
               حساب کاربری ندارید؟{' '}
-              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link to="/register" className="font-medium text-brand transition hover:text-brand-strong">
                 ثبت‌نام اپراتور جدید
               </Link>
             </p>
