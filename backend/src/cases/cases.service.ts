@@ -16,17 +16,17 @@ import {
   OrderStatus,
   Prisma,
 } from '../generated/prisma/client';
+import { parseCaseDecisionInput } from './case-decision.helpers';
 import {
   CASE_LIST_QUERY_MAX_LENGTH,
   isCaseStatus,
   normalizeCaseListQuery,
 } from './case-list.helpers';
-import { parseCaseDecisionInput } from './case-decision.helpers';
 import {
+  isUuid,
   parseCreateCaseInput,
   validateCaseItemsAgainstOrder,
   type CreateCaseInput,
-  isUuid,
 } from './case-validation.helpers';
 
 const developmentOperatorEmail = 'operator@local.test';
@@ -439,7 +439,8 @@ export class CasesService {
             throw new ConflictException({
               statusCode: 409,
               code: 'CASE_ALREADY_ASSIGNED',
-              message: 'این پرونده در حال حاضر به کاربر دیگری اختصاص یافته است.',
+              message:
+                'این پرونده در حال حاضر به کاربر دیگری اختصاص یافته است.',
               caseNumber: caseSnapshot.caseNumber,
               currentAssigneeId: caseSnapshot.assigneeId,
             });
@@ -460,7 +461,11 @@ export class CasesService {
 
           const assignedAt = new Date();
           const updateResult = await transaction.discrepancyCase.updateMany({
-            where: { id: caseId, status: CaseStatus.SUBMITTED, assigneeId: null },
+            where: {
+              id: caseId,
+              status: CaseStatus.SUBMITTED,
+              assigneeId: null,
+            },
             data: { assigneeId: operatorId, assignedAt },
           });
 
@@ -547,7 +552,10 @@ export class CasesService {
             );
           }
 
-          if (!caseSnapshot.assigneeId || caseSnapshot.assigneeId !== operatorId) {
+          if (
+            !caseSnapshot.assigneeId ||
+            caseSnapshot.assigneeId !== operatorId
+          ) {
             throw new ConflictException({
               statusCode: 409,
               code: 'CASE_ASSIGNMENT_CONFLICT',
@@ -557,7 +565,11 @@ export class CasesService {
           }
 
           const updateResult = await transaction.discrepancyCase.updateMany({
-            where: { id: caseId, status: CaseStatus.SUBMITTED, assigneeId: operatorId },
+            where: {
+              id: caseId,
+              status: CaseStatus.SUBMITTED,
+              assigneeId: operatorId,
+            },
             data: { assigneeId: null, assignedAt: null },
           });
 

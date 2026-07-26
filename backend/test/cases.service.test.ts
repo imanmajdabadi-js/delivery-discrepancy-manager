@@ -99,11 +99,14 @@ describe('cases service assignment workflow', () => {
 
     const service = createServiceWithMockPrisma(mockPrisma);
 
-    await assert.rejects(() => service.claimCase(caseId, operatorId), (error: any) => {
-      assert.equal(error.status, 409);
-      assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
-      return true;
-    });
+    await assert.rejects(
+      () => service.claimCase(caseId, operatorId),
+      (error: any) => {
+        assert.equal(error.status, 409);
+        assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
+        return true;
+      },
+    );
 
     assert.equal(updateManyCalls, 1);
     assert.equal(updateCalls, 0);
@@ -150,11 +153,14 @@ describe('cases service assignment workflow', () => {
 
     const service = createServiceWithMockPrisma(mockPrisma);
 
-    await assert.rejects(() => service.claimCase(caseId, operatorId), (error: any) => {
-      assert.equal(error.status, 409);
-      assert.equal(error.response?.code, 'CASE_ALREADY_ASSIGNED');
-      return true;
-    });
+    await assert.rejects(
+      () => service.claimCase(caseId, operatorId),
+      (error: any) => {
+        assert.equal(error.status, 409);
+        assert.equal(error.response?.code, 'CASE_ALREADY_ASSIGNED');
+        return true;
+      },
+    );
 
     assert.equal(updateManyCalls, 0);
     assert.equal(history.length, 0);
@@ -200,11 +206,14 @@ describe('cases service assignment workflow', () => {
 
       const service = createServiceWithMockPrisma(mockPrisma);
 
-      await assert.rejects(() => service.claimCase(caseId, operatorId), (error: any) => {
-        assert.equal(error.status, 409);
-        assert.equal(error.response?.code, 'CASE_ALREADY_DECIDED');
-        return true;
-      });
+      await assert.rejects(
+        () => service.claimCase(caseId, operatorId),
+        (error: any) => {
+          assert.equal(error.status, 409);
+          assert.equal(error.response?.code, 'CASE_ALREADY_DECIDED');
+          return true;
+        },
+      );
 
       assert.equal(updateManyCalls, 0);
       assert.equal(history.length, 0);
@@ -290,11 +299,14 @@ describe('cases service assignment workflow', () => {
 
     const service = createServiceWithMockPrisma(mockPrisma);
 
-    await assert.rejects(() => service.releaseCase(caseId, operatorId), (error: any) => {
-      assert.equal(error.status, 409);
-      assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
-      return true;
-    });
+    await assert.rejects(
+      () => service.releaseCase(caseId, operatorId),
+      (error: any) => {
+        assert.equal(error.status, 409);
+        assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
+        return true;
+      },
+    );
 
     assert.equal(updateManyCalls, 0);
     assert.equal(history.length, 0);
@@ -336,11 +348,14 @@ describe('cases service assignment workflow', () => {
 
     const service = createServiceWithMockPrisma(mockPrisma);
 
-    await assert.rejects(() => service.releaseCase(caseId, operatorId), (error: any) => {
-      assert.equal(error.status, 409);
-      assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
-      return true;
-    });
+    await assert.rejects(
+      () => service.releaseCase(caseId, operatorId),
+      (error: any) => {
+        assert.equal(error.status, 409);
+        assert.equal(error.response?.code, 'CASE_ASSIGNMENT_CONFLICT');
+        return true;
+      },
+    );
 
     assert.equal(updateManyCalls, 0);
     assert.equal(history.length, 0);
@@ -383,11 +398,14 @@ describe('cases service assignment workflow', () => {
 
       const service = createServiceWithMockPrisma(mockPrisma);
 
-      await assert.rejects(() => service.releaseCase(caseId, operatorId), (error: any) => {
-        assert.equal(error.status, 409);
-        assert.equal(error.response?.code, 'CASE_ALREADY_DECIDED');
-        return true;
-      });
+      await assert.rejects(
+        () => service.releaseCase(caseId, operatorId),
+        (error: any) => {
+          assert.equal(error.status, 409);
+          assert.equal(error.response?.code, 'CASE_ALREADY_DECIDED');
+          return true;
+        },
+      );
 
       assert.equal(updateManyCalls, 0);
       assert.equal(history.length, 0);
