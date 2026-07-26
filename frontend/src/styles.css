@@ -93,6 +93,21 @@ body {
   line-height: 1.75;
 }
 
+.login-card {
+  animation: loginFadeIn 400ms ease-out both;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .app-canvas {
   background:
     radial-gradient(circle at 88% 0%, rgb(15 118 110 / 8%), transparent 27rem),

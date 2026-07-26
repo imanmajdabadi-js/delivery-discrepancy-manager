@@ -19,7 +19,10 @@ export const LoginPage: React.FC = () => {
       localStorage.setItem('operator', JSON.stringify(res.data.operator));
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'خطا در ورود به سیستم. لطفاً اطلاعات را بررسی کنید.');
+      setError(
+        err.response?.data?.message ||
+          'خطا در ورود به سیستم. لطفاً اطلاعات را بررسی کنید.',
+      );
     } finally {
       setLoading(false);
     }
@@ -27,25 +30,6 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-canvas px-4 py-12 text-right sm:px-6 lg:px-8">
-      <style>{`
-        @keyframes loginFadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .login-card {
-            animation: none !important;
-          }
-        }
-      `}</style>
-
       <div className="mx-auto flex max-w-md flex-col items-center">
         <div className="mb-6 text-center">
           <h2 className="text-3xl font-semibold tracking-tight text-ink">
@@ -56,16 +40,22 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="login-card w-full rounded-2xl border border-line bg-surface px-6 py-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8" style={{ animation: 'loginFadeIn 0.4s ease-out both' }}>
+        <div className="login-card w-full rounded-2xl border border-line bg-surface px-6 py-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:px-8">
           {error && (
-            <div className="mb-5 rounded-xl border border-danger/20 bg-surface px-4 py-3 text-sm text-danger" aria-live="polite">
+            <div
+              className="mb-5 rounded-xl border border-danger/20 bg-surface px-4 py-3 text-sm text-danger"
+              aria-live="polite"
+            >
               {error}
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-ink">
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-medium text-ink"
+              >
                 ایمیل سازمانی
               </label>
               <input
@@ -75,13 +65,16 @@ export const LoginPage: React.FC = () => {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand-soft disabled:bg-canvas/60"
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand-soft disabled:bg-canvas/60"
                 placeholder="name@company.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-2 block text-sm font-medium text-ink">
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-medium text-ink"
+              >
                 رمز عبور
               </label>
               <input
@@ -91,7 +84,7 @@ export const LoginPage: React.FC = () => {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand-soft disabled:bg-canvas/60"
+                className="block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand-soft disabled:bg-canvas/60"
                 placeholder="••••••••"
               />
             </div>
@@ -108,7 +101,10 @@ export const LoginPage: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted">
               حساب کاربری ندارید؟{' '}
-              <Link to="/register" className="font-medium text-brand transition hover:text-brand-strong">
+              <Link
+                to="/register"
+                className="font-medium text-brand transition hover:text-brand-strong focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft"
+              >
                 ثبت‌نام اپراتور جدید
               </Link>
             </p>
