@@ -1,10 +1,11 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) {}
 
   async register(dto: { email: string; password: string; fullName: string }) {
     const existing = await this.prisma.operator.findUnique({ where: { email: dto.email } });
@@ -26,7 +27,11 @@ export class AuthService {
       select: { id: true, email: true, fullName: true, createdAt: true },
     });
 
-    return { message: 'ثبت‌نام با موفقیت انجام شد.', operator };
+    return {
+      message: 'ثبت‌نام با موفقیت انجام شد.',
+      access_token: this.signToken(operator.id),
+      operator,
+    };
   }
 
   async login(dto: { email: string; password: string }) {
@@ -45,7 +50,12 @@ export class AuthService {
 
     return {
       message: 'ورود موفقیت‌آمیز بود.',
+      access_token: this.signToken(operator.id),
       operator: { id: operator.id, email: operator.email, fullName: operator.fullName },
     };
+  }
+
+  private signToken(operatorId: string): string {
+    return this.jwtService.sign({ sub: operatorId });
   }
 }

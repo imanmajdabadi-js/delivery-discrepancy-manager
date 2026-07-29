@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CasesService } from './cases.service';
-import { CurrentOperator } from '../auth/operator-auth.guard';
-import { OperatorAuthGuard } from '../auth/operator-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { CurrentUser } from '../auth/jwt.strategy';
 
 @Controller('cases')
 export class CasesController {
@@ -40,23 +40,21 @@ export class CasesController {
     return this.casesService.create(body);
   }
 
-  // TEMPORARY: OperatorAuthGuard is a placeholder until JWT is implemented.
-  // See backend/src/auth/operator-auth.guard.ts for migration notes.
-  @UseGuards(OperatorAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post(':caseId/claim')
   claim(
     @Param('caseId') caseId: string,
-    @CurrentOperator() operatorId: string,
+    @CurrentUser() operator: { id: string },
   ) {
-    return this.casesService.claimCase(caseId, operatorId);
+    return this.casesService.claimCase(caseId, operator.id);
   }
 
-  @UseGuards(OperatorAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post(':caseId/release')
   release(
     @Param('caseId') caseId: string,
-    @CurrentOperator() operatorId: string,
+    @CurrentUser() operator: { id: string },
   ) {
-    return this.casesService.releaseCase(caseId, operatorId);
+    return this.casesService.releaseCase(caseId, operator.id);
   }
 }

@@ -15,7 +15,7 @@ describe('cases controller assignment endpoints', () => {
     };
 
     const controller = new CasesController(mockService as any);
-    const result = await controller.claim('case-1', 'operator-1');
+    const result = await controller.claim('case-1', { id: 'operator-1' });
 
     assert.equal(result.assigneeId, 'operator-1');
     assert.equal(result.caseNumber, 'CASE-000001');
@@ -33,7 +33,7 @@ describe('cases controller assignment endpoints', () => {
     };
 
     const controller = new CasesController(mockService as any);
-    const result = await controller.release('case-1', 'operator-1');
+    const result = await controller.release('case-1', { id: 'operator-1' });
 
     assert.equal(result.assigneeId, null);
     assert.equal(result.assignedAt, null);

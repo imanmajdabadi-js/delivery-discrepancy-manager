@@ -1,10 +1,13 @@
 const DEFAULT_API_PORT = 3000;
 const DEFAULT_FRONTEND_ORIGIN = 'http://localhost:5173';
+const DEFAULT_JWT_EXPIRY = '1h';
 
 interface ApplicationConfig {
   port: number;
   frontendOrigin: string;
   databaseUrl: string;
+  jwtSecret: string;
+  jwtExpiry: string;
 }
 
 function parsePort(value: unknown) {
@@ -69,6 +72,27 @@ function parseDatabaseUrl(value: unknown) {
   return url.toString();
 }
 
+function parseJwtSecret(value: unknown) {
+  const secret = typeof value === 'string' && value.trim() ? value.trim() : '';
+
+  if (secret.length < 32) {
+    throw new Error('JWT_SECRET must be at least 32 characters.');
+  }
+
+  return secret;
+}
+
+function parseJwtExpiry(value: unknown) {
+  const expiry =
+    typeof value === 'string' && value.trim() ? value.trim() : DEFAULT_JWT_EXPIRY;
+
+  if (!/^\d+[smhd]?$/.test(expiry)) {
+    throw new Error('JWT_EXPIRY must be a valid duration (e.g. 1h, 30m).');
+  }
+
+  return expiry;
+}
+
 export function getApplicationConfig(
   environment: Record<string, unknown>,
 ): ApplicationConfig {
@@ -76,6 +100,8 @@ export function getApplicationConfig(
     port: parsePort(environment.PORT),
     frontendOrigin: parseFrontendOrigin(environment.FRONTEND_ORIGIN),
     databaseUrl: parseDatabaseUrl(environment.DATABASE_URL),
+    jwtSecret: parseJwtSecret(environment.JWT_SECRET),
+    jwtExpiry: parseJwtExpiry(environment.JWT_EXPIRY),
   };
 }
 
@@ -89,5 +115,7 @@ export function validateApplicationEnvironment(
     PORT: config.port,
     FRONTEND_ORIGIN: config.frontendOrigin,
     DATABASE_URL: config.databaseUrl,
+    JWT_SECRET: config.jwtSecret,
+    JWT_EXPIRY: config.jwtExpiry,
   };
 }
