@@ -41,3 +41,39 @@ export function formatDateTime(value: string) {
 
   return persianDateTimeFormatter.format(date);
 }
+
+function decodeBase64Url(value: string): string {
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(normalized.length + (4 - (normalized.length % 4)) % 4, '=');
+  return decodeURIComponent(
+    Array.from(atob(padded))
+      .map((char) => `%${`00${char.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .join(''),
+  );
+}
+
+export interface JwtPayload {
+  sub?: string;
+  role?: string;
+}
+
+export function getUserRole(): string | null {
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    return null;
+  }
+
+  const segments = token.split('.');
+
+  if (segments.length < 3) {
+    return null;
+  }
+
+  try {
+    const claims = JSON.parse(decodeBase64Url(segments[1])) as JwtPayload;
+    return claims.role ?? null;
+  } catch {
+    return null;
+  }
+}

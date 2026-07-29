@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { CasesPage } from '../features/cases/pages/CasesPage';
 import { CreateCasePage } from '../features/cases/pages/CreateCasePage';
 import { CaseDetailsPage } from '../features/cases/pages/CaseDetailsPage';
+import { ManagerReviewPage } from '../features/cases/pages/ManagerReviewPage';
 import { LoginPage } from '../features/auth/pages/LoginPage';
 import { RegisterPage } from '../features/auth/pages/RegisterPage';
 import { AppLayout } from '../layout/AppLayout';
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
           {
             path: 'cases/new',
             element: <CreateCasePage />,
+          },
+          {
+            path: 'cases/review',
+            element: <ManagerReviewPage />,
           },
           {
             path: 'cases/:id',

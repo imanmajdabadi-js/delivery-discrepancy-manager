@@ -1,7 +1,9 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { getUserRole } from '../utils';
 
 export function AppLayout() {
   const navigate = useNavigate();
+  const userRole = getUserRole();
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
@@ -11,7 +13,7 @@ export function AppLayout() {
   return (
     <div className="app-canvas min-h-screen text-ink">
       <header className="app-header border-b border-line bg-surface">
-        <div className="mx-auto flex min-h-17 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-17 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
             className="flex items-center gap-3 rounded-xl focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
@@ -39,13 +41,23 @@ export function AppLayout() {
             </span>
           </Link>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-2"
-          >
-            خروج
-          </button>
+          <nav className="flex items-center gap-2">
+            {userRole === 'MANAGER' ? (
+              <Link
+                to="/cases/review"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-ink transition hover:bg-surface-2 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                صادرکننده تصمیم
+              </Link>
+            ) : null}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-2"
+            >
+              خروج
+            </button>
+          </nav>
         </div>
       </header>
 

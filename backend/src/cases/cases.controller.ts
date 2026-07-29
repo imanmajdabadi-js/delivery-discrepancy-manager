@@ -10,6 +10,7 @@ import {
 import { CasesService } from './cases.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/jwt.strategy';
+import { RolesGuard, Roles } from '../auth/roles.guard';
 
 @Controller('cases')
 export class CasesController {
@@ -30,17 +31,22 @@ export class CasesController {
     return this.casesService.findOne(caseId);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('MANAGER')
   @Post(':caseId/decision')
   decide(@Param('caseId') caseId: string, @Body() body: unknown) {
     return this.casesService.decide(caseId, body);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('OPERATOR')
   @Post()
   create(@Body() body: unknown) {
     return this.casesService.create(body);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('OPERATOR')
   @Post(':caseId/claim')
   claim(
     @Param('caseId') caseId: string,
@@ -49,7 +55,8 @@ export class CasesController {
     return this.casesService.claimCase(caseId, operator.id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('OPERATOR')
   @Post(':caseId/release')
   release(
     @Param('caseId') caseId: string,

@@ -10,6 +10,7 @@ import { CaseStatusBadge } from '../../../components/CaseStatusBadge';
 import { CaseTimeline } from '../../../components/CaseTimeline';
 import { useCaseDetails } from '../../../hooks/useCaseDetails';
 import { ApiError } from '../../../services';
+import { getUserRole } from '../../../utils';
 import { formatDateTime } from '../../../utils';
 
 export function CaseDetailsPage() {
@@ -41,6 +42,7 @@ export function CaseDetailsPage() {
   }
 
   const caseDetails = caseDetailsQuery.data;
+  const userRole = getUserRole();
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
@@ -94,7 +96,7 @@ export function CaseDetailsPage() {
         <div className="space-y-5">
           {caseDetails.decision ? (
             <CaseDecisionSummary decision={caseDetails.decision} />
-          ) : caseDetails.status === 'SUBMITTED' ? (
+          ) : caseDetails.status === 'SUBMITTED' && userRole === 'MANAGER' ? (
             <CaseDecisionForm caseId={caseDetails.id} />
           ) : null}
           <CaseDiscrepancyList items={caseDetails.items} />
