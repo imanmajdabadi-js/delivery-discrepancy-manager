@@ -44,7 +44,7 @@ export class CasesController {
   @Post(':caseId/claim')
   claim(
     @Param('caseId') caseId: string,
-    @CurrentUser() operator: { id: string },
+    @CurrentUser() operator: { id: string; role: string },
   ) {
     return this.casesService.claimCase(caseId, operator.id);
   }
@@ -53,7 +53,7 @@ export class CasesController {
   @Post(':caseId/release')
   release(
     @Param('caseId') caseId: string,
-    @CurrentUser() operator: { id: string },
+    @CurrentUser() operator: { id: string; role: string },
   ) {
     return this.casesService.releaseCase(caseId, operator.id);
   }

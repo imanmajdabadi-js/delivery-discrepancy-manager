@@ -12,21 +12,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string }) {
+  async validate(payload: { sub: string; role: string }) {
     const operator = await this.prisma.operator.findUnique({
       where: { id: payload.sub },
-      select: { id: true },
+      select: { id: true, role: true },
     });
 
     if (!operator) {
       throw new UnauthorizedException('Invalid token.');
     }
 
-    return { id: operator.id };
+    return { id: operator.id, role: operator.role };
   }
 }
 
 export const CurrentUser = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): { id: string } =>
+  (_data: unknown, ctx: ExecutionContext): { id: string; role: string } =>
     ctx.switchToHttp().getRequest().user,
 );

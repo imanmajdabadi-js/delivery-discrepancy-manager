@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { OrderStatus, PrismaClient } from '../src/generated/prisma/client';
+import { OrderStatus, PrismaClient, OperatorRole } from '../src/generated/prisma/client';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -33,11 +33,23 @@ async function seed() {
       update: {
         fullName: 'کارشناس عملیات توسعه',
         email: 'operator@local.test',
+        role: OperatorRole.OPERATOR,
       },
       create: {
         id: seedIds.operator,
         fullName: 'کارشناس عملیات توسعه',
         email: 'operator@local.test',
+        role: OperatorRole.OPERATOR,
+      },
+    });
+
+    await transaction.operator.upsert({
+      where: { email: 'manager@local.test' },
+      update: {},
+      create: {
+        fullName: 'مدیر عملیات توسعه',
+        email: 'manager@local.test',
+        role: OperatorRole.MANAGER,
       },
     });
 

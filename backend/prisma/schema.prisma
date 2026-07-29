@@ -37,11 +37,17 @@ enum CaseEventType {
   ASSIGNMENT_RELEASED
 }
 
+enum OperatorRole {
+  OPERATOR
+  MANAGER
+}
+
 model Operator {
   id             String            @id @default(uuid()) @db.Uuid
   fullName       String            @map("full_name") @db.VarChar(120)
   email          String            @unique @db.VarChar(254)
   passwordHash   String?           @map("password_hash") @db.VarChar(255)
+  role           OperatorRole      @default(OPERATOR)
   createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   createdCases   DiscrepancyCase[] @relation("CaseCreator")
   assignedCases  DiscrepancyCase[] @relation("CaseAssignee")

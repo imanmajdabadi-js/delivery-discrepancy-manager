@@ -24,12 +24,12 @@ export class AuthService {
         fullName: dto.fullName,
         passwordHash,
       },
-      select: { id: true, email: true, fullName: true, createdAt: true },
+      select: { id: true, email: true, fullName: true, role: true, createdAt: true },
     });
 
     return {
       message: 'ثبت‌نام با موفقیت انجام شد.',
-      access_token: this.signToken(operator.id),
+      access_token: this.signToken(operator.id, operator.role),
       operator,
     };
   }
@@ -50,12 +50,12 @@ export class AuthService {
 
     return {
       message: 'ورود موفقیت‌آمیز بود.',
-      access_token: this.signToken(operator.id),
+      access_token: this.signToken(operator.id, operator.role),
       operator: { id: operator.id, email: operator.email, fullName: operator.fullName },
     };
   }
 
-  private signToken(operatorId: string): string {
-    return this.jwtService.sign({ sub: operatorId });
+  private signToken(operatorId: string, role: string): string {
+    return this.jwtService.sign({ sub: operatorId, role });
   }
 }
