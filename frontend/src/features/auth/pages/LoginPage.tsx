@@ -16,7 +16,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       const res = await axios.post('/api/auth/login', { email, password });
-      localStorage.setItem('operator', JSON.stringify(res.data.operator));
+      localStorage.setItem('auth_token', res.data.access_token);
       navigate('/');
     } catch (err: any) {
       setError(

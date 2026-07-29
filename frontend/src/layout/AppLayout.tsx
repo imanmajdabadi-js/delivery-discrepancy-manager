@@ -4,7 +4,7 @@ export function AppLayout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('operator');
+    localStorage.removeItem('auth_token');
     navigate('/login');
   };
 

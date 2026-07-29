@@ -45,9 +45,23 @@ async function parseErrorResponse(response: Response, fallbackMessage: string) {
   return new ApiError(message, response.status, payload);
 }
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    return { 'Content-Type': 'application/json' };
+  }
+
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 export async function searchOrders(query: string, signal: AbortSignal) {
   const searchParams = new URLSearchParams({ query });
   const response = await fetch(`${apiBaseUrl}/orders/search?${searchParams}`, {
+    headers: getAuthHeaders(),
     signal,
   });
 
@@ -64,7 +78,7 @@ export async function searchOrders(query: string, signal: AbortSignal) {
 export async function createCase(request: CreateCaseRequest) {
   const response = await fetch(`${apiBaseUrl}/cases`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify(request),
   });
 
@@ -79,7 +93,10 @@ export async function createCase(request: CreateCaseRequest) {
 }
 
 export async function getCaseDetails(caseId: string, signal: AbortSignal) {
-  const response = await fetch(`${apiBaseUrl}/cases/${caseId}`, { signal });
+  const response = await fetch(`${apiBaseUrl}/cases/${caseId}`, {
+    headers: getAuthHeaders(),
+    signal,
+  });
 
   if (!response.ok) {
     throw await parseErrorResponse(
@@ -97,7 +114,7 @@ export async function submitCaseDecision(
 ) {
   const response = await fetch(`${apiBaseUrl}/cases/${caseId}/decision`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify(request),
   });
 
@@ -112,7 +129,10 @@ export async function submitCaseDecision(
 }
 
 export async function getCaseStats(signal?: AbortSignal) {
-  const response = await fetch(`${apiBaseUrl}/cases/stats`, { signal });
+  const response = await fetch(`${apiBaseUrl}/cases/stats`, {
+    headers: getAuthHeaders(),
+    signal,
+  });
 
   if (!response.ok) {
     throw await parseErrorResponse(
@@ -142,7 +162,10 @@ export async function getCases(
   const queryString = searchParams.toString();
   const response = await fetch(
     `${apiBaseUrl}/cases${queryString ? `?${queryString}` : ''}`,
-    { signal },
+    {
+      headers: getAuthHeaders(),
+      signal,
+    },
   );
 
   if (!response.ok) {

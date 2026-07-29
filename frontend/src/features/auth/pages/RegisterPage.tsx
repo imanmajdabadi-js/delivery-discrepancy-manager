@@ -16,8 +16,9 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      await axios.post('/api/auth/register', { fullName, email, password });
-      navigate('/login');
+      const res = await axios.post('/api/auth/register', { fullName, email, password });
+      localStorage.setItem('auth_token', res.data.access_token);
+      navigate('/');
     } catch (err: any) {
       setError(
         err.response?.data?.message || 'خطا در ثبت‌نام. لطفاً مجدد تلاش کنید.',
