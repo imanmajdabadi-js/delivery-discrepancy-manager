@@ -34,15 +34,22 @@ export class CasesController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('MANAGER')
   @Post(':caseId/decision')
-  decide(@Param('caseId') caseId: string, @Body() body: unknown) {
-    return this.casesService.decide(caseId, body);
+  decide(
+    @Param('caseId') caseId: string,
+    @Body() body: unknown,
+    @CurrentUser() operator: { id: string; role: string },
+  ) {
+    return this.casesService.decide(caseId, body, operator.id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('OPERATOR')
   @Post()
-  create(@Body() body: unknown) {
-    return this.casesService.create(body);
+  create(
+    @Body() body: unknown,
+    @CurrentUser() operator: { id: string; role: string },
+  ) {
+    return this.casesService.create(body, operator.id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

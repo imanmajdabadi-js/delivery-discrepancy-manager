@@ -29,8 +29,6 @@ import {
   type CreateCaseInput,
 } from './case-validation.helpers';
 
-const developmentOperatorEmail = 'operator@local.test';
-
 interface OpenConflict {
   orderItemId: string;
   type: DiscrepancyType;
@@ -267,7 +265,7 @@ export class CasesService {
     };
   }
 
-  async decide(caseId: string, rawInput: unknown) {
+  async decide(caseId: string, rawInput: unknown, operatorId: string) {
     if (!isUuid(caseId)) {
       this.throwCaseNotFound();
     }
@@ -308,16 +306,11 @@ export class CasesService {
             );
           }
 
-          const operator = await transaction.operator.findUnique({
-            where: { email: developmentOperatorEmail },
-            select: { id: true, fullName: true },
-          });
-
-          if (!operator) {
-            throw new InternalServerErrorException({
-              statusCode: 500,
-              code: 'DEVELOPMENT_OPERATOR_MISSING',
-              message: 'کاربر عملیاتی محیط توسعه پیدا نشد.',
+          if (!isUuid(operatorId)) {
+            throw new NotFoundException({
+              statusCode: 404,
+              code: 'OPERATOR_NOT_FOUND',
+              message: 'کاربر عملیاتی معتبر نیست.',
             });
           }
 
@@ -335,7 +328,7 @@ export class CasesService {
               caseId,
               type: input.type,
               explanation: input.explanation,
-              decidedById: operator.id,
+              decidedById: operatorId,
             },
             select: {
               type: true,
@@ -352,7 +345,7 @@ export class CasesService {
               caseId,
               eventType: CaseEventType.DECIDED,
               resultingStatus,
-              performedById: operator.id,
+              performedById: operatorId,
             },
           });
 
@@ -618,7 +611,7 @@ export class CasesService {
     }
   }
 
-  async create(rawInput: unknown) {
+  async create(rawInput: unknown, operatorId: string) {
     const parsedInput = parseCreateCaseInput(rawInput);
 
     if (!parsedInput.value) {
@@ -635,16 +628,10 @@ export class CasesService {
     try {
       return await this.prisma.$transaction(
         async (transaction) => {
-          const [order, operator] = await Promise.all([
-            transaction.order.findUnique({
-              where: { id: input.orderId },
-              include: { items: true },
-            }),
-            transaction.operator.findUnique({
-              where: { email: developmentOperatorEmail },
-              select: { id: true },
-            }),
-          ]);
+          const order = await transaction.order.findUnique({
+            where: { id: input.orderId },
+            include: { items: true },
+          });
 
           if (!order) {
             throw new NotFoundException({
@@ -672,11 +659,11 @@ export class CasesService {
             });
           }
 
-          if (!operator) {
-            throw new InternalServerErrorException({
-              statusCode: 500,
-              code: 'DEVELOPMENT_OPERATOR_MISSING',
-              message: 'کاربر عملیاتی محیط توسعه پیدا نشد.',
+          if (!isUuid(operatorId)) {
+            throw new NotFoundException({
+              statusCode: 404,
+              code: 'OPERATOR_NOT_FOUND',
+              message: 'کاربر عملیاتی معتبر نیست.',
             });
           }
 
@@ -723,7 +710,7 @@ export class CasesService {
             data: {
               caseNumber,
               orderId: order.id,
-              createdById: operator.id,
+              createdById: operatorId,
               items: {
                 create: input.items.map((item) => ({
                   orderItemId: item.orderItemId,
@@ -741,7 +728,7 @@ export class CasesService {
                 create: {
                   eventType: CaseEventType.CREATED,
                   resultingStatus: CaseStatus.SUBMITTED,
-                  performedById: operator.id,
+                  performedById: operatorId,
                 },
               },
             },
