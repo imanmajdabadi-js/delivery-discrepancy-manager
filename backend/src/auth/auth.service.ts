@@ -1,14 +1,23 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(dto: { email: string; password: string; fullName: string }) {
-    const existing = await this.prisma.operator.findUnique({ where: { email: dto.email } });
+    const existing = await this.prisma.operator.findUnique({
+      where: { email: dto.email },
+    });
     if (existing) {
       throw new BadRequestException('این ایمیل قبلاً ثبت‌نام کرده است.');
     }
@@ -24,7 +33,13 @@ export class AuthService {
         fullName: dto.fullName,
         passwordHash,
       },
-      select: { id: true, email: true, fullName: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        createdAt: true,
+      },
     });
 
     return {
@@ -35,7 +50,9 @@ export class AuthService {
   }
 
   async login(dto: { email: string; password: string }) {
-    const operator = await this.prisma.operator.findUnique({ where: { email: dto.email } });
+    const operator = await this.prisma.operator.findUnique({
+      where: { email: dto.email },
+    });
     if (!operator || !operator.passwordHash) {
       throw new UnauthorizedException('ایمیل یا رمز عبور اشتباه است.');
     }
@@ -51,7 +68,11 @@ export class AuthService {
     return {
       message: 'ورود موفقیت‌آمیز بود.',
       access_token: this.signToken(operator.id, operator.role),
-      operator: { id: operator.id, email: operator.email, fullName: operator.fullName },
+      operator: {
+        id: operator.id,
+        email: operator.email,
+        fullName: operator.fullName,
+      },
     };
   }
 

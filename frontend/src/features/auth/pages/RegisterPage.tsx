@@ -16,7 +16,11 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/register', { fullName, email, password });
+      const res = await axios.post('/api/auth/register', {
+        fullName,
+        email,
+        password,
+      });
       localStorage.setItem('auth_token', res.data.access_token);
       navigate('/');
     } catch (err: any) {

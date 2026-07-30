@@ -84,7 +84,9 @@ function parseJwtSecret(value: unknown) {
 
 function parseJwtExpiry(value: unknown) {
   const expiry =
-    typeof value === 'string' && value.trim() ? value.trim() : DEFAULT_JWT_EXPIRY;
+    typeof value === 'string' && value.trim()
+      ? value.trim()
+      : DEFAULT_JWT_EXPIRY;
 
   if (!/^\d+[smhd]?$/.test(expiry)) {
     throw new Error('JWT_EXPIRY must be a valid duration (e.g. 1h, 30m).');

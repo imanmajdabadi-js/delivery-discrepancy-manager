@@ -23,6 +23,16 @@ export function CaseTimeline({
         {history.map((event, index) => {
           const isLast = index === history.length - 1;
           const isCreated = event.eventType === 'CREATED';
+          const isAssigned = event.eventType === 'ASSIGNED';
+          const isReleased = event.eventType === 'ASSIGNMENT_RELEASED';
+
+          const eventLabel = isCreated
+            ? 'پرونده ایجاد شد'
+            : isAssigned
+              ? 'پرونده تخصیص یافت'
+              : isReleased
+                ? 'تخصیص پرونده آزاد شد'
+                : 'تصمیم نهایی ثبت شد';
 
           return (
             <li key={event.id} className="relative flex gap-4 pb-7 last:pb-0">
@@ -35,9 +45,11 @@ export function CaseTimeline({
               <span
                 aria-hidden="true"
                 className={`relative z-1 mt-1 grid size-8 shrink-0 place-items-center rounded-xl border ${
-                  isCreated
+                  isCreated || isAssigned
                     ? 'border-brand-mild bg-brand-soft text-brand'
-                    : 'border-accent-violet/20 bg-accent-violet-soft text-accent-violet'
+                    : isReleased
+                      ? 'border-accent-amber/20 bg-accent-amber-soft text-accent-amber'
+                      : 'border-accent-violet/20 bg-accent-violet-soft text-accent-violet'
                 }`}
               >
                 <svg
@@ -51,6 +63,8 @@ export function CaseTimeline({
                 >
                   {isCreated ? (
                     <path d="M12 5v14M5 12h14" />
+                  ) : isAssigned || isReleased ? (
+                    <path d="M16 12h5m-5 0h5m-10 0h5M4 6h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
                   ) : (
                     <path d="m5 12 4 4L19 6" />
                   )}
@@ -59,7 +73,7 @@ export function CaseTimeline({
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-sm font-semibold text-ink">
-                    {isCreated ? 'پرونده ایجاد شد' : 'تصمیم نهایی ثبت شد'}
+                    {eventLabel}
                   </h3>
                   <CaseStatusBadge status={event.resultingStatus} />
                 </div>

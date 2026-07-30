@@ -1,4 +1,8 @@
-import type { CaseDiscrepancyType, CreateCaseItemInput, OrderSearchResult } from '../../../types';
+import type {
+  CaseDiscrepancyType,
+  CreateCaseItemInput,
+  OrderSearchResult,
+} from '../../../types';
 
 export interface ValidationResult {
   requestItems: CreateCaseItemInput[];
@@ -15,7 +19,11 @@ export interface ValidationResult {
  */
 export function validateCaseItems(
   order: OrderSearchResult,
-  selectedEntries: Array<{ item: { id: string, deliveredQuantity: number }, type: CaseDiscrepancyType, value: string }>
+  selectedEntries: Array<{
+    item: { id: string; deliveredQuantity: number };
+    type: CaseDiscrepancyType;
+    value: string;
+  }>,
 ): ValidationResult {
   const errors: Record<string, string> = {};
   const requestItems: CreateCaseItemInput[] = [];

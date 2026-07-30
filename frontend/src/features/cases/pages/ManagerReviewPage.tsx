@@ -18,7 +18,9 @@ export function ManagerReviewPage() {
   const [status, setStatus] = useState<CaseStatus | null>('SUBMITTED');
   const [validationError, setValidationError] = useState<string | null>(null);
   const cases = useCases(submittedQuery, status);
-  const hasActiveFilters = Boolean(submittedQuery || (status && status !== 'SUBMITTED'));
+  const hasActiveFilters = Boolean(
+    submittedQuery || (status && status !== 'SUBMITTED'),
+  );
 
   function handleQueryChange(value: string) {
     setQuery(value);

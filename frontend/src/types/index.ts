@@ -36,7 +36,8 @@ export interface OrderSearchResponse {
 export type CaseDiscrepancyType = 'SHORTAGE' | 'DAMAGED';
 export type CaseStatus = 'SUBMITTED' | 'APPROVED' | 'REJECTED';
 export type CaseDecisionType = 'APPROVE' | 'REJECT';
-export type CaseEventType = 'CREATED' | 'DECIDED' | 'ASSIGNED' | 'ASSIGNMENT_RELEASED';
+export type CaseEventType =
+  'CREATED' | 'DECIDED' | 'ASSIGNED' | 'ASSIGNMENT_RELEASED';
 
 export interface CreateCaseItemInput {
   orderItemId: string;

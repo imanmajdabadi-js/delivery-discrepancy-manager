@@ -1,7 +1,11 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { OrderStatus, PrismaClient, OperatorRole } from '../src/generated/prisma/client';
+import {
+  OrderStatus,
+  PrismaClient,
+  OperatorRole,
+} from '../src/generated/prisma/client';
 
 const databaseUrl = process.env.DATABASE_URL;
 

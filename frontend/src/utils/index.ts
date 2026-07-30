@@ -44,7 +44,10 @@ export function formatDateTime(value: string) {
 
 function decodeBase64Url(value: string): string {
   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
-  const padded = normalized.padEnd(normalized.length + (4 - (normalized.length % 4)) % 4, '=');
+  const padded = normalized.padEnd(
+    normalized.length + ((4 - (normalized.length % 4)) % 4),
+    '=',
+  );
   return decodeURIComponent(
     Array.from(atob(padded))
       .map((char) => `%${`00${char.charCodeAt(0).toString(16)}`.slice(-2)}`)
