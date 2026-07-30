@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { apiBaseUrl } from '../../../services';
 
 export const RegisterPage: React.FC = () => {
   const [fullName, setFullName] = useState('');
@@ -16,7 +17,7 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/register', {
+      const res = await axios.post(`${apiBaseUrl}/auth/register`, {
         fullName,
         email,
         password,

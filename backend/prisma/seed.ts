@@ -38,12 +38,16 @@ async function seed() {
         fullName: 'کارشناس عملیات توسعه',
         email: 'operator@local.test',
         role: OperatorRole.OPERATOR,
+        passwordHash:
+          '32f636f8ede60bf2f169bc4c0255cfc3:87a252d54ddd8a4f1ee89fb7ff6b5325262013c600feb5a7d97cc30e09c20a892eeb80a8709238d079548663e58c1d1c76adc4d0fc77b59ecbdb53484b621b6d',
       },
       create: {
         id: seedIds.operator,
         fullName: 'کارشناس عملیات توسعه',
         email: 'operator@local.test',
         role: OperatorRole.OPERATOR,
+        passwordHash:
+          '32f636f8ede60bf2f169bc4c0255cfc3:87a252d54ddd8a4f1ee89fb7ff6b5325262013c600feb5a7d97cc30e09c20a892eeb80a8709238d079548663e58c1d1c76adc4d0fc77b59ecbdb53484b621b6d',
       },
     });
 
@@ -54,6 +58,8 @@ async function seed() {
         fullName: 'مدیر عملیات توسعه',
         email: 'manager@local.test',
         role: OperatorRole.MANAGER,
+        passwordHash:
+          '9385919b5e3c1b0cc94d28e545dff3a2:ad8ab8b996cafed60187c5285fe96fd607e62762551044dc21a7a56d88f9940c1b6ff6148375e72d45178e3f1bc7518d9bed9f63a4fd843b1567d48b8d21c16a',
       },
     });
 

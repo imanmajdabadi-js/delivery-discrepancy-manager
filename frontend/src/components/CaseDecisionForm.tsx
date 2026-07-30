@@ -13,6 +13,7 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
   const [submittingType, setSubmittingType] = useState<CaseDecisionType | null>(
     null,
   );
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const explanationRef = useRef<HTMLTextAreaElement>(null);
   const decisionMutation = useCaseDecision(caseId);
 
@@ -21,6 +22,10 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
 
     if (validationError) {
       setValidationError(null);
+    }
+
+    if (successMessage) {
+      setSuccessMessage(null);
     }
 
     if (decisionMutation.isError) {
@@ -42,10 +47,18 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
     }
 
     setValidationError(null);
+    setSuccessMessage(null);
     setSubmittingType(type);
     decisionMutation.mutate(
       { type, explanation: trimmedExplanation },
       {
+        onSuccess: () => {
+          setSuccessMessage(
+            type === 'APPROVE'
+              ? 'پرونده با موفقیت تأیید شد.'
+              : 'پرونده با موفقیت رد شد.',
+          );
+        },
         onSettled: () => setSubmittingType(null),
       },
     );
@@ -116,7 +129,14 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
       />
 
       <div aria-live="polite" className="mt-2 min-h-6">
-        {validationError ? (
+        {successMessage && !decisionMutation.isError ? (
+          <p
+            className="wrap-anywhere text-sm leading-6 text-success-strong"
+            role="status"
+          >
+            {successMessage}
+          </p>
+        ) : validationError ? (
           <p
             id="case-decision-validation-error"
             className="wrap-anywhere text-sm text-danger"

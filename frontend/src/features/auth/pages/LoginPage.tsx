@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { apiBaseUrl } from '../../../services';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/login', { email, password });
+      const res = await axios.post(`${apiBaseUrl}/auth/login`, { email, password });
       localStorage.setItem('auth_token', res.data.access_token);
       navigate('/');
     } catch (err: any) {
