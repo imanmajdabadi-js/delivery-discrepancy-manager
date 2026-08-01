@@ -14,8 +14,8 @@ import { getUserRole } from '../../../utils';
 import { formatDateTime } from '../../../utils';
 
 export function CaseDetailsPage() {
-  const { caseId } = useParams();
-  const caseDetailsQuery = useCaseDetails(caseId ?? null);
+  const { id } = useParams();
+  const caseDetailsQuery = useCaseDetails(id ?? null);
 
   if (caseDetailsQuery.isPending) {
     return <CaseDetailsSkeleton />;
@@ -66,7 +66,7 @@ export function CaseDetailsPage() {
             >
               {caseDetails.caseNumber}
             </h1>
-            <p className="mt-2 text-sm leading-7 text-muted">
+            <p className="mt-2 text-[0.9375rem] leading-7.5 text-muted">
               مغایرت ثبت‌شده برای سفارش{' '}
               <span dir="ltr" className="font-semibold text-ink">
                 {caseDetails.order.orderNumber}
