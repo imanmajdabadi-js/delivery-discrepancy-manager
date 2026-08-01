@@ -71,7 +71,7 @@ export function CaseTimeline({
                 </svg>
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-sm font-semibold text-ink">
                     {eventLabel}
                   </h3>

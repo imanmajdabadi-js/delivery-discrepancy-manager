@@ -20,14 +20,14 @@ export function OrderSearchForm({
   return (
     <form
       aria-busy={isSubmitting}
-      className="search-panel surface-enter rounded-3xl border border-line bg-surface p-5 shadow-[0_18px_55px_rgba(24,57,51,0.07)] sm:p-7"
+      className="search-panel surface-enter rounded-3xl border border-line bg-surface p-5 shadow-[0_18px_55px_rgba(24,57,51,0.07)] sm:p-6"
       noValidate
       onSubmit={onSubmit}
     >
       <div className="flex items-start gap-3.5">
         <span
           aria-hidden="true"
-          className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand"
+          className="grid size-10 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand"
         >
           <svg
             viewBox="0 0 24 24"
@@ -36,7 +36,7 @@ export function OrderSearchForm({
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="size-5.5"
+            className="size-5"
           >
             <circle cx="11" cy="11" r="6.5" />
             <path d="m16 16 4 4" />

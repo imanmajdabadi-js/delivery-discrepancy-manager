@@ -42,7 +42,7 @@ export function CaseDetailsSummary({
         >
           اطلاعات مشتری
         </h2>
-        <dl className="mt-3">
+        <dl className="mt-3 space-y-0 divide-y divide-line">
           <SummaryRow
             label="نام مشتری"
             value={caseDetails.order.customer.fullName}
@@ -67,7 +67,7 @@ export function CaseDetailsSummary({
         <h2 id="order-summary-title" className="text-sm font-semibold text-ink">
           اطلاعات سفارش
         </h2>
-        <dl className="mt-3">
+        <dl className="mt-3 space-y-0 divide-y divide-line">
           <SummaryRow
             label="شماره سفارش"
             value={caseDetails.order.orderNumber}

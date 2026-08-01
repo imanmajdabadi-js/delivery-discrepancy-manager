@@ -24,7 +24,7 @@ export function CaseListNotice({
   return (
     <section
       role={isError ? 'alert' : 'status'}
-      className="surface-enter empty-state-card mt-5 rounded-3xl border border-dashed border-line bg-surface/95 px-5 py-11 text-center shadow-[0_12px_36px_rgba(24,57,51,0.05)] sm:px-8 sm:py-13"
+      className="surface-enter empty-state-card mt-6 rounded-3xl border border-dashed border-line bg-surface/95 px-5 py-11 text-center shadow-[0_12px_36px_rgba(24,57,51,0.05)] sm:px-8 sm:py-13"
     >
       <span
         aria-hidden="true"

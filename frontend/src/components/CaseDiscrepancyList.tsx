@@ -39,7 +39,7 @@ export function CaseDiscrepancyList({
             مقدار گزارش‌شده در کنار مقدار تحویل هر قلم نمایش داده شده است.
           </p>
         </div>
-        <span className="shrink-0 rounded-full bg-brand-soft px-2.5 py-1 text-[0.75rem] font-semibold text-brand-strong">
+        <span className="shrink-0 rounded-lg bg-brand-soft px-2.5 py-1 text-[0.75rem] font-semibold text-brand-strong">
           {toPersianDigits(items.length)} ردیف
         </span>
       </div>
@@ -59,7 +59,7 @@ export function CaseDiscrepancyList({
                     {item.orderItem.productName}
                   </h3>
                   <span
-                    className={`rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold ${details.className}`}
+                    className={`rounded-lg px-2.5 py-1 text-[0.6875rem] font-semibold ${details.className}`}
                   >
                     {details.label}
                   </span>

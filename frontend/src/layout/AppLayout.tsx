@@ -41,7 +41,7 @@ export function AppLayout() {
             </span>
           </Link>
 
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1.5">
             {userRole === 'MANAGER' ? (
               <Link
                 to="/cases/review"

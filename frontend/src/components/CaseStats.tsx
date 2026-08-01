@@ -53,11 +53,11 @@ export function CaseStats() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`rounded-2xl border ${card.border} ${card.bg} p-4 shadow-[0_10px_25px_rgba(0,0,0,0.03)] backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-5`}
+          className={`rounded-2xl border ${card.border} ${card.bg} p-4 shadow-[0_10px_25px_rgba(0,0,0,0.03)] transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-5`}
         >
           <span className="block text-[0.8125rem] font-medium text-muted">
             {card.label}

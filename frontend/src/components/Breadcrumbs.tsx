@@ -16,7 +16,7 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className="flex">
-      <ol className="flex items-center gap-1.5 text-[0.8125rem] font-medium text-muted">
+      <ol className="flex items-center gap-2 text-[0.8125rem] font-medium text-muted">
         <li>
           <Link
             to="/"
@@ -26,7 +26,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           </Link>
         </li>
         {items.map((item, index) => (
-          <li key={index} className="flex items-center gap-1.5">
+          <li key={index} className="flex items-center gap-2">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"

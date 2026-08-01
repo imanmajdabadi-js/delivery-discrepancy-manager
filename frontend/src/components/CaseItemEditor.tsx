@@ -92,7 +92,7 @@ export function CaseItemEditor({
                 data-discrepancy-toggle
                 aria-pressed={isTypeSelected}
                 disabled={disabled}
-                className={`min-h-12 rounded-xl border px-3 py-2 text-right transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60 ${
+                className={`min-h-12 rounded-xl border px-3 py-2.5 text-right transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60 ${
                   isTypeSelected
                     ? details.selectedClassName
                     : 'border-line-strong bg-surface text-ink hover:border-brand-mild hover:bg-brand-soft/35'
@@ -142,7 +142,7 @@ export function CaseItemEditor({
                     value={quantities[type] ?? ''}
                     aria-invalid={Boolean(error || sumError)}
                     aria-describedby={descriptionIds || undefined}
-                    className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 pl-16 text-sm text-ink outline-none transition focus:border-brand focus:ring-3 focus:ring-brand-mild/55 disabled:bg-surface-soft disabled:text-subtle aria-invalid:border-danger aria-invalid:ring-danger-soft"
+                    className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 pl-16 text-[0.9375rem] text-ink outline-none transition focus:border-brand focus:ring-3 focus:ring-brand-mild/55 disabled:bg-surface-soft disabled:text-subtle aria-invalid:border-danger aria-invalid:ring-danger-soft"
                     placeholder="۰"
                     onChange={(event) =>
                       onQuantityChange(item.id, type, event.target.value)

@@ -6,7 +6,7 @@ export function CaseDetailsSkeleton() {
       className="mx-auto w-full max-w-6xl animate-pulse px-4 py-7 motion-reduce:animate-none sm:px-6 sm:py-10 lg:px-8"
     >
       <div className="h-5 w-32 rounded-full bg-line/70" />
-      <div className="mt-5 rounded-3xl border border-line bg-surface p-5 sm:p-7">
+      <div className="mt-5 rounded-3xl border border-line bg-surface p-5 sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="h-3.5 w-24 rounded-full bg-line" />

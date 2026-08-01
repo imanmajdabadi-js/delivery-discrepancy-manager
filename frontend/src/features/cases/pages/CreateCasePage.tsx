@@ -73,7 +73,7 @@ export function CreateCasePage() {
       <Breadcrumbs items={[{ label: 'ایجاد پرونده جدید' }]} />
 
       <header className="mt-5 max-w-3xl">
-        <span className="inline-flex rounded-full bg-accent-violet-soft px-3 py-1 text-[0.75rem] font-semibold text-accent-violet">
+        <span className="inline-flex rounded-lg bg-accent-violet-soft px-3 py-1 text-[0.75rem] font-semibold text-accent-violet">
           ایجاد پرونده جدید
         </span>
         <h1 className="mt-3 text-[1.625rem] leading-[1.55] font-bold text-ink sm:text-[1.875rem]">

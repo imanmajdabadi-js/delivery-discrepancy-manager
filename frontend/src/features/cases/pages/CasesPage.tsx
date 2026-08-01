@@ -65,7 +65,7 @@ export function CasesPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-9 sm:px-6 sm:py-12 lg:px-8">
+    <main className="mx-auto w-full max-w-6xl px-4 py-9 sm:px-6 sm:py-10 lg:px-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <header className="max-w-3xl">
           <p className="mb-2.5 text-[0.8125rem] font-semibold text-brand sm:text-sm">

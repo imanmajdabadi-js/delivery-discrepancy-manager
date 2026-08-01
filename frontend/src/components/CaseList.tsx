@@ -22,20 +22,20 @@ function CaseLinkIcon() {
 
 export function CaseList({ cases }: { cases: CaseListItem[] }) {
   return (
-    <section aria-label="فهرست پرونده‌ها" className="surface-enter mt-5">
+    <section aria-label="فهرست پرونده‌ها" className="surface-enter mt-6">
       <div className="space-y-3 lg:hidden">
         {cases.map((caseItem) => (
           <Link
             key={caseItem.id}
             to={`/cases/${caseItem.id}`}
-            className="group block rounded-2xl border border-line bg-surface p-4 shadow-[0_8px_26px_rgba(24,57,51,0.045)] transition hover:-translate-y-0.5 hover:border-brand-mild hover:shadow-[0_12px_32px_rgba(24,57,51,0.08)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:p-5"
+            className="group block rounded-2xl border border-line bg-surface p-5 shadow-[0_8px_26px_rgba(24,57,51,0.045)] transition hover:-translate-y-0.5 hover:border-brand-mild hover:shadow-[0_12px_32px_rgba(24,57,51,0.08)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-medium text-muted">شماره پرونده</p>
                 <p
                   dir="ltr"
-                  className="wrap-anywhere mt-1 text-right text-base font-bold text-ink"
+                  className="mt-1 text-right text-base font-bold text-ink"
                 >
                   {caseItem.caseNumber}
                 </p>
@@ -84,26 +84,26 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_10px_35px_rgba(24,57,51,0.05)] lg:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_35px_rgba(24,57,51,0.05)] lg:block">
         <table className="w-full table-fixed border-collapse text-right">
           <thead className="border-b border-line bg-surface-soft text-[0.8125rem] font-semibold text-muted">
             <tr>
-              <th scope="col" className="w-[16%] px-5 py-4">
+              <th scope="col" className="w-[16%] px-5 py-4 text-right">
                 شماره پرونده
               </th>
-              <th scope="col" className="w-[24%] px-5 py-4">
+              <th scope="col" className="w-[24%] px-5 py-4 text-right">
                 مشتری و سفارش
               </th>
-              <th scope="col" className="w-[13%] px-5 py-4">
+              <th scope="col" className="w-[13%] px-5 py-4 text-right">
                 تعداد اقلام
               </th>
-              <th scope="col" className="w-[15%] px-5 py-4">
+              <th scope="col" className="w-[15%] px-5 py-4 text-right">
                 وضعیت
               </th>
-              <th scope="col" className="w-[22%] px-5 py-4">
+              <th scope="col" className="w-[22%] px-5 py-4 text-right">
                 زمان ثبت
               </th>
-              <th scope="col" className="w-[10%] px-5 py-4">
+              <th scope="col" className="w-[10%] px-5 py-4 text-right">
                 <span className="sr-only">عملیات</span>
               </th>
             </tr>
@@ -112,7 +112,7 @@ export function CaseList({ cases }: { cases: CaseListItem[] }) {
             {cases.map((caseItem) => (
               <tr
                 key={caseItem.id}
-                className="transition hover:bg-brand-soft/20"
+                className="transition hover:bg-brand-soft/25"
               >
                 <td className="px-5 py-4">
                   <Link

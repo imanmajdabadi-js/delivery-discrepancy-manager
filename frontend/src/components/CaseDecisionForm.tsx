@@ -74,12 +74,12 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
     <section
       aria-labelledby="case-decision-form-title"
       aria-busy={decisionMutation.isPending}
-      className="rounded-3xl border border-line bg-surface p-5 shadow-[0_14px_42px_rgba(24,57,51,0.045)] sm:p-6"
+      className="rounded-3xl border border-line bg-surface p-6 shadow-[0_14px_42px_rgba(24,57,51,0.045)] sm:p-7"
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3.5">
         <span
           aria-hidden="true"
-          className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent-violet-soft text-accent-violet"
+          className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-violet-soft text-accent-violet"
         >
           <svg
             viewBox="0 0 24 24"
@@ -107,57 +107,59 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
         </div>
       </div>
 
-      <label className="mt-5 block" htmlFor="case-decision-explanation">
-        <span className="text-sm font-semibold text-ink">توضیح تصمیم</span>
-        <span aria-hidden="true" className="mr-1 text-xs text-danger">
-          الزامی
-        </span>
-      </label>
-      <textarea
-        ref={explanationRef}
-        id="case-decision-explanation"
-        value={explanation}
-        rows={4}
-        disabled={decisionMutation.isPending}
-        placeholder="دلیل تأیید یا رد پرونده را کوتاه و روشن بنویسید."
-        aria-invalid={validationError ? true : undefined}
-        aria-describedby={
-          validationError ? 'case-decision-validation-error' : undefined
-        }
-        className="mt-2 w-full resize-y rounded-2xl border border-line-strong bg-surface px-4 py-3 text-sm leading-7 text-ink outline-none transition placeholder:text-muted/75 focus:border-brand focus:ring-3 focus:ring-brand-soft disabled:cursor-wait disabled:bg-surface-soft"
-        onChange={(event) => handleExplanationChange(event.target.value)}
-      />
+      <div className="mt-6">
+        <label className="block" htmlFor="case-decision-explanation">
+          <span className="text-sm font-semibold text-ink">توضیح تصمیم</span>
+          <span aria-hidden="true" className="mr-1 text-xs text-danger">
+            الزامی
+          </span>
+        </label>
+        <textarea
+          ref={explanationRef}
+          id="case-decision-explanation"
+          value={explanation}
+          rows={4}
+          disabled={decisionMutation.isPending}
+          placeholder="دلیل تأیید یا رد پرونده را کوتاه و روشن بنویسید."
+          aria-invalid={validationError ? true : undefined}
+          aria-describedby={
+            validationError ? 'case-decision-validation-error' : undefined
+          }
+          className="mt-2 w-full resize-y rounded-2xl border border-line-strong bg-surface px-4 py-3 text-[0.9375rem] leading-7 text-ink outline-none transition placeholder:text-muted/75 focus:border-brand focus:ring-3 focus:ring-brand-soft disabled:cursor-wait disabled:bg-surface-soft"
+          onChange={(event) => handleExplanationChange(event.target.value)}
+        />
 
-      <div aria-live="polite" className="mt-2 min-h-6">
-        {successMessage && !decisionMutation.isError ? (
-          <p
-            className="wrap-anywhere text-sm leading-6 text-success-strong"
-            role="status"
-          >
-            {successMessage}
-          </p>
-        ) : validationError ? (
-          <p
-            id="case-decision-validation-error"
-            className="wrap-anywhere text-sm text-danger"
-          >
-            {validationError}
-          </p>
-        ) : requestError ? (
-          <p
-            role="alert"
-            className="wrap-anywhere text-sm leading-6 text-danger"
-          >
-            {requestError}
-          </p>
-        ) : (
-          <p className="text-xs leading-6 text-muted">
-            توضیح ثبت‌شده همراه پرونده و نام تصمیم‌گیرنده نگه‌داری می‌شود.
-          </p>
-        )}
+        <div aria-live="polite" className="mt-2.5 min-h-6">
+          {successMessage && !decisionMutation.isError ? (
+            <p
+              className="wrap-anywhere text-sm leading-6 text-success-strong"
+              role="status"
+            >
+              {successMessage}
+            </p>
+          ) : validationError ? (
+            <p
+              id="case-decision-validation-error"
+              className="wrap-anywhere text-sm text-danger"
+            >
+              {validationError}
+            </p>
+          ) : requestError ? (
+            <p
+              role="alert"
+              className="wrap-anywhere text-sm leading-6 text-danger"
+            >
+              {requestError}
+            </p>
+          ) : (
+            <p className="text-xs leading-6 text-muted">
+              توضیح ثبت‌شده همراه پرونده و نام تصمیم‌گیرنده نگه‌داری می‌شود.
+            </p>
+          )}
+        </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <button
           type="button"
           disabled={decisionMutation.isPending}

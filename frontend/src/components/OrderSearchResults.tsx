@@ -104,11 +104,11 @@ function OrderResultCard({
           </h3>
         </div>
         <span
-          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold ${status.className}`}
+          className={`inline-flex w-fit items-center gap-2 rounded-lg px-3 py-1.5 text-[0.8125rem] font-semibold tracking-wide ${status.className}`}
         >
           <span
             aria-hidden="true"
-            className="size-1.5 rounded-full bg-current"
+            className="size-2 rounded-full bg-current"
           />
           {status.label}
         </span>

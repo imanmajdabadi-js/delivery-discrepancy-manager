@@ -3,7 +3,7 @@ export function CaseListSkeleton() {
     <section
       aria-label="در حال دریافت فهرست پرونده‌ها"
       aria-busy="true"
-      className="surface-enter mt-5"
+      className="surface-enter mt-6"
     >
       <div className="space-y-3 lg:hidden">
         {Array.from({ length: 3 }, (_, index) => (
@@ -30,7 +30,7 @@ export function CaseListSkeleton() {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-3xl border border-line/70 bg-surface shadow-[0_14px_40px_rgba(24,57,51,0.05)] lg:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-line/70 bg-surface shadow-[0_14px_40px_rgba(24,57,51,0.05)] lg:block">
         <div className="h-14 border-b border-line bg-surface-soft" />
         {Array.from({ length: 4 }, (_, index) => (
           <div
