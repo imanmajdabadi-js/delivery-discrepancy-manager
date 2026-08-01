@@ -16,16 +16,19 @@ import { RolesGuard, Roles } from '../auth/roles.guard';
 export class CasesController {
   constructor(private readonly casesService: CasesService) {}
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
   findAll(@Query('query') query?: string, @Query('status') status?: string) {
     return this.casesService.findAll(query, status);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('stats')
   getStats() {
     return this.casesService.getStats();
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':caseId')
   findOne(@Param('caseId') caseId: string) {
     return this.casesService.findOne(caseId);

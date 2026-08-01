@@ -49,12 +49,12 @@ async function verify() {
   assert(processingOrder, 'The processing development order is missing.');
   assert.equal(processingOrder.status, OrderStatus.PROCESSING);
 
-  const emptyDeliveredOrder = orders.find(
+  const cleanDeliveredOrder = orders.find(
     (order) => order.orderNumber === 'ORD-1405-00127',
   );
-  assert(emptyDeliveredOrder, 'The empty delivered order is missing.');
-  assert.equal(emptyDeliveredOrder.status, OrderStatus.DELIVERED);
-  assert.equal(emptyDeliveredOrder.items.length, 0);
+  assert(cleanDeliveredOrder, 'The clean delivered order is missing.');
+  assert.equal(cleanDeliveredOrder.status, OrderStatus.DELIVERED);
+  assert.equal(cleanDeliveredOrder.items.length, 3);
 
   await assert.rejects(
     prisma.$queryRawUnsafe(`SELECT 'INVALID_STATUS'::"OrderStatus"`),

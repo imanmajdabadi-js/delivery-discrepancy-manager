@@ -22,12 +22,15 @@ const seedIds = {
   customerKarimi: '22222222-2222-4222-8222-222222222222',
   deliveredOrder: '31111111-1111-4111-8111-111111111111',
   processingOrder: '32222222-2222-4222-8222-222222222222',
-  emptyDeliveredOrder: '33333333-3333-4333-8333-333333333333',
+  cleanDeliveredOrder: '33333333-3333-4333-8333-333333333333',
   cancelledOrder: '34444444-4444-4444-8444-444444444444',
   riceItem: '41111111-1111-4111-8111-111111111111',
   oilItem: '42222222-2222-4222-8222-222222222222',
   detergentItem: '43333333-3333-4333-8333-333333333333',
   processingItem: '44444444-4444-4444-8444-444444444444',
+  cleanRiceItem: '55111111-1111-4111-8111-111111111111',
+  cleanOilItem: '55222222-2222-4222-8222-222222222222',
+  cleanDetergentItem: '55333333-3333-4333-8333-333333333333',
 } as const;
 
 async function seed() {
@@ -39,7 +42,7 @@ async function seed() {
         email: 'operator@local.test',
         role: OperatorRole.OPERATOR,
         passwordHash:
-          '32f636f8ede60bf2f169bc4c0255cfc3:87a252d54ddd8a4f1ee89fb7ff6b5325262013c600feb5a7d97cc30e09c20a892eeb80a8709238d079548663e58c1d1c76adc4d0fc77b59ecbdb53484b621b6d',
+          'd63fc9c28fff5bcac906b9f18e5427e6:483a7aab3f5f6bb2d15152a5d63ec72e4774815e2b7a7768c602667c6eb53104deb4aa65899aebf19cf8cdf99a054feed0b92c8752991205c3667ae881f2c07d',
       },
       create: {
         id: seedIds.operator,
@@ -47,19 +50,25 @@ async function seed() {
         email: 'operator@local.test',
         role: OperatorRole.OPERATOR,
         passwordHash:
-          '32f636f8ede60bf2f169bc4c0255cfc3:87a252d54ddd8a4f1ee89fb7ff6b5325262013c600feb5a7d97cc30e09c20a892eeb80a8709238d079548663e58c1d1c76adc4d0fc77b59ecbdb53484b621b6d',
+          'd63fc9c28fff5bcac906b9f18e5427e6:483a7aab3f5f6bb2d15152a5d63ec72e4774815e2b7a7768c602667c6eb53104deb4aa65899aebf19cf8cdf99a054feed0b92c8752991205c3667ae881f2c07d',
       },
     });
 
     await transaction.operator.upsert({
       where: { email: 'manager@local.test' },
-      update: {},
+      update: {
+        fullName: 'مدیر عملیات توسعه',
+        email: 'manager@local.test',
+        role: OperatorRole.MANAGER,
+        passwordHash:
+          'd63fc9c28fff5bcac906b9f18e5427e6:483a7aab3f5f6bb2d15152a5d63ec72e4774815e2b7a7768c602667c6eb53104deb4aa65899aebf19cf8cdf99a054feed0b92c8752991205c3667ae881f2c07d',
+      },
       create: {
         fullName: 'مدیر عملیات توسعه',
         email: 'manager@local.test',
         role: OperatorRole.MANAGER,
         passwordHash:
-          '9385919b5e3c1b0cc94d28e545dff3a2:ad8ab8b996cafed60187c5285fe96fd607e62762551044dc21a7a56d88f9940c1b6ff6148375e72d45178e3f1bc7518d9bed9f63a4fd843b1567d48b8d21c16a',
+          'd63fc9c28fff5bcac906b9f18e5427e6:483a7aab3f5f6bb2d15152a5d63ec72e4774815e2b7a7768c602667c6eb53104deb4aa65899aebf19cf8cdf99a054feed0b92c8752991205c3667ae881f2c07d',
       },
     });
 
@@ -127,7 +136,7 @@ async function seed() {
     });
 
     await transaction.order.upsert({
-      where: { id: seedIds.emptyDeliveredOrder },
+      where: { id: seedIds.cleanDeliveredOrder },
       update: {
         orderNumber: 'ORD-1405-00127',
         customerId: seedIds.customerRahimi,
@@ -135,7 +144,7 @@ async function seed() {
         deliveredAt: new Date('2026-07-14T11:15:00.000Z'),
       },
       create: {
-        id: seedIds.emptyDeliveredOrder,
+        id: seedIds.cleanDeliveredOrder,
         orderNumber: 'ORD-1405-00127',
         customerId: seedIds.customerRahimi,
         status: OrderStatus.DELIVERED,
@@ -232,6 +241,63 @@ async function seed() {
         productName: 'چای سیاه ممتاز پانصد گرمی',
         unit: 'بسته',
         deliveredQuantity: 4,
+      },
+    });
+
+    await transaction.orderItem.upsert({
+      where: { id: seedIds.cleanRiceItem },
+      update: {
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-RICE-10',
+        productName: 'برنج ایرانی هاشمی ممتاز ده کیلویی',
+        unit: 'کیسه',
+        deliveredQuantity: 6,
+      },
+      create: {
+        id: seedIds.cleanRiceItem,
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-RICE-10',
+        productName: 'برنج ایرانی هاشمی ممتاز ده کیلویی',
+        unit: 'کیسه',
+        deliveredQuantity: 6,
+      },
+    });
+
+    await transaction.orderItem.upsert({
+      where: { id: seedIds.cleanOilItem },
+      update: {
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-OIL-810',
+        productName: 'روغن مایع آفتابگردان ۸۱۰ گرمی',
+        unit: 'بطری',
+        deliveredQuantity: 12,
+      },
+      create: {
+        id: seedIds.cleanOilItem,
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-OIL-810',
+        productName: 'روغن مایع آفتابگردان ۸۱۰ گرمی',
+        unit: 'بطری',
+        deliveredQuantity: 12,
+      },
+    });
+
+    await transaction.orderItem.upsert({
+      where: { id: seedIds.cleanDetergentItem },
+      update: {
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-WASH-25',
+        productName: 'مایع لباس‌شویی مخصوص لباس‌های رنگی دو و نیم لیتری',
+        unit: 'بطری',
+        deliveredQuantity: 8,
+      },
+      create: {
+        id: seedIds.cleanDetergentItem,
+        orderId: seedIds.cleanDeliveredOrder,
+        sku: 'SKU-WASH-25',
+        productName: 'مایع لباس‌شویی مخصوص لباس‌های رنگی دو و نیم لیتری',
+        unit: 'بطری',
+        deliveredQuantity: 8,
       },
     });
 

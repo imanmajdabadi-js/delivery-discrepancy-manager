@@ -32,6 +32,11 @@ export class ApiError extends Error {
 }
 
 async function parseErrorResponse(response: Response, fallbackMessage: string) {
+  if (response.status === 401) {
+    localStorage.removeItem('auth_token');
+    window.location.href = '/login';
+  }
+
   const body: unknown = await response.json().catch(() => null);
   const payload =
     typeof body === 'object' && body !== null

@@ -1,7 +1,10 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { validateCaseItems } from '../features/cases/utils/validation';
 import { useCreateCase } from '../hooks/useCreateCase';
+import { ApiError } from '../services';
 import type {
+  CaseConflict,
   CaseDiscrepancyType,
   CreateCaseResponse,
   OrderSearchResult,
@@ -34,6 +37,7 @@ export function CaseItemsForm({
   const [drafts, setDrafts] = useState<ItemDrafts>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [conflicts, setConflicts] = useState<CaseConflict[] | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const createCaseMutation = useCreateCase();
 
@@ -55,6 +59,7 @@ export function CaseItemsForm({
   function resetFeedback() {
     setErrors({});
     setSubmitError(null);
+    setConflicts(null);
     createCaseMutation.reset();
   }
 
@@ -139,7 +144,10 @@ export function CaseItemsForm({
       });
       onCreated(createdCase);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof ApiError && error.payload?.conflicts) {
+        setConflicts(error.payload.conflicts);
+        setSubmitError(error.message);
+      } else if (error instanceof Error) {
         setSubmitError(error.message);
       } else {
         setSubmitError('ثبت پرونده با خطا روبه‌رو شد. دوباره تلاش کنید.');
@@ -236,12 +244,26 @@ export function CaseItemsForm({
             ) : null}
 
             {submitError ? (
-              <p
+              <div
                 role="alert"
                 className="wrap-anywhere mt-3 text-[0.75rem] leading-6 text-danger-strong"
               >
-                {submitError}
-              </p>
+                <p>{submitError}</p>
+                {conflicts && conflicts.length > 0 ? (
+                  <ul className="mt-2 list-disc space-y-1 pr-4">
+                    {conflicts.map((conflict) => (
+                      <li key={`${conflict.orderItemId}:${conflict.type}`}>
+                        <Link
+                          to={`/cases?query=${conflict.caseNumber}`}
+                          className="font-semibold underline decoration-danger/30 underline-offset-2 hover:decoration-danger"
+                        >
+                          پرونده {conflict.caseNumber}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             ) : null}
 
             <button
