@@ -7,6 +7,63 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
 import * as crypto from 'crypto';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+interface ValidatedLoginInput {
+  email: string;
+  password: string;
+}
+
+interface ValidatedRegisterInput extends ValidatedLoginInput {
+  fullName: string;
+}
+
+function validateLoginInput(body: unknown): ValidatedLoginInput {
+  if (!isRecord(body)) {
+    throw new BadRequestException('اطلاعات ورود معتبر نیست.');
+  }
+
+  const { email, password } = body;
+
+  if (!isNonEmptyString(email)) {
+    throw new BadRequestException('ایمیل الزامی است.');
+  }
+
+  if (!emailPattern.test(email.trim())) {
+    throw new BadRequestException('فرمت ایمیل معتبر نیست.');
+  }
+
+  if (!isNonEmptyString(password)) {
+    throw new BadRequestException('رمز عبور الزامی است.');
+  }
+
+  return { email: email.trim(), password };
+}
+
+function validateRegisterInput(body: unknown): ValidatedRegisterInput {
+  const base = validateLoginInput(body);
+
+  if (!isRecord(body)) {
+    throw new BadRequestException('اطلاعات ورود معتبر نیست.');
+  }
+
+  const { fullName } = body;
+
+  if (!isNonEmptyString(fullName)) {
+    throw new BadRequestException('نام کامل الزامی است.');
+  }
+
+  return { ...base, fullName: fullName.trim() };
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,7 +71,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(dto: { email: string; password: string; fullName: string }) {
+  async register(body: unknown) {
+    const dto = validateRegisterInput(body);
+
     const existing = await this.prisma.operator.findUnique({
       where: { email: dto.email },
     });
@@ -49,7 +108,9 @@ export class AuthService {
     };
   }
 
-  async login(dto: { email: string; password: string }) {
+  async login(body: unknown) {
+    const dto = validateLoginInput(body);
+
     const operator = await this.prisma.operator.findUnique({
       where: { email: dto.email },
     });
