@@ -28,9 +28,12 @@ An internal case-management system for tracing, reviewing, and resolving shortag
 git clone <repository-url>
 cd delivery-discrepancy-manager
 pnpm install
+pnpm setup:local
 pnpm db:setup
 pnpm dev
 ```
+
+> **Note:** `pnpm setup:local` creates `backend/.env` from `.env.example` with a randomly generated `JWT_SECRET` if it doesn't already exist. An existing `.env` is never overwritten.
 
 | Service | URL |
 |---|---|
@@ -432,6 +435,7 @@ This is a portfolio project. These are the deliberate gaps:
 ## Available Commands
 
 ```bash
+pnpm setup:local       # Create backend/.env from .env.example if missing
 pnpm db:start          # Start PostgreSQL
 pnpm db:stop           # Stop PostgreSQL
 pnpm db:seed           # Seed development data
