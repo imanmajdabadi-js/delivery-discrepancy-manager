@@ -74,6 +74,22 @@ export interface SubmitCaseDecisionResponse {
   };
 }
 
+export interface ClaimCaseResponse {
+  id: string;
+  caseNumber: string;
+  status: 'SUBMITTED';
+  assigneeId: string;
+  assignedAt: string;
+}
+
+export interface ReleaseCaseResponse {
+  id: string;
+  caseNumber: string;
+  status: 'SUBMITTED';
+  assigneeId: null;
+  assignedAt: null;
+}
+
 export interface CaseActor {
   id: string;
   fullName: string;
@@ -83,6 +99,9 @@ export interface CaseDetailsResponse {
   id: string;
   caseNumber: string;
   status: CaseStatus;
+  assigneeId: string | null;
+  assignedAt: string | null;
+  assignee: CaseActor | null;
   createdAt: string;
   updatedAt: string;
   createdBy: CaseActor;

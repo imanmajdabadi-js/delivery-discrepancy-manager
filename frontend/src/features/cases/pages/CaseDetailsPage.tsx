@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Breadcrumbs } from '../../../components/Breadcrumbs';
+import { CaseAssignmentControls } from '../../../components/CaseAssignmentControls';
 import { CaseDecisionSummary } from '../../../components/CaseDecisionSummary';
 import { CaseDecisionForm } from '../../../components/CaseDecisionForm';
 import { CaseDetailsNotice } from '../../../components/CaseDetailsNotice';
@@ -91,6 +92,8 @@ export function CaseDetailsPage() {
           </div>
         </dl>
       </header>
+
+      <CaseAssignmentControls caseDetails={caseDetails} />
 
       <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_19rem]">
         <div className="space-y-5">

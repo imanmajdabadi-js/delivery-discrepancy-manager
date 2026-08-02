@@ -80,3 +80,24 @@ export function getUserRole(): string | null {
     return null;
   }
 }
+
+export function getCurrentUserId(): string | null {
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    return null;
+  }
+
+  const segments = token.split('.');
+
+  if (segments.length < 3) {
+    return null;
+  }
+
+  try {
+    const claims = JSON.parse(decodeBase64Url(segments[1])) as JwtPayload;
+    return claims.sub ?? null;
+  } catch {
+    return null;
+  }
+}

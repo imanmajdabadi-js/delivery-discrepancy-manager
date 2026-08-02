@@ -4,9 +4,11 @@ import type {
   CaseListResponse,
   CaseStatsResponse,
   CaseStatus,
+  ClaimCaseResponse,
   CreateCaseRequest,
   CreateCaseResponse,
   OrderSearchResponse,
+  ReleaseCaseResponse,
   SubmitCaseDecisionRequest,
   SubmitCaseDecisionResponse,
 } from '../types';
@@ -111,6 +113,38 @@ export async function getCaseDetails(caseId: string, signal: AbortSignal) {
   }
 
   return (await response.json()) as CaseDetailsResponse;
+}
+
+export async function claimCase(caseId: string) {
+  const response = await fetch(`${apiBaseUrl}/cases/${caseId}/claim`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'اختصاص پرونده با خطا روبه‌رو شد. دوباره تلاش کنید.',
+    );
+  }
+
+  return (await response.json()) as ClaimCaseResponse;
+}
+
+export async function releaseCase(caseId: string) {
+  const response = await fetch(`${apiBaseUrl}/cases/${caseId}/release`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'آزادسازی پرونده با خطا روبه‌رو شد. دوباره تلاش کنید.',
+    );
+  }
+
+  return (await response.json()) as ReleaseCaseResponse;
 }
 
 export async function submitCaseDecision(
