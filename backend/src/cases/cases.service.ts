@@ -32,7 +32,7 @@ import {
 interface OpenConflict {
   orderItemId: string;
   type: DiscrepancyType;
-  case: { caseNumber: string };
+  case: { id: string; caseNumber: string };
 }
 
 function isPrismaErrorWithCode(error: unknown, codes: string[]) {
@@ -683,7 +683,7 @@ export class CasesService {
 
           const conflicts = await transaction.openDiscrepancy.findMany({
             where: { OR: this.buildConflictConditions(input) },
-            include: { case: { select: { caseNumber: true } } },
+            include: { case: { select: { id: true, caseNumber: true } } },
           });
 
           if (conflicts.length > 0) {
@@ -753,10 +753,10 @@ export class CasesService {
       }
 
       if (isPrismaErrorWithCode(error, ['P2002', 'P2034'])) {
-        const conflicts = await this.prisma.openDiscrepancy.findMany({
-          where: { OR: this.buildConflictConditions(input) },
-          include: { case: { select: { caseNumber: true } } },
-        });
+      const conflicts = await this.prisma.openDiscrepancy.findMany({
+        where: { OR: this.buildConflictConditions(input) },
+        include: { case: { select: { id: true, caseNumber: true } } },
+      });
 
         if (conflicts.length > 0) {
           this.throwOpenConflict(conflicts);
@@ -797,6 +797,7 @@ export class CasesService {
       conflicts: conflicts.map((conflict) => ({
         orderItemId: conflict.orderItemId,
         type: conflict.type,
+        caseId: conflict.case.id,
         caseNumber: conflict.case.caseNumber,
       })),
     });

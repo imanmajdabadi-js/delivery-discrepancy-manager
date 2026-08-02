@@ -172,6 +172,7 @@ export interface CaseValidationIssue {
 export interface CaseConflict {
   orderItemId: string;
   type: CaseDiscrepancyType;
+  caseId: string;
   caseNumber: string;
 }
 

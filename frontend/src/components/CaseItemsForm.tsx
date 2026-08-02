@@ -254,7 +254,7 @@ export function CaseItemsForm({
                     {conflicts.map((conflict) => (
                       <li key={`${conflict.orderItemId}:${conflict.type}`}>
                         <Link
-                          to={`/cases?query=${conflict.caseNumber}`}
+                          to={`/cases/${conflict.caseId}`}
                           className="font-semibold underline decoration-danger/30 underline-offset-2 hover:decoration-danger"
                         >
                           پرونده {conflict.caseNumber}
