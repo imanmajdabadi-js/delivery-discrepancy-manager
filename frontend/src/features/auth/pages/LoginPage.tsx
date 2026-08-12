@@ -1,7 +1,6 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiBaseUrl } from '../../../services';
+import { ApiError, login } from '../../../services';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,14 +15,15 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${apiBaseUrl}/auth/login`, { email, password });
-      localStorage.setItem('auth_token', res.data.access_token);
+      const response = await login(email, password);
+      localStorage.setItem('auth_token', response.access_token);
       navigate('/');
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-          'خطا در ورود به سیستم. لطفاً اطلاعات را بررسی کنید.',
-      );
+    } catch (err) {
+      const errorMessage =
+        err instanceof ApiError
+          ? err.message
+          : 'خطا در ورود به سیستم. لطفاً اطلاعات را بررسی کنید.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ export const LoginPage: React.FC = () => {
             سامانه مدیریت مغایرت لجستیک
           </h2>
           <p className="mt-2 text-[0.9375rem] leading-7.5 text-muted sm:text-base sm:leading-8">
-            ورود اپراتور به سیستم
+            ورود به سیستم
           </p>
         </div>
 
@@ -106,7 +106,7 @@ export const LoginPage: React.FC = () => {
                 to="/register"
                 className="font-medium text-brand transition hover:text-brand-strong focus-visible:rounded-sm focus-visible:outline-3 focus-visible:outline-brand"
               >
-                ثبت‌نام اپراتور جدید
+                ثبت‌نام کاربر جدید
               </Link>
             </p>
           </div>

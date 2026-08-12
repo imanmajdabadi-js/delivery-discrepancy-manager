@@ -1,16 +1,17 @@
 import type {
-  ApiErrorPayload,
-  CaseDetailsResponse,
-  CaseListResponse,
-  CaseStatsResponse,
-  CaseStatus,
-  ClaimCaseResponse,
-  CreateCaseRequest,
-  CreateCaseResponse,
-  OrderSearchResponse,
-  ReleaseCaseResponse,
-  SubmitCaseDecisionRequest,
-  SubmitCaseDecisionResponse,
+    ApiErrorPayload,
+    CaseDetailsResponse,
+    CaseListResponse,
+    CaseStatsResponse,
+    CaseStatus,
+    ClaimCaseResponse,
+    CreateCaseRequest,
+    CreateCaseResponse,
+    LoginResponse,
+    OrderSearchResponse,
+    ReleaseCaseResponse,
+    SubmitCaseDecisionRequest,
+    SubmitCaseDecisionResponse,
 } from '../types';
 
 export const apiBaseUrl = (
@@ -63,6 +64,23 @@ function getAuthHeaders(): HeadersInit {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   };
+}
+
+export async function login(email: string, password: string) {
+  const response = await fetch(`${apiBaseUrl}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    throw await parseErrorResponse(
+      response,
+      'خطا در ورود به سیستم. لطفاً اطلاعات را بررسی کنید.',
+    );
+  }
+
+  return (await response.json()) as LoginResponse;
 }
 
 export async function searchOrders(query: string, signal: AbortSignal) {

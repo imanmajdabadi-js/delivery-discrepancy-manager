@@ -1,3 +1,7 @@
+export interface LoginResponse {
+  access_token: string;
+}
+
 export type OrderStatus = 'PROCESSING' | 'DELIVERED' | 'CANCELLED';
 
 export type OrderEligibilityReason = 'NOT_DELIVERED' | 'NO_ITEMS';
