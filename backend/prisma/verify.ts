@@ -2,7 +2,12 @@ import 'dotenv/config';
 import assert from 'node:assert/strict';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { OrderStatus, PrismaClient } from '../src/generated/prisma/client';
+import {
+  CaseStatus,
+  OperatorRole,
+  OrderStatus,
+  PrismaClient,
+} from '../src/generated/prisma/client';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -18,6 +23,21 @@ async function verify() {
     where: { email: 'operator@local.test' },
   });
   assert(operator, 'The fixed development operator is missing.');
+  assert.equal(
+    operator.role,
+    OperatorRole.OPERATOR,
+    'The development operator must have the OPERATOR role.',
+  );
+
+  const manager = await prisma.operator.findUnique({
+    where: { email: 'manager@local.test' },
+  });
+  assert(manager, 'The fixed development manager is missing.');
+  assert.equal(
+    manager.role,
+    OperatorRole.MANAGER,
+    'The development manager must have the MANAGER role.',
+  );
 
   const orders = await prisma.order.findMany({
     where: {
@@ -55,6 +75,39 @@ async function verify() {
   assert(cleanDeliveredOrder, 'The clean delivered order is missing.');
   assert.equal(cleanDeliveredOrder.status, OrderStatus.DELIVERED);
   assert.equal(cleanDeliveredOrder.items.length, 3);
+
+  const cleanOrderItemIds = cleanDeliveredOrder.items.map((item) => item.id);
+  const cleanOpenDiscrepancies = await prisma.openDiscrepancy.findMany({
+    where: { orderItemId: { in: cleanOrderItemIds } },
+  });
+  assert.equal(
+    cleanOpenDiscrepancies.length,
+    0,
+    'The clean demo order must not have any open discrepancies.',
+  );
+
+  const sampleCase = await prisma.discrepancyCase.findUnique({
+    where: { caseNumber: 'CASE-1405-001' },
+    include: { items: true, openDiscrepancies: true, history: true },
+  });
+  assert(sampleCase, 'The sample demo case (CASE-1405-001) is missing.');
+  assert.equal(
+    sampleCase.status,
+    CaseStatus.SUBMITTED,
+    'The sample demo case must be in SUBMITTED status.',
+  );
+  assert.equal(
+    sampleCase.assigneeId,
+    null,
+    'The sample demo case must have no assignee.',
+  );
+  assert.equal(sampleCase.items.length, 1, 'Expected one discrepancy item.');
+  assert.equal(
+    sampleCase.openDiscrepancies.length,
+    1,
+    'Expected one open discrepancy.',
+  );
+  assert.equal(sampleCase.history.length, 1, 'Expected one history event.');
 
   await assert.rejects(
     prisma.$queryRawUnsafe(`SELECT 'INVALID_STATUS'::"OrderStatus"`),

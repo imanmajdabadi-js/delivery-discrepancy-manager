@@ -301,48 +301,79 @@ async function seed() {
       },
     });
 
-    const sampleCaseId = '51111111-1111-4111-8111-111111111111';
-    const existingCase = await transaction.discrepancyCase.findUnique({
-      where: { id: sampleCaseId },
+    const deliveredOrderItemIds = [
+      seedIds.riceItem,
+      seedIds.oilItem,
+      seedIds.detergentItem,
+    ];
+    const cleanOrderItemIds = [
+      seedIds.cleanRiceItem,
+      seedIds.cleanOilItem,
+      seedIds.cleanDetergentItem,
+    ];
+
+    const allDemoOrderItemIds = [...deliveredOrderItemIds, ...cleanOrderItemIds];
+
+    const demoOrderIds = [
+      seedIds.deliveredOrder,
+      seedIds.cleanDeliveredOrder,
+    ];
+
+    const demoCases = await transaction.discrepancyCase.findMany({
+      where: {
+        orderId: { in: demoOrderIds },
+      },
+      select: { id: true },
     });
 
-    if (!existingCase) {
-      const discrepancyCase = await transaction.discrepancyCase.create({
-        data: {
-          id: sampleCaseId,
-          caseNumber: 'CASE-1405-001',
-          orderId: seedIds.deliveredOrder,
-          status: 'SUBMITTED',
-          createdById: seedIds.operator,
-          items: {
-            create: [
-              {
-                orderItemId: seedIds.riceItem,
-                type: 'SHORTAGE',
-                quantity: 2,
-              },
-            ],
-          },
-          openDiscrepancies: {
-            create: [
-              {
-                orderItemId: seedIds.riceItem,
-                type: 'SHORTAGE',
-              },
-            ],
-          },
-          history: {
-            create: [
-              {
-                eventType: 'CREATED',
-                resultingStatus: 'SUBMITTED',
-                performedById: seedIds.operator,
-              },
-            ],
-          },
-        },
+    if (demoCases.length > 0) {
+      const caseIds = demoCases.map((c) => c.id);
+      await transaction.caseHistory.deleteMany({ where: { caseId: { in: caseIds } } });
+      await transaction.caseDecision.deleteMany({ where: { caseId: { in: caseIds } } });
+      await transaction.discrepancyItem.deleteMany({ where: { caseId: { in: caseIds } } });
+      await transaction.openDiscrepancy.deleteMany({
+        where: { orderItemId: { in: allDemoOrderItemIds } },
       });
+      await transaction.discrepancyCase.deleteMany({ where: { id: { in: caseIds } } });
     }
+
+    const sampleCaseId = '51111111-1111-4111-8111-111111111111';
+
+    await transaction.discrepancyCase.create({
+      data: {
+        id: sampleCaseId,
+        caseNumber: 'CASE-1405-001',
+        orderId: seedIds.deliveredOrder,
+        status: 'SUBMITTED',
+        createdById: seedIds.operator,
+        items: {
+          create: [
+            {
+              orderItemId: seedIds.riceItem,
+              type: 'SHORTAGE',
+              quantity: 2,
+            },
+          ],
+        },
+        openDiscrepancies: {
+          create: [
+            {
+              orderItemId: seedIds.riceItem,
+              type: 'SHORTAGE',
+            },
+          ],
+        },
+        history: {
+          create: [
+            {
+              eventType: 'CREATED',
+              resultingStatus: 'SUBMITTED',
+              performedById: seedIds.operator,
+            },
+          ],
+        },
+      },
+    });
   });
 }
 
