@@ -1,4 +1,10 @@
-import { readFileSync, writeFileSync, existsSync, unlinkSync, renameSync } from 'fs';
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  unlinkSync,
+  renameSync,
+} from 'fs';
 import { join } from 'path';
 import { randomBytes } from 'crypto';
 
@@ -17,7 +23,7 @@ function validateExample(content) {
     error('.env.example is missing DATABASE_URL.');
   }
 
-  const jwtSecretMatches = content.match(/^JWT_SECRET=.*$/mg);
+  const jwtSecretMatches = content.match(/^JWT_SECRET=.*$/gm);
   if (!jwtSecretMatches) {
     error('.env.example is missing JWT_SECRET.');
   }
@@ -26,7 +32,9 @@ function validateExample(content) {
     error('.env.example contains multiple JWT_SECRET entries.');
   }
 
-  const databaseUrlLine = content.split('\n').find((line) => line.startsWith('DATABASE_URL='));
+  const databaseUrlLine = content
+    .split('\n')
+    .find((line) => line.startsWith('DATABASE_URL='));
   if (!databaseUrlLine || databaseUrlLine.split('=')[1]?.trim() === '') {
     error('.env.example contains an empty DATABASE_URL.');
   }
@@ -53,13 +61,20 @@ function validateExistingEnv(content) {
     const value = env[key];
 
     if (typeof value !== 'string' || value.trim() === '') {
-      error(`backend/.env is missing or contains an empty required variable: ${key}. Delete the file and run setup again.`);
+      error(
+        `backend/.env is missing or contains an empty required variable: ${key}. Delete the file and run setup again.`,
+      );
     }
   }
 
   const jwtSecret = env.JWT_SECRET;
-  if (typeof jwtSecret !== 'string' || jwtSecret.length < JWT_SECRET_MIN_LENGTH) {
-    error(`backend/.env contains a JWT_SECRET shorter than ${JWT_SECRET_MIN_LENGTH} characters. Delete the file and run setup again.`);
+  if (
+    typeof jwtSecret !== 'string' ||
+    jwtSecret.length < JWT_SECRET_MIN_LENGTH
+  ) {
+    error(
+      `backend/.env contains a JWT_SECRET shorter than ${JWT_SECRET_MIN_LENGTH} characters. Delete the file and run setup again.`,
+    );
   }
 }
 
@@ -70,13 +85,19 @@ function bootstrap() {
   const tempPath = join(backendDir, '.env.tmp');
 
   if (existsSync(tempPath)) {
-    try { unlinkSync(tempPath); } catch { /* ignore */ }
+    try {
+      unlinkSync(tempPath);
+    } catch {
+      /* ignore */
+    }
   }
 
   if (existsSync(envPath)) {
     const content = readFileSync(envPath, 'utf8');
     validateExistingEnv(content);
-    console.log('backend/.env already exists and is valid, skipping bootstrap.');
+    console.log(
+      'backend/.env already exists and is valid, skipping bootstrap.',
+    );
     process.exit(0);
   }
 
@@ -104,7 +125,11 @@ function bootstrap() {
     renameSync(tempPath, envPath);
   } catch (err) {
     if (existsSync(tempPath)) {
-      try { unlinkSync(tempPath); } catch { /* ignore cleanup failure */ }
+      try {
+        unlinkSync(tempPath);
+      } catch {
+        /* ignore cleanup failure */
+      }
     }
     error(`Failed to write backend/.env: ${err.message}`);
   }

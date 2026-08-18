@@ -312,12 +312,12 @@ async function seed() {
       seedIds.cleanDetergentItem,
     ];
 
-    const allDemoOrderItemIds = [...deliveredOrderItemIds, ...cleanOrderItemIds];
-
-    const demoOrderIds = [
-      seedIds.deliveredOrder,
-      seedIds.cleanDeliveredOrder,
+    const allDemoOrderItemIds = [
+      ...deliveredOrderItemIds,
+      ...cleanOrderItemIds,
     ];
+
+    const demoOrderIds = [seedIds.deliveredOrder, seedIds.cleanDeliveredOrder];
 
     const demoCases = await transaction.discrepancyCase.findMany({
       where: {
@@ -328,13 +328,21 @@ async function seed() {
 
     if (demoCases.length > 0) {
       const caseIds = demoCases.map((c) => c.id);
-      await transaction.caseHistory.deleteMany({ where: { caseId: { in: caseIds } } });
-      await transaction.caseDecision.deleteMany({ where: { caseId: { in: caseIds } } });
-      await transaction.discrepancyItem.deleteMany({ where: { caseId: { in: caseIds } } });
+      await transaction.caseHistory.deleteMany({
+        where: { caseId: { in: caseIds } },
+      });
+      await transaction.caseDecision.deleteMany({
+        where: { caseId: { in: caseIds } },
+      });
+      await transaction.discrepancyItem.deleteMany({
+        where: { caseId: { in: caseIds } },
+      });
       await transaction.openDiscrepancy.deleteMany({
         where: { orderItemId: { in: allDemoOrderItemIds } },
       });
-      await transaction.discrepancyCase.deleteMany({ where: { id: { in: caseIds } } });
+      await transaction.discrepancyCase.deleteMany({
+        where: { id: { in: caseIds } },
+      });
     }
 
     const sampleCaseId = '51111111-1111-4111-8111-111111111111';
