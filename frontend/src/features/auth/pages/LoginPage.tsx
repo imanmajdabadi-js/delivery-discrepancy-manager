@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ApiError, login } from '../../../services';
 
 export const LoginPage: React.FC = () => {
@@ -99,17 +99,9 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted">
-              حساب کاربری ندارید؟{' '}
-              <Link
-                to="/register"
-                className="font-medium text-brand transition hover:text-brand-strong focus-visible:rounded-sm focus-visible:outline-3 focus-visible:outline-brand"
-              >
-                ثبت‌نام کاربر جدید
-              </Link>
-            </p>
-          </div>
+          <p className="mt-6 border-t border-line pt-5 text-center text-sm leading-7 text-muted">
+            ورود فقط با حساب فعال سازمانی امکان‌پذیر است.
+          </p>
         </div>
       </div>
     </div>

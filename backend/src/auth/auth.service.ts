@@ -22,10 +22,6 @@ interface ValidatedLoginInput {
   password: string;
 }
 
-interface ValidatedRegisterInput extends ValidatedLoginInput {
-  fullName: string;
-}
-
 function validateLoginInput(body: unknown): ValidatedLoginInput {
   if (!isRecord(body)) {
     throw new BadRequestException('اطلاعات ورود معتبر نیست.');
@@ -45,23 +41,11 @@ function validateLoginInput(body: unknown): ValidatedLoginInput {
     throw new BadRequestException('رمز عبور الزامی است.');
   }
 
+  if (password.length < 8 || password.length > 72) {
+    throw new BadRequestException('رمز عبور باید بین ۸ تا ۷۲ نویسه باشد.');
+  }
+
   return { email: email.trim(), password };
-}
-
-function validateRegisterInput(body: unknown): ValidatedRegisterInput {
-  const base = validateLoginInput(body);
-
-  if (!isRecord(body)) {
-    throw new BadRequestException('اطلاعات ورود معتبر نیست.');
-  }
-
-  const { fullName } = body;
-
-  if (!isNonEmptyString(fullName)) {
-    throw new BadRequestException('نام کامل الزامی است.');
-  }
-
-  return { ...base, fullName: fullName.trim() };
 }
 
 @Injectable()
@@ -70,43 +54,6 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
-
-  async register(body: unknown) {
-    const dto = validateRegisterInput(body);
-
-    const existing = await this.prisma.operator.findUnique({
-      where: { email: dto.email },
-    });
-    if (existing) {
-      throw new BadRequestException('این ایمیل قبلاً ثبت‌نام کرده است.');
-    }
-
-    const salt = crypto.randomBytes(16).toString('hex');
-    const p = dto.password || '';
-    const buf = crypto.scryptSync(p, salt as any, 64);
-    const passwordHash = `${salt}:${buf.toString('hex')}`;
-
-    const operator = await this.prisma.operator.create({
-      data: {
-        email: dto.email,
-        fullName: dto.fullName,
-        passwordHash,
-      },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        role: true,
-        createdAt: true,
-      },
-    });
-
-    return {
-      message: 'ثبت‌نام با موفقیت انجام شد.',
-      access_token: this.signToken(operator.id, operator.role),
-      operator,
-    };
-  }
 
   async login(body: unknown) {
     const dto = validateLoginInput(body);
@@ -119,10 +66,18 @@ export class AuthService {
     }
 
     const [salt, key] = operator.passwordHash.split(':');
-    const p = dto.password || '';
-    const buf = crypto.scryptSync(p, salt as any, 64);
 
-    if (buf.toString('hex') !== key) {
+    if (!salt || !key) {
+      throw new UnauthorizedException('ایمیل یا رمز عبور اشتباه است.');
+    }
+
+    const derivedKey = crypto.scryptSync(dto.password, salt, 64);
+    const storedKey = Buffer.from(key, 'hex');
+    const isPasswordValid =
+      storedKey.length === derivedKey.length &&
+      crypto.timingSafeEqual(storedKey, derivedKey);
+
+    if (!isPasswordValid) {
       throw new UnauthorizedException('ایمیل یا رمز عبور اشتباه است.');
     }
 

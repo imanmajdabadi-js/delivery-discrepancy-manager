@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AuthGuard from '../app/AuthGuard';
 import { RequireRole } from '../app/RequireRole';
 import { LoginPage } from '../features/auth/pages/LoginPage';
-import { RegisterPage } from '../features/auth/pages/RegisterPage';
 import { CaseDetailsPage } from '../features/cases/pages/CaseDetailsPage';
 import { CasesPage } from '../features/cases/pages/CasesPage';
 import { CreateCasePage } from '../features/cases/pages/CreateCasePage';
@@ -13,10 +12,6 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
-  },
-  {
-    path: '/register',
-    element: <RegisterPage />,
   },
   {
     path: '/',

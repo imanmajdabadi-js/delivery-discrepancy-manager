@@ -12,4 +12,5 @@ Thumbs.db
 .private/
 .agents/
 .codex/
+AGENTS.md
 backend/src/generated/prisma/
