@@ -45,7 +45,7 @@ export function AppLayout() {
             {userRole === 'MANAGER' ? (
               <Link
                 to="/cases/review"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-ink transition hover:bg-surface-2 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-ink transition hover:bg-surface-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 صادرکننده تصمیم
               </Link>
@@ -53,7 +53,7 @@ export function AppLayout() {
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-2"
+              className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-soft"
             >
               خروج
             </button>

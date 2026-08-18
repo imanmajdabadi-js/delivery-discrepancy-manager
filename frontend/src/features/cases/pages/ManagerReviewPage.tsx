@@ -84,7 +84,7 @@ export function ManagerReviewPage() {
 
         <Link
           to="/"
-          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-line bg-surface px-4 text-sm font-semibold text-ink transition hover:bg-surface-2 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:self-auto"
+          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-line bg-surface px-4 text-sm font-semibold text-ink transition hover:bg-surface-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:self-auto"
         >
           <svg
             aria-hidden="true"
