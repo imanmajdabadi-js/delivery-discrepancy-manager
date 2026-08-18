@@ -6,14 +6,12 @@ export function useCaseAssignment() {
 
   const claim = useMutation({
     mutationFn: claimCase,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['cases'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
   });
 
   const release = useMutation({
     mutationFn: releaseCase,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['cases'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
   });
 
   return { claim, release };

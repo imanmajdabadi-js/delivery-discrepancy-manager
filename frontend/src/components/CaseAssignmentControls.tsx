@@ -5,9 +5,11 @@ import { getCurrentUserId, formatDateTime, getUserRole } from '../utils';
 
 interface CaseAssignmentControlsProps {
   caseDetails: CaseDetailsResponse;
-};
+}
 
-export function CaseAssignmentControls({ caseDetails }: CaseAssignmentControlsProps) {
+export function CaseAssignmentControls({
+  caseDetails,
+}: CaseAssignmentControlsProps) {
   const userRole = getUserRole();
   const currentUserId = getCurrentUserId();
   const { claim, release } = useCaseAssignment();

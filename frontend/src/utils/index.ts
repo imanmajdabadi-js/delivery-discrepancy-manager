@@ -42,7 +42,7 @@ export function formatDateTime(value: string) {
   return persianDateTimeFormatter.format(date);
 }
 
-function decodeBase64Url(value: string): string {
+export function decodeBase64Url(value: string): string {
   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
   const padded = normalized.padEnd(
     normalized.length + ((4 - (normalized.length % 4)) % 4),
@@ -58,6 +58,7 @@ function decodeBase64Url(value: string): string {
 export interface JwtPayload {
   sub?: string;
   role?: string;
+  exp?: number;
 }
 
 export function getUserRole(): string | null {

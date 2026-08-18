@@ -8,6 +8,9 @@ export function useCaseDecision(caseId: string) {
   return useMutation({
     mutationFn: (request: SubmitCaseDecisionRequest) =>
       submitCaseDecision(caseId, request),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['cases'] }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      queryClient.invalidateQueries({ queryKey: ['cases', 'details', caseId] });
+    },
   });
 }
