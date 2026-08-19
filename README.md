@@ -7,6 +7,7 @@ An internal case-management system for tracing, reviewing, and resolving shortag
 **Solution:** A role-based web application where operators search delivered orders, create discrepancy cases with multi-item validation, and assign them for review. Managers approve or reject with a mandatory explanation. Every action is recorded in an immutable audit trail.
 
 **Users:**
+
 - **Operators:** Search orders, create cases, claim/release assignments
 - **Managers:** Review submitted cases, approve or reject with explanation, trace complete history
 
@@ -16,8 +17,22 @@ An internal case-management system for tracing, reviewing, and resolving shortag
 - **Database-enforced integrity:** Composite primary key on `OpenDiscrepancy`, check constraints on quantities and explanations, `SERIALIZABLE` transactions for concurrent operations.
 - **Working demo:** Deterministic seed data, one-command startup, documented credentials, step-by-step demo script.
 - **Full-stack implementation:** React 19 + NestJS + PostgreSQL with TypeScript end-to-end. Persian RTL localization.
-- **Security boundaries:** JWT authentication, role-based guards, CORS locked to frontend origin, scrypt password hashing.
-- **Tested business rules:** 28 passing unit tests covering validation, concurrency, conflict detection, and state transitions.
+- **Access boundaries:** Pre-provisioned accounts, JWT authentication, role-based guards, CORS locked to frontend origin, and scrypt password hashing.
+- **Business logic:** Order eligibility, quantity validation, duplicate prevention, assignment conflict handling, and immutable history are enforced server-side.
+
+## Product Screenshots
+
+### Operator Case Workflow
+
+Case overview with status summaries, search, filtering, and case creation access.
+
+![Operator case workflow](README-assets/screenshots/operator-case-workflow.png)
+
+### Manager Review
+
+Submitted-case queue for final manager review.
+
+![Manager review](README-assets/screenshots/manager-review.png)
 
 ---
 
@@ -35,11 +50,11 @@ pnpm dev
 
 > **Note:** `pnpm setup:local` creates `backend/.env` from `.env.example` with a randomly generated `JWT_SECRET` if it doesn't already exist. An existing `.env` is never overwritten.
 
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:5173 |
-| API | http://localhost:3000/api |
-| PostgreSQL | localhost:5433 |
+| Service    | URL                       |
+| ---------- | ------------------------- |
+| Frontend   | http://localhost:5173     |
+| API        | http://localhost:3000/api |
+| PostgreSQL | localhost:5433            |
 
 `pnpm dev` starts both frontend and backend concurrently.
 
@@ -47,10 +62,10 @@ pnpm dev
 
 ## Demo Credentials
 
-| Role | Email | Password |
-|---|---|---|
+| Role         | Email                 | Password   |
+| ------------ | --------------------- | ---------- |
 | **OPERATOR** | `operator@local.test` | `Demo123!` |
-| **MANAGER** | `manager@local.test` | `Demo123!` |
+| **MANAGER**  | `manager@local.test`  | `Demo123!` |
 
 ---
 
@@ -59,6 +74,7 @@ pnpm dev
 Follow these exact steps to see the most impressive features.
 
 ### Step 1: Login as Operator
+
 - Open http://localhost:5173/login
 - Enter `operator@local.test` / `Demo123!`
 - Click "ورود به سیستم"
@@ -67,6 +83,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves JWT authentication works and the frontend stores the token correctly.
 
 ### Step 2: Create a New Case
+
 - Click "ثبت پرونده جدید"
 - Search `ORD-1405-00127`
 - Expected: Order card shows green badge "قابل ثبت پرونده" with 3 items (Rice, Oil, Detergent)
@@ -79,6 +96,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves order eligibility validation, multi-item case creation, quantity validation, and that the backend creates the case with `OpenDiscrepancy` markers and `CREATED` history event.
 
 ### Step 3: Claim, Release, Claim Again
+
 - Click "درخواست انتساب"
 - Expected: Button changes to "آزادسازی انتساب", assignee name appears
 - Click "آزادسازی انتساب"
@@ -89,6 +107,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves atomic claim/release operations with `SERIALIZABLE` transaction isolation. Two simultaneous claims would conflict; the `updateMany` with status + assignee check prevents double-claim.
 
 ### Step 4: Trigger Duplicate Prevention
+
 - Click "ثبت پرونده جدید"
 - Search `ORD-1405-00125`
 - Expected: Shows same 3 items but with existing open discrepancy (Rice SHORTAGE)
@@ -100,6 +119,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves the `OpenDiscrepancy` composite primary key `[orderItemId, type]` prevents duplicate cases at the database level. The backend returns the existing case number for navigation.
 
 ### Step 5: Manager Review
+
 - Click "خروج" in header
 - Login as `manager@local.test` / `Demo123!`
 - Expected: Header shows "صادرکننده تصمیم" link
@@ -113,6 +133,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves role-based authorization (`@Roles('MANAGER')`), decision creation, and that the backend cleans up `OpenDiscrepancy` records after decision.
 
 ### Step 6: Verify Audit Trail
+
 - Scroll to "تاریخچه پرونده" section
 - Expected: Timeline shows events in order:
   1. CREATED → SUBMITTED (by operator)
@@ -124,6 +145,7 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves the immutable `CaseHistory` table records every state transition with actor attribution and timestamp.
 
 ### Step 7: Test Invalid Token
+
 - Open DevTools → Application → Local Storage
 - Modify `auth_token` to `invalid.token.here`
 - Refresh the page
@@ -132,20 +154,23 @@ Follow these exact steps to see the most impressive features.
 **Why this matters:** Proves the centralized 401 handler in `services/index.ts` clears stale tokens and redirects to login.
 
 ### Step 8: Test Forbidden Operator Action
+
 - Login as operator again
 - Open any SUBMITTED case
 - Expected: No approve/reject buttons visible
 - Open DevTools Console, run:
+
 ```javascript
 fetch('/api/cases/' + window.location.pathname.split('/').pop() + '/decision', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
-    'Content-Type': 'application/json'
+    Authorization: 'Bearer ' + localStorage.getItem('auth_token'),
+    'Content-Type': 'application/json',
   },
-  body: JSON.stringify({type: 'APPROVE', explanation: 'test'})
-})
+  body: JSON.stringify({ type: 'APPROVE', explanation: 'test' }),
+});
 ```
+
 - Expected: 403 Forbidden
 
 **Why this matters:** Proves backend `RolesGuard` enforces authorization even when a client bypasses UI restrictions.
@@ -170,7 +195,8 @@ fetch('/api/cases/' + window.location.pathname.split('/').pop() + '/decision', {
 
 **Business Problem:** Operators must not claim more items than were delivered, either per-item or across multiple discrepancy types.
 
-**Business Rule:** 
+**Business Rule:**
+
 - Each discrepancy quantity must be a positive integer
 - Individual quantity cannot exceed `deliveredQuantity` for that order item
 - Combined quantity across all discrepancy types for one item cannot exceed `deliveredQuantity`
@@ -344,6 +370,7 @@ fetch('/api/cases/' + window.location.pathname.split('/').pop() + '/decision', {
 ## Security Verification
 
 ### Authentication
+
 ```bash
 # Login returns JWT
 curl -X POST http://localhost:3000/api/auth/login \
@@ -353,6 +380,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 ```
 
 ### Authorization
+
 ```bash
 # Operator trying manager endpoint
 curl -X POST http://localhost:3000/api/cases/{caseId}/decision \
@@ -363,6 +391,7 @@ curl -X POST http://localhost:3000/api/cases/{caseId}/decision \
 ```
 
 ### Unauthenticated Access
+
 ```bash
 # No token
 curl http://localhost:3000/api/cases
@@ -370,37 +399,19 @@ curl http://localhost:3000/api/cases
 ```
 
 ### CORS
+
 - Backend locked to `FRONTEND_ORIGIN` from environment
 - Vite proxy is development-only
 
 ### Password Storage
+
 - scrypt with random 16-byte salt, 64-byte key
 - Never returns password hash in API responses
 
 ### Known Trade-offs
+
 - JWT stored in localStorage (XSS risk). httpOnly cookies would be preferable in production but require refresh tokens and CSRF protection.
 - No rate limiting or security headers. Acceptable for a portfolio; required for production.
-
----
-
-## Testing
-
-### What's Tested
-- Business rule validation: quantity boundaries, duplicate detection, item ownership
-- Case list query parsing: Persian/Arabic digit normalization, status filtering
-- Decision parsing: type validation, explanation requirement
-- Service workflows: claim, release, concurrent conflict handling
-- **Total:** 28 passing unit tests
-
-### What's Not Tested
-- End-to-end browser flow
-- Integration tests against real database
-- Performance or load testing
-
-### Running Tests
-```bash
-pnpm test
-```
 
 ---
 
@@ -408,15 +419,15 @@ pnpm test
 
 This is a portfolio project. These are the deliberate gaps:
 
-| Limitation | Why It Exists | Production Fix |
-|---|---|---|
-| JWT in localStorage | Simplest MVP implementation | httpOnly cookies + refresh tokens |
-| No refresh token flow | Portfolio scope | Short-lived access tokens + refresh endpoint |
-| No E2E tests | Time investment vs portfolio ROI | Playwright or Cypress suite |
-| CasesService is 826 lines | Prioritized feature delivery over refactoring | Split into query/command services |
-| No rate limiting | Not required for demo | Express middleware or Cloudflare |
-| No CI/CD | Portfolio, not deployment | GitHub Actions |
-| No monitoring | Portfolio, not operations | Sentry or similar |
+| Limitation                | Why It Exists                                 | Production Fix                               |
+| ------------------------- | --------------------------------------------- | -------------------------------------------- |
+| JWT in localStorage       | Simplest MVP implementation                   | httpOnly cookies + refresh tokens            |
+| No refresh token flow     | Portfolio scope                               | Short-lived access tokens + refresh endpoint |
+| No automated test suite   | Kept the portfolio scope focused              | Add unit, integration, and E2E coverage      |
+| CasesService is 827 lines | Prioritized feature delivery over refactoring | Split into query/command services            |
+| No rate limiting          | Not required for demo                         | Express middleware or Cloudflare             |
+| No CI/CD                  | Portfolio, not deployment                     | GitHub Actions                               |
+| No monitoring             | Portfolio, not operations                     | Sentry or similar                            |
 
 ---
 
@@ -442,9 +453,10 @@ pnpm db:seed           # Seed development data
 pnpm db:verify         # Verify database integrity
 pnpm db:setup          # Start + deploy migrations + seed + verify
 pnpm dev               # Start frontend and backend
-pnpm check             # Lint + typecheck + test + build
+pnpm check             # Lint + typecheck + build + format:check
 pnpm lint              # Oxlint
 pnpm typecheck         # TypeScript check
-pnpm test              # Run tests
 pnpm build             # Production build
+pnpm format            # Format files with Prettier
+pnpm format:check      # Check formatting with Prettier
 ```
