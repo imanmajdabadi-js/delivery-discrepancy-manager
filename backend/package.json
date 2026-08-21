@@ -9,6 +9,7 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "pretest": "prisma generate",
+    "test": "tsx --test test/roles.guard.test.ts test/jwt.strategy.test.ts test/cases.authorization.test.ts",
     "pretypecheck": "prisma generate",
     "typecheck": "tsc --noEmit --pretty false",
     "db:generate": "prisma generate",

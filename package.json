@@ -16,10 +16,11 @@
     "db:verify": "pnpm --filter @delivery-discrepancy/api db:verify",
     "build": "pnpm -r --if-present build",
     "lint": "oxlint frontend/src backend/src",
+    "test": "pnpm --filter @delivery-discrepancy/api test",
     "typecheck": "pnpm -r --if-present typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm format:check"
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check"
   },
   "devDependencies": {
     "@types/passport-jwt": "^4.0.1",
