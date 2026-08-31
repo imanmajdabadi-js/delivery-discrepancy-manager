@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma } from '../generated/prisma/client';
+import { OrderStatus, Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import {
   getOrderEligibility,
@@ -45,22 +45,56 @@ export class OrdersService {
 
     const orders = await this.prisma.order.findMany({
       where: { OR: searchConditions },
-      include: {
-        customer: true,
-        items: {
-          where: { deliveredQuantity: { gt: 0 } },
-          orderBy: { productName: 'asc' },
-        },
-      },
+      include: { customer: true },
       orderBy: [{ deliveredAt: 'desc' }, { createdAt: 'desc' }],
     });
+
+    const itemCounts = await this.prisma.orderItem.groupBy({
+      by: ['orderId'],
+      where: {
+        orderId: { in: orders.map((o) => o.id) },
+        deliveredQuantity: { gt: 0 },
+      },
+      _count: true,
+    });
+
+    const deliveredItemCountByOrder = new Map(
+      itemCounts.map((ic) => [ic.orderId, ic._count]),
+    );
+
+    const eligibleOrderIds = orders
+      .filter(
+        (order) =>
+          order.status === OrderStatus.DELIVERED &&
+          (deliveredItemCountByOrder.get(order.id) ?? 0) > 0,
+      )
+      .map((order) => order.id);
+
+    const itemsByOrder = await this.prisma.orderItem.findMany({
+      where: {
+        orderId: { in: eligibleOrderIds },
+        deliveredQuantity: { gt: 0 },
+      },
+      orderBy: { productName: 'asc' },
+    });
+
+    const itemsByOrderId = new Map<string, typeof itemsByOrder>();
+    for (const item of itemsByOrder) {
+      const arr = itemsByOrderId.get(item.orderId);
+      if (arr) {
+        arr.push(item);
+      } else {
+        itemsByOrderId.set(item.orderId, [item]);
+      }
+    }
 
     return {
       query,
       results: orders.map((order) => {
+        const deliveredItemCount = deliveredItemCountByOrder.get(order.id) ?? 0;
         const eligibility = getOrderEligibility(
           order.status,
-          order.items.length,
+          deliveredItemCount,
         );
 
         return {
@@ -75,7 +109,7 @@ export class OrdersService {
             phone: order.customer.phone,
           },
           items: eligibility.eligible
-            ? order.items.map((item) => ({
+            ? (itemsByOrderId.get(order.id) ?? []).map((item) => ({
                 id: item.id,
                 sku: item.sku,
                 productName: item.productName,
