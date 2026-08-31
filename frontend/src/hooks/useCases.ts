@@ -7,7 +7,7 @@ export function useCases(query: string, status: CaseStatus | null) {
     queryKey: ['cases', query, status],
     queryFn: ({ signal }) => getCases(query, status, signal),
     retry: false,
-    staleTime: 0,
+    staleTime: 5_000,
     refetchOnWindowFocus: false,
   });
 }

@@ -84,7 +84,7 @@ export function CaseListToolbar({
         <button
           type="submit"
           disabled={isFetching}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-semibold text-white transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-60"
+          className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-strong hover:shadow-[0_8px_22px_rgba(13,123,132,0.25)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-60"
         >
           {isFetching ? 'در حال بررسی...' : 'جست‌وجو'}
         </button>

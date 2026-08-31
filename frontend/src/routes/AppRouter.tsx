@@ -1,12 +1,18 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import AuthGuard from '../app/AuthGuard';
 import { RequireRole } from '../app/RequireRole';
 import { LoginPage } from '../features/auth/pages/LoginPage';
 import { CaseDetailsPage } from '../features/cases/pages/CaseDetailsPage';
 import { CasesPage } from '../features/cases/pages/CasesPage';
-import { CreateCasePage } from '../features/cases/pages/CreateCasePage';
 import { ManagerReviewPage } from '../features/cases/pages/ManagerReviewPage';
 import { AppLayout } from '../layout/AppLayout';
+
+const CreateCasePage = lazy(() =>
+  import('../features/cases/pages/CreateCasePage').then((mod) => ({
+    default: mod.CreateCasePage,
+  })),
+);
 
 const router = createBrowserRouter([
   {
@@ -26,7 +32,17 @@ const router = createBrowserRouter([
           },
           {
             path: 'cases/new',
-            element: <CreateCasePage />,
+            element: (
+              <Suspense
+                fallback={
+                  <div className="p-8 text-center text-muted">
+                    در حال بارگذاری...
+                  </div>
+                }
+              >
+                <CreateCasePage />
+              </Suspense>
+            ),
           },
           {
             path: 'cases/review',

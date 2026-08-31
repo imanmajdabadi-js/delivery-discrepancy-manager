@@ -7,7 +7,7 @@ export function useCaseDetails(caseId: string | null) {
     queryFn: ({ signal }) => getCaseDetails(caseId ?? '', signal),
     enabled: caseId !== null,
     retry: false,
-    staleTime: 0,
+    staleTime: 5_000,
     refetchOnWindowFocus: false,
   });
 }
