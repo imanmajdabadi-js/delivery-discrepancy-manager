@@ -1,28 +1,28 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { getUserRole } from '../utils';
+import { NavigationMenu } from '../components/NavigationMenu';
 
 export function AppLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const userRole = getUserRole();
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
-    navigate('/login');
+    void navigate('/login');
   };
 
   return (
     <div className="app-canvas min-h-screen text-ink">
-      <header className="app-header border-b border-line bg-surface">
+      <header className="app-header relative border-b border-line bg-surface/80 backdrop-blur-sm">
         <div className="mx-auto flex min-h-17 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
             className="flex items-center gap-3 rounded-xl focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
-            <span
-              aria-hidden="true"
-              className="brand-mark grid size-9 place-items-center rounded-xl text-brand"
-            >
+            <span className="brand-mark grid size-10 place-items-center rounded-2xl text-brand">
               <svg
+                aria-hidden="true"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -41,23 +41,46 @@ export function AppLayout() {
             </span>
           </Link>
 
-          <nav className="flex items-center gap-1.5">
-            {userRole === 'MANAGER' ? (
-              <Link
-                to="/cases/review"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-ink transition hover:bg-surface-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
-              >
-                صادرکننده تصمیم
-              </Link>
-            ) : null}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg border border-line px-3 py-2 text-sm text-ink hover:bg-surface-soft"
-            >
-              خروج
-            </button>
+          <nav className="flex items-center gap-1.5" aria-label=" منوی اصلی">
+            <NavigationMenu
+              items={[
+                {
+                  label: 'پرونده‌ها',
+                  to: '/',
+                  isActive: location.pathname === '/',
+                },
+                ...(userRole === 'MANAGER'
+                  ? [
+                      {
+                        label: 'صادرکننده تصمیم',
+                        to: '/cases/review',
+                        isActive: location.pathname === '/cases/review',
+                      },
+                    ]
+                  : []),
+              ]}
+            />
           </nav>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="motion-safe:transition-all motion-safe:duration-200 relative inline-flex items-center justify-center rounded-xl border border-line px-3.5 py-2 text-sm font-medium text-muted hover:border-brand-mild hover:text-ink hover:shadow-[0_4px_12px_rgba(13,123,132,0.08)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="ml-1.5 size-4"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+            </svg>
+            خروج
+          </button>
         </div>
       </header>
 
