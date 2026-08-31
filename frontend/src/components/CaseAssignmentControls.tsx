@@ -12,7 +12,7 @@ export function CaseAssignmentControls({
 }: CaseAssignmentControlsProps) {
   const userRole = getUserRole();
   const currentUserId = getCurrentUserId();
-  const { claim, release } = useCaseAssignment();
+  const { claim, release } = useCaseAssignment(caseDetails.id);
 
   const isAssignable = caseDetails.status === 'SUBMITTED';
   const isAssigned = caseDetails.assigneeId !== null;
@@ -30,7 +30,7 @@ export function CaseAssignmentControls({
       return;
     }
 
-    claim.mutate(caseDetails.id);
+    claim.mutate();
   }
 
   function handleRelease() {
@@ -38,7 +38,7 @@ export function CaseAssignmentControls({
       return;
     }
 
-    release.mutate(caseDetails.id);
+    release.mutate();
   }
 
   const claimError = claim.isError
@@ -127,7 +127,7 @@ export function CaseAssignmentControls({
           <button
             type="button"
             disabled={claim.isPending || release.isPending}
-            className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(15,118,110,0.18)] transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-65 sm:w-auto sm:flex-1"
+            className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 w-full items-center justify-center rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(13,123,132,0.22)] hover:bg-brand-strong hover:shadow-[0_8px_24px_rgba(13,123,132,0.28)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-65 sm:w-auto sm:flex-1"
             onClick={handleClaim}
           >
             {claim.isPending ? 'در حال درخواست...' : 'درخواست انتساب'}
@@ -137,7 +137,7 @@ export function CaseAssignmentControls({
           <button
             type="button"
             disabled={claim.isPending || release.isPending}
-            className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-brand-mild bg-surface px-4 text-sm font-semibold text-brand-strong transition hover:bg-brand-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-65 sm:w-auto sm:flex-1"
+            className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 w-full items-center justify-center rounded-xl border border-brand-mild bg-surface text-sm font-semibold text-brand-strong hover:bg-brand-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-wait disabled:opacity-65 sm:w-auto sm:flex-1"
             onClick={handleRelease}
           >
             {release.isPending ? 'در حال آزادسازی...' : 'آزادسازی انتساب'}

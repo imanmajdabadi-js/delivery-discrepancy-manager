@@ -11,7 +11,7 @@ export function CaseDecisionSummary({
   return (
     <section
       aria-labelledby="case-decision-title"
-      className={`rounded-3xl border p-5 sm:p-6 ${
+      className={`motion-safe:delay-75 motion-safe:page-enter rounded-3xl border p-5 sm:p-6 ${
         isApproved
           ? 'border-success/20 bg-success-soft/55'
           : 'border-danger/20 bg-danger-soft/55'

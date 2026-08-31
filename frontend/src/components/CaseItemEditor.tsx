@@ -1,4 +1,4 @@
-import type { CaseDiscrepancyType, OrderSearchItem } from '../types';
+import { type CaseDiscrepancyType, type OrderSearchItem } from '../types';
 import { toPersianDigits } from '../utils';
 
 const typeDetails: Record<
@@ -8,13 +8,12 @@ const typeDetails: Record<
   SHORTAGE: {
     label: 'کسری',
     description: 'تعداد تحویل‌نشده',
-    selectedClassName: 'border-accent-sky bg-accent-sky-soft text-accent-sky',
+    selectedClassName: 'border-danger bg-danger-soft text-danger',
   },
   DAMAGED: {
     label: 'آسیب‌دیدگی',
     description: 'تعداد تحویل‌شده معیوب',
-    selectedClassName:
-      'border-accent-violet bg-accent-violet-soft text-accent-violet',
+    selectedClassName: 'border-accent bg-accent-soft text-accent',
   },
 };
 
@@ -48,13 +47,13 @@ export function CaseItemEditor({
 
   return (
     <li
-      className={`rounded-3xl border bg-surface p-5 transition sm:p-6 ${
-        isSelected
-          ? 'border-brand-mild shadow-[0_12px_36px_rgba(24,57,51,0.06)]'
-          : 'border-line'
-      }`}
+      className="motion-safe:duration-150 rounded-3xl border bg-surface p-5 shadow-[0_4px_18px_rgba(24,57,51,0.04)] transition-[border-color,box-shadow] sm:p-6
+        data-[selected=true]:border-brand-mild
+        data-[selected=true]:shadow-[0_12px_36px_rgba(24,57,51,0.06)]
+        data-[selected=false]:border-line"
+      data-selected={isSelected}
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h3 className="wrap-anywhere text-sm leading-7 font-semibold text-ink sm:text-[0.9375rem]">
             {item.productName}
@@ -66,7 +65,7 @@ export function CaseItemEditor({
             {item.sku}
           </p>
         </div>
-        <div className="shrink-0 rounded-xl bg-surface-soft px-3 py-2 sm:text-left">
+        <div className="shrink-0 rounded-xl bg-surface-soft px-3 py-2 text-left sm:text-left">
           <p className="text-[0.6875rem] font-semibold text-subtle">
             مقدار تحویل
           </p>
@@ -92,12 +91,13 @@ export function CaseItemEditor({
                 data-discrepancy-toggle
                 aria-pressed={isTypeSelected}
                 disabled={disabled}
-                className={`min-h-12 rounded-xl border px-3 py-2.5 text-right transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60 ${
-                  isTypeSelected
-                    ? details.selectedClassName
-                    : 'border-line-strong bg-surface text-ink hover:border-brand-mild hover:bg-brand-soft/35'
-                }`}
                 onClick={() => onToggle(item.id, type)}
+                className={`motion-safe:transition-all motion-safe:duration-150 relative isolate min-h-12 rounded-xl border px-4 py-3 text-right focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60
+                  ${
+                    isTypeSelected
+                      ? `${details.selectedClassName} border-transparent shadow-[0_6px_18px_rgba(0,0,0,0.05)] active:scale-[0.975]`
+                      : 'border-line-strong bg-surface text-ink hover:border-brand-mild hover:bg-brand-soft/40 active:scale-[0.975]'
+                  }`}
               >
                 <span className="block text-sm font-semibold">
                   {details.label}
@@ -105,6 +105,24 @@ export function CaseItemEditor({
                 <span className="mt-0.5 block text-[0.6875rem] leading-5 opacity-75">
                   {details.description}
                 </span>
+                {isTypeSelected ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-2 left-3 flex items-center justify-center"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-3.5"
+                    >
+                      <path d="M5 12l5 5 9-9" />
+                    </svg>
+                  </span>
+                ) : null}
               </button>
             );
           })}
@@ -112,7 +130,7 @@ export function CaseItemEditor({
       </fieldset>
 
       {selectedTypes.length > 0 ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="motion-safe:delay-75 motion-safe:item-enter mt-4 grid gap-3 sm:grid-cols-2">
           {selectedTypes.map((type) => {
             const fieldId = `quantity-${item.id}-${type}`;
             const errorKey = `${item.id}:${type}`;
@@ -142,13 +160,16 @@ export function CaseItemEditor({
                     value={quantities[type] ?? ''}
                     aria-invalid={Boolean(error || sumError)}
                     aria-describedby={descriptionIds || undefined}
-                    className="h-11 w-full rounded-xl border border-line-strong bg-surface px-3 pl-16 text-[0.9375rem] text-ink outline-none transition focus:border-brand focus:ring-3 focus:ring-brand-mild/55 disabled:bg-surface-soft disabled:text-subtle aria-invalid:border-danger aria-invalid:ring-danger-soft"
+                    className="motion-safe:transition-all motion-safe:duration-150 h-11 w-full rounded-xl border border-line-strong bg-surface px-3 pl-16 text-[0.9375rem] text-ink outline-none placeholder:text-subtle hover:border-brand-mild focus-visible:border-brand focus-visible:ring-3 focus-visible:ring-brand-mild/55 aria-invalid:border-danger aria-invalid:ring-danger-soft disabled:bg-surface-soft disabled:text-subtle"
                     placeholder="۰"
                     onChange={(event) =>
                       onQuantityChange(item.id, type, event.target.value)
                     }
                   />
-                  <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[0.75rem] text-subtle">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[0.75rem] text-subtle"
+                  >
                     {item.unit}
                   </span>
                 </div>
@@ -156,7 +177,7 @@ export function CaseItemEditor({
                   <p
                     id={`${fieldId}-error`}
                     role="alert"
-                    className="mt-1.5 text-[0.75rem] leading-5 text-danger-strong"
+                    className="motion-safe:item-enter mt-1.5 text-[0.75rem] leading-5 text-danger-strong"
                   >
                     {error}
                   </p>
@@ -171,7 +192,7 @@ export function CaseItemEditor({
         <p
           id={sumErrorId}
           role="alert"
-          className="mt-3 rounded-xl bg-danger-soft px-3 py-2 text-[0.75rem] leading-6 text-danger-strong"
+          className="motion-safe:item-enter mt-3 rounded-xl bg-danger-soft px-3 py-2 text-[0.75rem] leading-6 text-danger-strong"
         >
           {sumError}
         </p>

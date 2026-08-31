@@ -20,7 +20,7 @@ export function CaseDetailsNotice({
           aria-hidden="true"
           className={`mx-auto grid size-13 place-items-center rounded-2xl ${
             isNotFound
-              ? 'bg-accent-violet-soft text-accent-violet'
+              ? 'bg-accent-soft text-accent'
               : 'bg-danger-soft text-danger'
           }`}
         >
@@ -57,7 +57,7 @@ export function CaseDetailsNotice({
           {!isNotFound && onRetry ? (
             <button
               type="button"
-              className="inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-semibold text-white transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-strong hover:shadow-[0_8px_22px_rgba(13,123,132,0.25)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
               onClick={onRetry}
             >
               تلاش دوباره
@@ -65,7 +65,7 @@ export function CaseDetailsNotice({
           ) : null}
           <Link
             to="/"
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-line-strong bg-surface px-5 text-sm font-semibold text-ink transition hover:border-brand-mild hover:bg-brand-soft/35 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 items-center justify-center rounded-xl border border-line-strong bg-surface px-5 text-sm font-semibold text-ink hover:border-brand-mild hover:bg-brand-soft/35 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             بازگشت به پرونده‌ها
           </Link>

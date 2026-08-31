@@ -61,7 +61,7 @@ export function OrderSearchForm({
           شماره سفارش، کد مشتری یا شماره موبایل
         </label>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <div className="min-w-0 flex-1">
+          <div className="relative min-w-0 flex-1">
             <input
               id="order-search-query"
               name="query"
@@ -76,22 +76,29 @@ export function OrderSearchForm({
               placeholder="مثلاً ORD-1405-..."
               onChange={(event) => onQueryChange(event.target.value)}
             />
-            {error ? (
-              <p
-                id="order-search-error"
-                role="alert"
-                className="wrap-anywhere mt-2 text-sm leading-6 text-danger-strong"
+            {!error && query.length > 0 ? (
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-label="پاک‌کردن جست‌وجو"
+                className="absolute inset-y-0 left-3 flex items-center text-subtle hover:text-ink"
+                onClick={() => onQueryChange('')}
               >
-                {error}
-              </p>
-            ) : (
-              <p
-                id="order-search-hint"
-                className="mt-2 text-[0.8125rem] leading-6 text-muted"
-              >
-                رقم‌های فارسی و انگلیسی هر دو پذیرفته می‌شوند.
-              </p>
-            )}
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M15 9l-6 6M9 9l6 6" />
+                </svg>
+              </button>
+            ) : null}
           </div>
 
           <button
@@ -112,6 +119,7 @@ export function OrderSearchForm({
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 className="size-4.5"
               >
                 <circle cx="10.5" cy="10.5" r="6" />
@@ -121,6 +129,23 @@ export function OrderSearchForm({
             {isSubmitting ? 'در حال بررسی' : 'جست‌وجو'}
           </button>
         </div>
+
+        {error ? (
+          <p
+            id="order-search-error"
+            role="alert"
+            className="wrap-anywhere mt-2 text-sm leading-6 text-danger-strong"
+          >
+            {error}
+          </p>
+        ) : (
+          <p
+            id="order-search-hint"
+            className="mt-2 text-[0.8125rem] leading-6 text-muted"
+          >
+            رقم‌های فارسی و انگلیسی هر دو پذیرفته می‌شوند.
+          </p>
+        )}
       </div>
     </form>
   );

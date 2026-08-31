@@ -79,7 +79,7 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
       <div className="flex items-start gap-3.5">
         <span
           aria-hidden="true"
-          className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-violet-soft text-accent-violet"
+          className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"
         >
           <svg
             viewBox="0 0 24 24"
@@ -132,8 +132,8 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
         <div aria-live="polite" className="mt-2.5 min-h-6">
           {successMessage && !decisionMutation.isError ? (
             <p
-              className="wrap-anywhere text-sm leading-6 text-success-strong"
               role="status"
+              className="wrap-anywhere text-sm leading-6 text-success-strong"
             >
               {successMessage}
             </p>
@@ -163,18 +163,32 @@ export function CaseDecisionForm({ caseId }: CaseDecisionFormProps) {
         <button
           type="button"
           disabled={decisionMutation.isPending}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-success px-4 text-sm font-semibold text-white transition hover:bg-success-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-success disabled:cursor-wait disabled:opacity-60"
+          className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-success px-4 text-sm font-semibold text-white hover:bg-success-strong hover:shadow-[0_8px_22px_rgba(16,150,66,0.22)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-success disabled:cursor-wait disabled:opacity-60"
           onClick={() => handleDecision('APPROVE')}
         >
-          {submittingType === 'APPROVE' ? 'در حال ثبت...' : 'تأیید پرونده'}
+          {submittingType === 'APPROVE' && decisionMutation.isPending ? (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="size-4 animate-spin"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 17l4-4-4-4" />
+            </svg>
+          ) : null}
+          {submittingType === 'APPROVE' ? 'در حال ثبت...' : 'تأیید و اتمام'}
         </button>
         <button
           type="button"
           disabled={decisionMutation.isPending}
-          className="inline-flex h-11 items-center justify-center rounded-xl border border-danger/30 bg-surface px-4 text-sm font-semibold text-danger-strong transition hover:bg-danger-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-danger disabled:cursor-wait disabled:opacity-60"
+          className="motion-safe:transition-all motion-safe:duration-180 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-danger/30 bg-surface px-4 text-sm font-semibold text-danger-strong hover:border-danger/50 hover:bg-danger-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-danger disabled:cursor-wait disabled:opacity-60"
           onClick={() => handleDecision('REJECT')}
         >
-          {submittingType === 'REJECT' ? 'در حال ثبت...' : 'رد پرونده'}
+          {submittingType === 'REJECT' ? 'در حال ثبت...' : 'رد و انتقال'}
         </button>
       </div>
     </section>

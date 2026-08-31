@@ -24,11 +24,13 @@ export function CaseListNotice({
   return (
     <section
       role={isError ? 'alert' : 'status'}
-      className="surface-enter empty-state-card mt-6 rounded-3xl border border-dashed border-line bg-surface/95 px-5 py-11 text-center shadow-[0_12px_36px_rgba(24,57,51,0.05)] sm:px-8 sm:py-13"
+      className="empty-state-card motion-safe:surface-enter mt-6 rounded-3xl border border-dashed border-line bg-surface/95 px-5 py-11 text-center shadow-[0_12px_36px_rgba(24,57,51,0.05)] sm:px-8 sm:py-13"
     >
       <span
         aria-hidden="true"
-        className={`mx-auto grid size-12 place-items-center rounded-2xl ${isError ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'}`}
+        className={`mx-auto grid size-12 place-items-center rounded-2xl ${
+          isError ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'
+        }`}
       >
         <svg
           viewBox="0 0 24 24"
@@ -52,8 +54,7 @@ export function CaseListNotice({
             </>
           ) : (
             <>
-              <path d="M8 4h8M9 3v2m6-2v2" />
-              <path d="M7 5h10a2 2 0 0 1 2 2v12H5V7a2 2 0 0 1 2-2Z" />
+              <path d="M8 4h8M9 3v2m6-2v2M7 5h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
               <path d="M9 10h6m-6 4h4" />
             </>
           )}
@@ -72,7 +73,7 @@ export function CaseListNotice({
       {isError && onRetry ? (
         <button
           type="button"
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink transition hover:border-brand-mild hover:bg-brand-soft/45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="motion-safe:transition-colors motion-safe:duration-150 mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink hover:border-brand-mild hover:bg-brand-soft/45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
           onClick={onRetry}
         >
           تلاش دوباره
@@ -81,7 +82,7 @@ export function CaseListNotice({
       {isFiltered && onClear ? (
         <button
           type="button"
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink transition hover:border-brand-mild hover:bg-brand-soft/45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="motion-safe:transition-colors motion-safe:duration-150 mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink hover:border-brand-mild hover:bg-brand-soft/45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
           onClick={onClear}
         >
           پاک‌کردن جست‌وجو و فیلتر
@@ -90,7 +91,7 @@ export function CaseListNotice({
       {kind === 'initial-empty' ? (
         <Link
           to="/cases/new"
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="motion-safe:transition-colors motion-safe:duration-150 mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           ایجاد اولین پرونده
         </Link>

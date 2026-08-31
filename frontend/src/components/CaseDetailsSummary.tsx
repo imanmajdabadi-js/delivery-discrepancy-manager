@@ -31,10 +31,10 @@ export function CaseDetailsSummary({
   caseDetails: CaseDetailsResponse;
 }) {
   return (
-    <aside className="space-y-4 lg:sticky lg:top-6">
+    <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
       <section
         aria-labelledby="customer-summary-title"
-        className="rounded-3xl border border-line bg-surface p-5 shadow-[0_12px_38px_rgba(24,57,51,0.045)]"
+        className="rounded-3xl border border-line bg-surface/80 p-5 shadow-[0_12px_38px_rgba(24,57,51,0.045)]"
       >
         <h2
           id="customer-summary-title"
@@ -42,7 +42,7 @@ export function CaseDetailsSummary({
         >
           اطلاعات مشتری
         </h2>
-        <dl className="mt-3 space-y-0 divide-y divide-line">
+        <dl className="mt-3 divide-y divide-line">
           <SummaryRow
             label="نام مشتری"
             value={caseDetails.order.customer.fullName}
@@ -62,12 +62,12 @@ export function CaseDetailsSummary({
 
       <section
         aria-labelledby="order-summary-title"
-        className="rounded-3xl border border-line bg-surface p-5 shadow-[0_12px_38px_rgba(24,57,51,0.045)]"
+        className="rounded-3xl border border-line bg-surface/80 p-5 shadow-[0_12px_38px_rgba(24,57,51,0.045)]"
       >
         <h2 id="order-summary-title" className="text-sm font-semibold text-ink">
           اطلاعات سفارش
         </h2>
-        <dl className="mt-3 space-y-0 divide-y divide-line">
+        <dl className="mt-3 divide-y divide-line">
           <SummaryRow
             label="شماره سفارش"
             value={caseDetails.order.orderNumber}

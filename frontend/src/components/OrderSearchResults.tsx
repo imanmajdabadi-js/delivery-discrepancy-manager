@@ -78,16 +78,18 @@ function OrderResultCard({
   order,
   isSelected,
   onSelect,
+  index,
 }: {
   order: OrderSearchResult;
   isSelected: boolean;
   onSelect: (orderId: string) => void;
+  index: number;
 }) {
   const status = statusDetails[order.status];
 
   return (
     <article
-      className={`result-card surface-enter overflow-hidden rounded-3xl border bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)] ${
+      className={`motion-safe:surface-enter motion-safe:delay-[${index * 50}ms] result-card surface-enter overflow-hidden rounded-3xl border bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.055)] ${
         isSelected ? 'border-brand' : 'border-line'
       }`}
     >
@@ -143,7 +145,7 @@ function OrderResultCard({
           <button
             type="button"
             aria-pressed={isSelected}
-            className={`mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:w-auto ${
+            className={`motion-safe:transition-all motion-safe:duration-150 mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:w-auto ${
               isSelected
                 ? 'cursor-default border border-brand-mild bg-brand-soft text-brand-strong'
                 : 'bg-brand text-white shadow-[0_8px_20px_rgba(15,118,110,0.16)] hover:bg-brand-strong'
@@ -190,7 +192,7 @@ function OrderResultCard({
             {order.items.map((item) => (
               <li
                 key={item.id}
-                className="grid gap-3 rounded-2xl border border-line bg-surface-soft px-4 py-3.5 sm:grid-cols-[minmax(0,1fr)_8rem_6rem] sm:items-center sm:gap-4 sm:rounded-xl sm:border-transparent sm:py-3"
+                className="motion-safe:transition-colors motion-safe:duration-150 grid gap-3 rounded-2xl border border-line bg-surface-soft px-4 py-3.5 hover:bg-brand-soft/20 sm:grid-cols-[minmax(0,1fr)_8rem_6rem] sm:items-center sm:gap-4 sm:rounded-xl sm:border-transparent sm:py-3"
               >
                 <div className="min-w-0">
                   <span className="text-[0.75rem] font-semibold text-subtle sm:hidden">
@@ -238,7 +240,10 @@ export function OrderSearchResults({
   onSelectOrder: (orderId: string) => void;
 }) {
   return (
-    <section aria-labelledby="search-results-title" className="mt-7">
+    <section
+      aria-labelledby="search-results-title"
+      className="motion-safe:surface-enter mt-7"
+    >
       <div className="mb-3.5 flex items-center justify-between gap-4 px-1">
         <h2
           id="search-results-title"
@@ -251,12 +256,13 @@ export function OrderSearchResults({
         </span>
       </div>
       <div className="space-y-4">
-        {results.map((order) => (
+        {results.map((order, index) => (
           <OrderResultCard
             key={order.id}
             order={order}
             isSelected={order.id === selectedOrderId}
             onSelect={onSelectOrder}
+            index={index}
           />
         ))}
       </div>

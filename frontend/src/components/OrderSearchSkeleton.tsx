@@ -3,7 +3,7 @@ export function OrderSearchSkeleton() {
     <section
       aria-label="در حال دریافت اطلاعات سفارش"
       aria-busy="true"
-      className="mt-6 overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.05)]"
+      className="motion-safe:surface-enter mt-6 overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_12px_40px_rgba(24,57,51,0.05)]"
     >
       <div className="motion-safe:animate-pulse">
         <div className="flex flex-col gap-5 border-b border-line bg-surface-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">

@@ -16,7 +16,7 @@ export function OrderSearchNotice({
   return (
     <section
       role={isError ? 'alert' : 'status'}
-      className="surface-enter empty-state-card mt-6 rounded-3xl border border-line bg-surface/95 px-5 py-9 text-center shadow-[0_12px_40px_rgba(24,57,51,0.05)] sm:px-8 sm:py-11"
+      className="motion-safe:surface-enter empty-state-card mt-6 rounded-3xl border border-line bg-surface/95 px-5 py-9 text-center shadow-[0_12px_40px_rgba(24,57,51,0.05)] sm:px-8 sm:py-11"
     >
       <span
         aria-hidden="true"
@@ -62,7 +62,7 @@ export function OrderSearchNotice({
       {onRetry ? (
         <button
           type="button"
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink transition hover:border-brand-mild hover:bg-brand-soft/45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="motion-safe:transition-colors motion-safe:duration-150 mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-line-strong bg-surface px-4 text-sm font-semibold text-ink hover:border-brand-mild hover:bg-surface-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand"
           onClick={onRetry}
         >
           تلاش دوباره

@@ -20,7 +20,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         <li>
           <Link
             to="/"
-            className="transition hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            className="motion-safe:transition-colors motion-safe:duration-200 hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
             پرونده‌ها
           </Link>
@@ -42,7 +42,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
             {item.to ? (
               <Link
                 to={item.to}
-                className="transition hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
+                className="motion-safe:transition-colors motion-safe:duration-200 hover:text-brand focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-brand"
               >
                 {item.label}
               </Link>
