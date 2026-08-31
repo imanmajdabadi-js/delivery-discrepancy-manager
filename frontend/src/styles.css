@@ -29,43 +29,38 @@
 
 @theme {
   --font-sans: 'Estedad', Tahoma, Arial, sans-serif;
+
   --color-canvas: #f8fafc;
   --color-surface: #ffffff;
   --color-surface-soft: #f1f5f9;
+  --color-surface-elevated: #ffffff;
   --color-ink: #0f172a;
   --color-muted: #475569;
   --color-subtle: #94a3b8;
   --color-line: #e2e8f0;
   --color-line-strong: #cbd5e1;
 
-  --color-brand-soft: #e0f2fe;
-  --color-brand-mild: #bae6fd;
-  --color-brand: #0284c7;
-  --color-brand-strong: #0369a1;
+  --color-brand-soft: #e0f2f1;
+  --color-brand-mild: #b2ebf2;
+  --color-brand: #0d7b84;
+  --color-brand-strong: #084247;
+  --color-brand-emphasis: #09959d;
 
-  --color-accent-purple-soft: #f3e8ff;
-  --color-accent-purple: #9333ea;
-  --color-accent-indigo-soft: #e0e7ff;
-  --color-accent-indigo: #4f46e5;
-
-  --color-accent-sky-soft: #cff0f5;
-  --color-accent-sky: #0891b2;
-  --color-accent-violet-soft: #ede9fe;
-  --color-accent-violet: #7c3aed;
-  --color-accent-amber-soft: #fffbeb;
-  --color-accent-amber: #f59e0b;
-
-  --color-success-soft: #dcfce7;
-  --color-success: #16a34a;
-  --color-success-strong: #15803d;
+  --color-accent-soft: #ede9fe;
+  --color-accent: #7c3aed;
+  --color-accent-strong: #6d28d9;
 
   --color-warning-soft: #fef3c7;
   --color-warning: #d97706;
   --color-warning-strong: #b45309;
 
-  --color-danger-soft: #ffe4e6;
-  --color-danger: #e11d48;
-  --color-danger-strong: #be123c;
+  --color-success-soft: #dcfce7;
+  --color-success: #16a34a;
+  --color-success-strong: #15803d;
+
+  --color-danger-soft: #fee2e2;
+  --color-danger: #d32f2f;
+  --color-danger-strong: #b91c1c;
 }
 
 :root {
@@ -100,19 +95,15 @@ body {
   line-height: 1.75;
 }
 
-.login-card {
-  animation: loginFadeIn 400ms ease-out both;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-@keyframes loginFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.wrap-anywhere {
+  overflow-wrap: anywhere;
 }
 
 @keyframes surfaceFadeIn {
@@ -127,13 +118,107 @@ body {
 }
 
 .surface-enter {
-  animation: surfaceFadeIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: surfaceFadeIn 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: pageFadeIn 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes itemStaggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.item-enter {
+  animation: itemStaggerIn 340ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes statusBadgeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.status-badge-enter {
+  animation: statusBadgeIn 220ms cubic-bezier(0.3, 0, 0.7, 1) both;
+}
+
+@keyframes particleFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(8px, -10px) scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+.login-card {
+  animation: surfaceFadeIn 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes logoReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-logoReveal {
+    animation: logoReveal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-nodePulse {
+    animation: nodePulse 3s ease-in-out infinite;
+  }
 }
 
 .app-canvas {
   background:
-    radial-gradient(circle at 88% 0%, rgb(15 118 110 / 8%), transparent 27rem),
-    radial-gradient(circle at 7% 29%, rgb(116 88 199 / 6%), transparent 25rem),
+    radial-gradient(circle at 88% 0%, rgb(13 123 132 / 5%), transparent 22rem),
+    radial-gradient(circle at 7% 29%, rgb(124 63 236 / 4%), transparent 22rem),
     var(--color-canvas);
 }
 
@@ -148,28 +233,32 @@ body {
   background: linear-gradient(
     90deg,
     var(--color-brand),
-    var(--color-accent-indigo),
-    var(--color-accent-purple),
-    var(--color-warning)
+    var(--color-warning),
+    var(--color-accent)
   );
   content: '';
 }
 
 .brand-mark {
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-soft),
-    var(--color-accent-indigo-soft)
-  );
-  box-shadow: inset 0 0 0 1px rgb(15 118 110 / 6%);
+  background: linear-gradient(135deg, var(--color-brand), var(--color-warning));
+  box-shadow: 0 4px 16px rgb(13 123 132 / 25%);
+}
+
+.login-hero {
+  background:
+    radial-gradient(circle at 90% 5%, rgb(13 123 132 / 4%), transparent 20rem),
+    radial-gradient(circle at 10% 90%, rgb(124 63 236 / 4%), transparent 20rem),
+    linear-gradient(
+      140deg,
+      rgb(255 255 255 / 98%) 0%,
+      rgb(248 252 251 / 96%) 100%
+    );
 }
 
 .empty-state-card {
-  background: linear-gradient(
-    180deg,
-    rgb(255 255 255 / 97%),
-    rgb(255 255 255 / 92%)
-  );
+  background:
+    radial-gradient(circle at 50% 0%, rgb(13 123 132 / 2%), transparent 12rem),
+    var(--color-surface);
 }
 
 .search-panel,
@@ -179,7 +268,7 @@ body {
 
 .search-panel {
   background:
-    radial-gradient(circle at 100% 0%, rgb(15 118 110 / 5%), transparent 17rem),
+    radial-gradient(circle at 100% 0%, rgb(13 123 132 / 3%), transparent 17rem),
     var(--color-surface);
 }
 
@@ -196,20 +285,9 @@ body {
 
 .case-detail-hero {
   background:
-    radial-gradient(circle at 92% 0%, rgb(15 118 110 / 10%), transparent 22rem),
-    radial-gradient(circle at 5% 100%, rgb(61 127 195 / 7%), transparent 20rem),
+    radial-gradient(circle at 92% 0%, rgb(13 123 132 / 8%), transparent 22rem),
+    radial-gradient(circle at 5% 100%, rgb(104 57 197 / 6%), transparent 20rem),
     linear-gradient(145deg, rgb(255 255 255 / 98%), rgb(248 252 251 / 95%));
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-.wrap-anywhere {
-  overflow-wrap: anywhere;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,5 +298,9 @@ textarea {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .animate-pulse {
+    animation: none !important;
   }
 }
