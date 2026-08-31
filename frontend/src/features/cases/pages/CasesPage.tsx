@@ -65,11 +65,11 @@ export function CasesPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-9 sm:px-6 sm:py-10 lg:px-8">
+    <main className="motion-safe:page-enter mx-auto w-full max-w-6xl px-4 py-9 sm:px-6 sm:py-10 lg:px-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <header className="max-w-3xl">
           <p className="mb-2.5 text-[0.8125rem] font-semibold text-brand sm:text-sm">
-            مدیریت عملیات پس از تحویل
+            پنل عملیات
           </p>
           <h1 className="text-[1.625rem] leading-[1.55] font-bold text-ink sm:text-[1.75rem]">
             پرونده‌های مغایرت
@@ -82,7 +82,7 @@ export function CasesPage() {
 
         <Link
           to="/cases/new"
-          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(15,118,110,0.18)] transition hover:bg-brand-strong focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:self-auto"
+          className="motion-safe:transition-all motion-safe:duration-200 inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(13,123,132,0.25)] hover:bg-brand-strong hover:shadow-[0_8px_24px_rgba(13,123,132,0.3)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand sm:self-auto"
         >
           <svg
             aria-hidden="true"
@@ -99,7 +99,7 @@ export function CasesPage() {
         </Link>
       </div>
 
-      <div className="mt-8">
+      <div className="motion-safe:delay-75 motion-safe:page-enter mt-8">
         <CaseStats />
       </div>
 
