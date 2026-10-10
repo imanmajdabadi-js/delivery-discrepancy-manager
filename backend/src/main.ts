@@ -8,8 +8,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({ origin: config.getOrThrow<string>('FRONTEND_ORIGIN') });
-
-  await app.listen(config.getOrThrow<number>('PORT'));
+  await app.listen(config.getOrThrow<number>('PORT'), '0.0.0.0');
 }
 
 void bootstrap();
